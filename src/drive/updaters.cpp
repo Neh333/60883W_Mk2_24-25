@@ -55,7 +55,7 @@ void Drive::updateStandstill(movement_Type type, bool &standStill, double error,
 
 void Drive::filterDerivative(uint16_t &cycleCount, double &derivative)
 {
-    
+
 }
  
 /* Returns the result of the PID calculation, updates integral */
@@ -67,18 +67,21 @@ double Drive::updatePID(double KP, double KI, double KD, double error, double la
   return KP*error + KI*integral + KD*derivative;
 }
 
-std::vector<double> Drive::updateVelocity(double targetVeloLeft, double targetVeloRight)
+void Drive::updateVelocity(double targetVelocity, double &velocityIntegral, double &workingVolt)
 {
- const double kP = 2;
- const double kI = 0;
- const double kD = 0;
-
- std::vector<double> x {0,0};
-
- double finalVoltageLeft;
- double finalVoltageRight;
-
- float error_L = targetVeloLeft - drive.actualVelocityLeft();
+ const double kP_velo = 0;
+ const double kI_velo = 0;
+ const double error = targetVelocity - actualVelocityAll();
+ if (error<100) 
+ {
+    velocityIntegral+= error;
+ }
+ else 
+ {
+    velocityIntegral =  0;
+ }
  
- return x;
+ /* Update the working volt with PI then */
+ workingVolt = (error * kP_velo + kI_velo * velocityIntegral) * 30; // 30 converts from velocity to voltag
+
 }

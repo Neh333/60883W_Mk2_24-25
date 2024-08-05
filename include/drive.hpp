@@ -125,7 +125,7 @@ class Drive{
 
  void calculateSlew(double *voltage, double actualVelocity, slewProfile *profile);
 
- std::vector<double> updateVelocity(double targetVeloLeft, double targetVeloRight);
+ void updateVelocity(double targetVelocity, double &velocityIntegral, double &workingVolt);
 
  /* "Virtual" Drivetrain methods */
  double leftDriveAvgPos(); 
