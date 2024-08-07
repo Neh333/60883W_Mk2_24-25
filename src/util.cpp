@@ -26,12 +26,12 @@ double imuTarget(double target)
 */
 double inchToTick(double inch) 
 {
-   return (inch * 39.1766013763);
+  return (inch * 39.1766013763);
 }
 
 double tickToInch(double tick) 
 {
-   return (tick / 39.1766013763);
+  return (tick / 39.1766013763);
 }
 
 double percentToVoltage(double percent) 
@@ -48,20 +48,20 @@ double voltageToVelocity(double voltage)
 // 200*60 = 12000
 double velocityToVoltage(double velocity) 
 {
-   return (velocity * 60);
+  return (velocity * 60);
 }
 
 double radToDeg(double radian)
 {
-    return (radian * (180 / M_PI));
+  return (radian * (180 / M_PI));
 }
 
 double degToRad(double degree)
 {
-    return (degree * (M_PI / 180));
+  return (degree * (M_PI / 180));
 }
 
 float wrapAngle(float rad)
 {
-    return std::remainder(rad, 2 * M_PI); 
+  return std::remainder(rad, 2 * M_PI); 
 }

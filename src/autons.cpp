@@ -30,6 +30,11 @@ std::function<void()> autos[AUTO_NUMBER] = {
   {tune}
 };
 
+
+Drive drive(leftMotors, rightMotors, imu);
+slewProfile mogoProfile{90, 30, 70};
+IntakeControl conveyor;
+
 //weird profiles for reuse 
 PIDprofile deg90RingConsts{ 0,   250,  0,   0,   0,  200,    0};
 PIDprofile deg90RingScheduledConsts{ 0,  190,  0,  15,   0,  600,  0};
@@ -37,9 +42,6 @@ PIDprofile deg60RingConsts{ 0,   200,  0,   0,   0,  200,    0};
 PIDprofile deg60RingSchedulesConsts{0,  125,  0,  15,   0,  320,  0};
 PIDprofile deg110RingConsts{ 0,   250,  0,   0,   0,  200,    0};
 PIDprofile deg110RingScheduledConsts{ 0,  190,  0,  15,   0,  600,  0};
-Drive drive(leftMotors, rightMotors, imu);
-slewProfile mogoProfile{90, 30, 70};
-IntakeControl conveyor;
 
 void winPointRed(){
  pros::Task runOnError(onError_fn);

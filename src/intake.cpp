@@ -6,38 +6,45 @@ bool JAM_PROTECTION_INACTIVE = false;
 
 pros::Mutex ringControlMutex;
 
-void IntakeControl::startIntake(){
+void IntakeControl::startIntake()
+{
     isRunning = true;
 }
 
-void IntakeControl::stopIntake(){
+void IntakeControl::stopIntake()
+{
     notifyOff = true;
 }
 
-void IntakeControl::setIntake(int16_t velocity){
+void IntakeControl::setIntake(int16_t velocity)
+{
     //Input will range from -400 to 400, voltage ranges from -12000 to 12000
     //12000 / 400 = 30
     intakeSpeed = velocity*30;
     intakeVel = velocity/2;
 }
 
-void IntakeControl::setJamThresh(int16_t velocity){
+void IntakeControl::setJamThresh(int16_t velocity)
+{
     //Input will range from -400 to 400, getVelocity returns between -200 and 200
     jamThresh = velocity/2;
 }
 
-void IntakeControl::setJamSpeed(int16_t velocity){
+void IntakeControl::setJamSpeed(int16_t velocity)
+{
     //Input will range from -400 to 400, voltage ranges from -12000 to 12000
     //12000 / 400 = 30
     jamSpeed = velocity*30;
 }
 
-void IntakeControl::setJamProtection(bool state){
+void IntakeControl::setJamProtection(bool state)
+{
     jamProtection = state;
 }
 
 
-void IntakeControl::run(){
+void IntakeControl::run()
+{
     ringControlMutex.take();
     if(notifyOff){
         notifyOff = false;
@@ -85,7 +92,8 @@ void startIntake(){conveyor.startIntake();}
 //Stop running the Intake (Does not continously run at zero, rather set speed to zero then quits)
 void stopIntake(){conveyor.stopIntake();}
 
-void IntakeControlSystem_fn(void *param){
+void IntakeControlSystem_fn(void *param)
+{
     uint32_t startTime = pros::millis();
     while(true){
         conveyor.run();

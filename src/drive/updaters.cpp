@@ -30,10 +30,13 @@ void Drive::updateIntegral(double error, double lastError, double activeDistance
 
 void Drive::updateStandstill(movement_Type type, bool &standStill, double error, double lastError, uint8_t &standStillCount) 
 {
-   if (type == lateral_t) {
-     if (SSActive && fabs(lastError - error) <= maxStepDistance) {
+   if (type == lateral_t) 
+   {
+     if (SSActive && fabs(lastError - error) <= maxStepDistance) 
+     {
        standStillCount++;
-       if (standStillCount > SSMaxCount) {
+       if (standStillCount > SSMaxCount) 
+       {
          standStill = true;
        }
      } else {
@@ -41,13 +44,16 @@ void Drive::updateStandstill(movement_Type type, bool &standStill, double error,
      }
    } 
   
-   else if (type == turn_t) {
-     if (SSActive_t && fabs(lastError - error) <= maxStepTurn) {
-       standStillCount++;
-       if (standStillCount > SSMaxCount_t) {
-         standStill = true;
-       }
-     } else {
+   else if (type == turn_t)
+    {
+     if (SSActive_t && fabs(lastError - error) <= maxStepTurn)
+      {
+        standStillCount++;
+        if (standStillCount > SSMaxCount_t) 
+        {
+          standStill = true;
+        }
+      } else {
        standStillCount = 0;
       }
     }

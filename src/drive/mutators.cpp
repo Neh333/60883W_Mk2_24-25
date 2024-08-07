@@ -74,18 +74,20 @@ void Drive::setSlew_a(slewProfile profile) {
 }
 
 void Drive::setStandStill(movement_Type type, uint8_t maxCycles, float maxStep) {
- if (type == lateral_t) {
-     // Deactivate standstill if maxcycles is 0
-     SSActive = !(maxCycles == 0);
-     SSMaxCount = maxCycles;
-     maxStepDistance = maxStep;
-    } 
+ if (type == lateral_t) 
+ {
+    // Deactivate standstill if maxcycles is 0
+    SSActive = !(maxCycles == 0);
+    SSMaxCount = maxCycles;
+    maxStepDistance = maxStep;
+  } 
 
- else if (type == turn_t) {
-     // Deactivate standstill if maxcycles is 0
-     SSActive_t = !(maxCycles == 0);
-     SSMaxCount_t = maxCycles;
-     maxStepTurn = maxStep;
+ else if (type == turn_t) 
+ {
+    // Deactivate standstill if maxcycles is 0
+    SSActive_t = !(maxCycles == 0);
+    SSMaxCount_t = maxCycles;
+    maxStepTurn = maxStep;
  }
 
 }

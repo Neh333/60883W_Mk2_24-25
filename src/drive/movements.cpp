@@ -153,7 +153,8 @@ double Drive::turn(Direction dir, double target, double timeOut, double maxVeloc
   return error;
 }
 
-double Drive::hardStop(Direction dir, double targetCutOff, double target, double maxVelocity){
+double Drive::hardStop(Direction dir, double targetCutOff, double target, double maxVelocity)
+{
   double errorDrift;
   double proportionDrift;
   double lastError;
