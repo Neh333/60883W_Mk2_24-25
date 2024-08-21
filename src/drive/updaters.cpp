@@ -58,7 +58,7 @@ double Drive::updatePID(double KP, double KI, double KD, double error, double la
   return KP*error + KI*integral + KD*derivative;
 }
 
-void Drive::updateVelocity(double targetVelocity, const double* lastError, double &velocityIntegral, double &workingVolt){
+void Drive::updateVelocity(double targetVelocity, double& lastError, double &velocityIntegral, double &workingVolt){
  const double kP_velo = 0;
  const double kI_velo = 0;
  const double error = targetVelocity - actualVelocityAll();
@@ -66,11 +66,11 @@ void Drive::updateVelocity(double targetVelocity, const double* lastError, doubl
  if(error){
    workingVolt = workingVolt;
  }  else {
-    updateIntegral(error, *lastError, 100, velocityIntegral);
+    updateIntegral(error, lastError, 100, velocityIntegral);
 
-    lastError = &error;
+    lastError = error;
 
-    workingVolt = (error * kP_velo + kI_velo * velocityIntegral) * 30; // 30 converts from velocity to voltag
+    workingVolt = (error * kP_velo + kI_velo * velocityIntegral) * 30; // 30 converts from velocity to voltage
  }  
  
 }

@@ -122,7 +122,7 @@ class Drive{
 
  void calculateSlew(double *voltage, double actualVelocity, slewProfile *profile);
 
- void updateVelocity(double targetVelocity, const double* lastError, double &velocityIntegral, double &workingVolt);
+ void updateVelocity(double targetVelocity, double& lastError, double &velocityIntegral, double &workingVolt);
 
  /* "Virtual" Drivetrain methods */
  double leftDriveAvgPos(); 
