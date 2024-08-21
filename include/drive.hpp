@@ -1,6 +1,7 @@
 #pragma once
 #include "main.h"
 #include "util.hpp"
+#include <tuple>
 #include <utility>
 
 //better than a macro soo
@@ -21,14 +22,13 @@ enum Direction{
   backwardShortest
 };
 
-enum movement_Type {
+enum movement_Type{
   lateral_t,
   turn_t
 };
 
 
-struct errorFuncTuple
-{
+struct errorFuncTuple{
   std::function<void()> func;
   double onError;
   bool called;
@@ -39,8 +39,7 @@ struct errorFuncTuple
 
 void onError_fn(void* param);
 
-struct PIDprofile
-{
+struct PIDprofile{
   double kP;
   double kP_a;
   double kI;
@@ -50,8 +49,7 @@ struct PIDprofile
   double kP_d;
 };
 
-struct slewProfile
-{
+struct slewProfile{
   double slew;
   double slew_lower_thresh;
   double slew_upper_thresh;
@@ -114,10 +112,9 @@ class Drive{
  bool isNewPID = false;
   
  /* PID updater methods */ 
- double updatePID(double KP, double KI, double KD, double error, double lastError, double integralActiveDistance, uint16_t &cycleCount,
-                  double &integral, double &derivative);
- 
- void filterDerivative(uint16_t &cycleCount, double &derivative);
+ double updatePID(double KP, double KI, double KD, double error, double lastError, double integralActiveDistance, 
+                    uint16_t &cycleCount, double &integral, double &derivative);
+
  void updateIntegral(double error, double lastError, double integralActiveDistance, double &integral);
 
  void updateStandstill(movement_Type type, bool & tandStill, double error, double lastError,
@@ -193,9 +190,15 @@ class Drive{
  double hardStop(Direction dir, double targetCutOff, double target, double maxVelocity);
   
  /* Swerve Movemnet Function */                 
- double swerve(Direction dir, double target, double target_a, double timeOut, double maxVel, 
-                 double maxVel_a);
+ double swerve(Direction dir, double target, double target_a, double timeOut, double maxVel, double maxVel_a);
+
+ double moveTo(Direction dir, std::pair<double, double> coord, double timeOut, double maxVelocity);
+
+ double turnTo(Direction dir, std::pair<double, double> coord, double timeOut, double maxVelocity);
+
+ double swerveTo(Direction dir, std::tuple<double, double, double> pose, double maxVel, double maxVel_a);
+
 };
 
-/* Drive object instance declartion */
+/* Drive object declartion */
 extern Drive drive;

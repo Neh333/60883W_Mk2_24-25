@@ -1,8 +1,7 @@
 #include "drive.hpp"
 
 /* Updates voltage given the slewProfile */
-void Drive::calculateSlew(double *voltage, double actualVelocity, slewProfile *profile)
-{
+void Drive::calculateSlew(double *voltage, double actualVelocity, slewProfile *profile){
   if(profile->slew && (fabs(actualVelocity) > profile->slew_lower_thresh) && (fabs(actualVelocity) < profile->slew_upper_thresh))
   {
     double deltaVelocity = voltageToVelocity(*voltage) - actualVelocity;
@@ -13,14 +12,13 @@ void Drive::calculateSlew(double *voltage, double actualVelocity, slewProfile *p
   }
 }
 
-void Drive::updateIntegral(double error, double lastError, double activeDistance, double &integral) 
-{
+void Drive::updateIntegral(double error, double lastError, double activeDistance, double &integral){
   /* Reset integral when crossing the zero point (going from error being positive to negative of vice versa) */
-  if ((error < 0) != (lastError < 0)) {
+  if ((error < 0) != (lastError < 0)){
     integral = 0;
   }
   /* Otherwise only continue to accumulate if within the active range */
-  else if (fabs(error) <= activeDistance) {
+  else if (fabs(error) <= activeDistance){
      integral += error;
      integral = std::clamp(integral,-INTEGRAL_MAX,INTEGRAL_MAX);
    }  else {
@@ -28,29 +26,21 @@ void Drive::updateIntegral(double error, double lastError, double activeDistance
    }
 }
 
-void Drive::updateStandstill(movement_Type type, bool &standStill, double error, double lastError, uint8_t &standStillCount) 
-{
-   if (type == lateral_t) 
-   {
-     if (SSActive && fabs(lastError - error) <= maxStepDistance) 
-     {
-       standStillCount++;
-       if (standStillCount > SSMaxCount) 
-       {
-         standStill = true;
-       }
-     } else {
+void Drive::updateStandstill(movement_Type type, bool &standStill, double error, double lastError, uint8_t &standStillCount){
+  if (type == lateral_t) {
+    if (SSActive && fabs(lastError - error) <= maxStepDistance){
+      standStillCount++;
+      if (standStillCount > SSMaxCount){
+        standStill = true;
+      }
+      } else {
        standStillCount = 0;
-     }
+      }
    } 
-  
-   else if (type == turn_t)
-    {
-     if (SSActive_t && fabs(lastError - error) <= maxStepTurn)
-      {
-        standStillCount++;
-        if (standStillCount > SSMaxCount_t) 
-        {
+  else if (type == turn_t){
+    if (SSActive_t && fabs(lastError - error) <= maxStepTurn){
+      standStillCount++;
+      if (standStillCount > SSMaxCount_t){
           standStill = true;
         }
       } else {
@@ -59,35 +49,24 @@ void Drive::updateStandstill(movement_Type type, bool &standStill, double error,
     }
 }
 
-void Drive::filterDerivative(uint16_t &cycleCount, double &derivative)
-{
-
-}
- 
 /* Returns the result of the PID calculation, updates integral */
 double Drive::updatePID(double KP, double KI, double KD, double error, double lastError, double integralActiveDistance, uint16_t &cycleCount,
                         double &integral, double &derivative)
 {
-  filterDerivative(cycleCount, derivative);
   updateIntegral(error, lastError, integralActiveDistance, integral);
   return KP*error + KI*integral + KD*derivative;
 }
 
-void Drive::updateVelocity(double targetVelocity, double &velocityIntegral, double &workingVolt)
-{
+void Drive::updateVelocity(double targetVelocity, double &velocityIntegral, double &workingVolt){
  const double kP_velo = 0;
  const double kI_velo = 0;
  const double error = targetVelocity - actualVelocityAll();
- if (error<100) 
- {
+ if (error<100) {
     velocityIntegral+= error;
- }
- else 
- {
+ } else {
     velocityIntegral =  0;
  }
  
  /* Update the working volt with PI then */
  workingVolt = (error * kP_velo + kI_velo * velocityIntegral) * 30; // 30 converts from velocity to voltag
-
 }

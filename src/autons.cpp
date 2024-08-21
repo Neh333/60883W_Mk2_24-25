@@ -1,33 +1,27 @@
 #include "drive.hpp"
 #include "include.hpp"
-#include "liblvgl/misc/lv_anim.h"
-#include "pros/motors.h"
-#include "pros/rtos.h"
 #include "pros/rtos.hpp"
-#include "util.hpp"
 #include "autons.hpp"
 #include "intake.hpp"
-#include <functional>
-
 /* Create an array of auton wrappers  to be used with the auton-selector*/
-std::function<void()> autos[AUTO_NUMBER] = {
-  {winPointRed},
-  {winPointBlue},
+autonTextTuple autos[AUTO_COUNT] = {
+  {"WPR", winPointRed},
+  {"WPB", winPointBlue},
 
-  {ringSideRed},
-  {ringSideBlue},
+  {"RSR",ringSideRed},
+  {"RSB",ringSideBlue},
 
-  {goalSideRed},
-  {goalSideBlue},
+  {"GSR",goalSideRed},
+  {"GSB",goalSideBlue},
 
-  {ringElimRed},
-  {ringElimBlue},
+  {"RER",ringElimRed},
+  {"REB",ringElimBlue},
 
-  {goalElimRed},
-  {goalElimBlue},
+  {"GER",goalElimRed},
+  {"GEB",goalElimBlue},
 
-  {skills},
-  {tune}
+  {"Skills",skills},
+  {"tune",tune}
 };
 
 
@@ -141,8 +135,6 @@ void skills(){
  runIntakeControl.remove();
  drive.onErrorVector.clear();
 }
-
-void nothing(){}
 
 void tune(){
  pros::Task runOnError(onError_fn);

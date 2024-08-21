@@ -1,5 +1,6 @@
 #include "include.hpp"
 #include <functional>
+#include <tuple>
 
 void winPointRed();
 void winPointBlue();
@@ -19,4 +20,8 @@ void goalElimBlue();
 void skills();
 void tune();
 
-extern std::function<void()> autos[AUTO_NUMBER];
+struct autonTextTuple{
+    std::string autoName; 
+    std::function<void()> autonomous;
+};
+extern autonTextTuple autos[AUTO_COUNT];

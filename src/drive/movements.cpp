@@ -6,8 +6,7 @@
 #include <algorithm>
  
 /* Basic linear PID movement function */
-double Drive::move(Direction dir, double target, double timeOut, double maxVelocity)
-{
+double Drive::move(Direction dir, double target, double timeOut, double maxVelocity){
   /* Error values */
   double lastError;
   double errorDrift;
@@ -81,8 +80,7 @@ double Drive::move(Direction dir, double target, double timeOut, double maxVeloc
 
 
 /* Basic angular PID movement function */
-double Drive::turn(Direction dir, double target, double timeOut, double maxVelocity)
-{ 
+double Drive::turn(Direction dir, double target, double timeOut, double maxVelocity){ 
   double lastError;
   const double initialAngle = imu->get_rotation() + 360;
   /* Scheduling variables */
@@ -153,8 +151,7 @@ double Drive::turn(Direction dir, double target, double timeOut, double maxVeloc
   return error;
 }
 
-double Drive::hardStop(Direction dir, double targetCutOff, double target, double maxVelocity)
-{
+double Drive::hardStop(Direction dir, double targetCutOff, double target, double maxVelocity){
   double errorDrift;
   double proportionDrift;
   double lastError;
@@ -217,8 +214,7 @@ double Drive::hardStop(Direction dir, double targetCutOff, double target, double
 //add secheduling if branch 
 
 /* Swerve movement */
-double Drive::swerve(Direction dir, double target, double target_a, double timeOut, double maxVel, double maxVel_a)
-{
+double Drive::swerve(Direction dir, double target, double target_a, double timeOut, double maxVel, double maxVel_a){
   /* Error values */
   double error_a;
   double lastError;

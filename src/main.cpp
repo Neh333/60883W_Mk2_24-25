@@ -1,95 +1,107 @@
-#include "main.h"
+#include "drive.hpp"
+#include "include.hpp"
+#include "autons.hpp"
+uint8_t auton = AUTO_COUNT; 
 
-/**
- * A callback function for LLEMU's center button.
- *
- * When this callback is fired, it will toggle line 2 of the LCD text between
- * "I was pressed!" and nothing.
- */
-void on_center_button() {
-	static bool pressed = false;
-	pressed = !pressed;
-	if (pressed) 
-	{
-		pros::lcd::set_text(2, "I was pressed!");
-	} else {
-		pros::lcd::clear_line(2);
+void AUTO_SWITCH(){
+	controller.print(2, 0, "%2.f", autos[auton%AUTO_COUNT].autoName + "%2.f", imu.get_heading());
+}
+
+void initialize(){
+	//initBarGraph();
+	//pros::Task brainDisplayTask(updateBarGraph_fn);
+  pros::lcd::initialize();
+  drive.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
+  imu.reset();
+} 
+
+void disabled(){
+	while(true){
+    AUTO_SWITCH();
+		//Change auton value
+		if(controller.get_digital_new_press(DIGITAL_LEFT)){auton--;}
+		if(controller.get_digital_new_press(DIGITAL_RIGHT)){auton++;}
+		pros::delay(20);
 	}
 }
 
-/**
- * Runs initialization code. This occurs as soon as the program is started.
- *
- * All other competition modes are blocked by initialize; it is recommended
- * to keep execution time for this mode under a few seconds.
- */
-void initialize() {
-	pros::lcd::initialize();
-	pros::lcd::set_text(1, "Hello PROS User!");
-
-	pros::lcd::register_btn1_cb(on_center_button);
+void competition_initialize(){
+	while(true){
+		//Change auton value
+		if(controller.get_digital_new_press(DIGITAL_LEFT)){auton--;}
+		if(controller.get_digital_new_press(DIGITAL_RIGHT)){auton++;}
+		pros::delay(20);
+	}
 }
 
-/**
- * Runs while the robot is in the disabled state of Field Management System or
- * the VEX Competition Switch, following either autonomous or opcontrol. When
- * the robot is enabled, this task will exit.
- */
-void disabled() {}
+void autonomous(){
+  /* Run the auton currently selected and displayed */
+	autos[auton%AUTO_COUNT].autonomous();
+}
 
-/**
- * Runs after initialize(), and before autonomous when connected to the Field
- * Management System or the VEX Competition Switch. This is intended for
- * competition-specific initialization routines, such as an autonomous selector
- * on the LCD.
- *
- * This task will exit when the robot is enabled and autonomous or opcontrol
- * starts.
- */
-void competition_initialize() {}
+void set_tank(int l_stick, int r_stick){
+  leftMotors.move_voltage(l_stick * (12000.0 / 127.0));
+  rightMotors.move_voltage(r_stick * (12000.0 / 127.0));
+}
 
-/**
- * Runs the user autonomous code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the autonomous
- * mode. Alternatively, this function may be called in initialize or opcontrol
- * for non-competition testing purposes.
- *
- * If the robot is disabled or communications is lost, the autonomous task
- * will be stopped. Re-enabling the robot will restart the task, not re-start it
- * from where it left off.
- */
-void autonomous() {}
+double left_curve_function(double x, double left_curve_scale){
+  if (left_curve_scale != 0) {
+    return (powf(2.718, -(left_curve_scale / 10)) + powf(2.718, (fabs(x) - 127) / 10) * (1 - powf(2.718, -(left_curve_scale / 10)))) * x;
+  }
+  return x;
+}
 
-/**
- * Runs the operator control code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the operator
- * control mode.
- *
- * If no competition control is connected, this function will run immediately
- * following initialize().
- *
- * If the robot is disabled or communications is lost, the
- * operator control task will be stopped. Re-enabling the robot will restart the
- * task, not resume it from where it left off.
- */
+void arcade_standard(double curve) {
+
+ int fwd_stick, turn_stick;
+
+ // Put the joysticks through the curve function
+ fwd_stick = left_curve_function(controller.get_analog(ANALOG_LEFT_Y), curve);
+ turn_stick = left_curve_function(controller.get_analog(ANALOG_RIGHT_X), curve);
+
+ // Set robot to l_stick and r_stick, check joystick threshold, set active brake
+ set_tank(fwd_stick + turn_stick, fwd_stick - turn_stick);
+}
+
 void opcontrol() {
-	pros::Controller master(pros::E_CONTROLLER_MASTER);
-	pros::MotorGroup left_mg({1, -2, 3});    // Creates a motor group with forwards ports 1 & 3 and reversed port 2
-	pros::MotorGroup right_mg({-4, 5, -6});  // Creates a motor group with forwards port 5 and reversed ports 4 & 6
+ bool backClampTog = false;
 
+ while (true) {
+   /*Display current autonomous on the controller*/
+   AUTO_SWITCH();
 
-	while (true) {
-		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
-		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
-		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);  // Prints status of the emulated screen LCDs
+   /*Change auton value*/
+   if(controller.get_digital_new_press(DIGITAL_LEFT)){auton--;}
+   if(controller.get_digital_new_press(DIGITAL_RIGHT)){auton++;}
+     
+   /*Run the currently selected autonomous when UP is pressed*/
+   if(controller.get_digital_new_press(DIGITAL_DOWN)){autonomous();}
+      
+   /*Reset all sensors*/
+   if(controller.get_digital_new_press(DIGITAL_UP)){
+     imu.reset();
+     while(drive.imu->is_calibrating()){
+       controller.print(2,0,"Calibrating:");
+       pros::delay(20);
+     }
+   } 
 
-		// Arcade control scheme
-		int dir = master.get_analog(ANALOG_LEFT_Y);    // Gets amount forward/backward from left joystick
-		int turn = master.get_analog(ANALOG_RIGHT_X);  // Gets the turn left/right from right joystick
-		left_mg.move(dir - turn);                      // Sets left motor voltage
-		right_mg.move(dir + turn);                     // Sets right motor voltage
-		pros::delay(20);                               // Run for 20 ms then update
-	}
+   /*DRIVER CONTROL */
+   arcade_standard(5);
+   if (controller.get_digital(DIGITAL_L1)){
+     intake.move_voltage(12000);
+   }
+   else if (controller.get_digital(DIGITAL_L2)){
+     intake.move_voltage(-12000);
+   }
+   else {intake.move_voltage(0);}
+   
+   if(controller.get_digital_new_press(DIGITAL_A)){ backClampTog = !backClampTog;}
+   if (!backClampTog){
+      mogoMechPisses.set_value(true);
+    }else {
+      mogoMechPisses.set_value(false);
+    }
+   pros::delay(20);
+ }
 }
