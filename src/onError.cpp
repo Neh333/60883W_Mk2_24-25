@@ -1,8 +1,7 @@
 #include "drive.hpp"
 
 /* onError function to be executed as a task */
-void onError_fn(void* param)
-{
+void onError_fn(void* param){
   pros::Mutex onErrorMutex;
   std::uint32_t startTime = pros::millis();
   while (true){
@@ -27,8 +26,7 @@ void onError_fn(void* param)
 
 
 /* Add an error-function tuple to the onErrorVector */
-void Drive::addErrorFunc(double onError, void input())
-{
+void Drive::addErrorFunc(double onError, void input()){
   onErrorVector.emplace_back(errorFuncTuple(input, inchToTick(onError), false));
 }
 

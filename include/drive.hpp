@@ -3,7 +3,7 @@
 #include "util.hpp"
 #include <tuple>
 #include <utility>
-
+#include "odometry.hpp"
 //better than a macro soo
 const double INTEGRAL_MAX = 800.0;
 const double NO_SCHEDULING = -1.f;
@@ -122,7 +122,7 @@ class Drive{
 
  void calculateSlew(double *voltage, double actualVelocity, slewProfile *profile);
 
- void updateVelocity(double targetVelocity, double &velocityIntegral, double &workingVolt);
+ void updateVelocity(double targetVelocity, const double* lastError, double &velocityIntegral, double &workingVolt);
 
  /* "Virtual" Drivetrain methods */
  double leftDriveAvgPos(); 
@@ -134,6 +134,10 @@ class Drive{
 
  struct slewProfile slewProf;
  struct slewProfile slewProf_a;
+
+ struct Odometry odom;
+
+ pros::Task* odomTask; 
 
  public:
  /* Drive object constructor */ 
@@ -192,11 +196,14 @@ class Drive{
  /* Swerve Movemnet Function */                 
  double swerve(Direction dir, double target, double target_a, double timeOut, double maxVel, double maxVel_a);
 
+ /*Odom movemnt functions*/
  double moveTo(Direction dir, std::pair<double, double> coord, double timeOut, double maxVelocity);
 
  double turnTo(Direction dir, std::pair<double, double> coord, double timeOut, double maxVelocity);
 
  double swerveTo(Direction dir, std::tuple<double, double, double> pose, double maxVel, double maxVel_a);
+
+ void startOdom();
 
 };
 

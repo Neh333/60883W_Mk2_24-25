@@ -12,6 +12,7 @@ Drive::Drive(pros::MotorGroup &leftMotors, pros::MotorGroup &rightMotors, pros::
  this->leftMotors      = &leftMotors;
  this->rightMotors     = &rightMotors;
  this->imu             = &imu;
+ odomTask = nullptr;
 }
 
 /*********************************************************************************************************/

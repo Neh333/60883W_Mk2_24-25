@@ -2,7 +2,8 @@
 
 /* Updates voltage given the slewProfile */
 void Drive::calculateSlew(double *voltage, double actualVelocity, slewProfile *profile){
-  if(profile->slew && (fabs(actualVelocity) > profile->slew_lower_thresh) && (fabs(actualVelocity) < profile->slew_upper_thresh))
+  if(profile->slew && (fabs(actualVelocity) > profile->slew_lower_thresh) 
+    && (fabs(actualVelocity) < profile->slew_upper_thresh))
   {
     double deltaVelocity = voltageToVelocity(*voltage) - actualVelocity;
     if(fabs(deltaVelocity) > profile->slew)
@@ -57,16 +58,19 @@ double Drive::updatePID(double KP, double KI, double KD, double error, double la
   return KP*error + KI*integral + KD*derivative;
 }
 
-void Drive::updateVelocity(double targetVelocity, double &velocityIntegral, double &workingVolt){
+void Drive::updateVelocity(double targetVelocity, const double* lastError, double &velocityIntegral, double &workingVolt){
  const double kP_velo = 0;
  const double kI_velo = 0;
  const double error = targetVelocity - actualVelocityAll();
- if (error<100) {
-    velocityIntegral+= error;
- } else {
-    velocityIntegral =  0;
- }
+
+ if(error){
+   workingVolt = workingVolt;
+ }  else {
+    updateIntegral(error, *lastError, 100, velocityIntegral);
+
+    lastError = &error;
+
+    workingVolt = (error * kP_velo + kI_velo * velocityIntegral) * 30; // 30 converts from velocity to voltag
+ }  
  
- /* Update the working volt with PI then */
- workingVolt = (error * kP_velo + kI_velo * velocityIntegral) * 30; // 30 converts from velocity to voltag
 }
