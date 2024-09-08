@@ -4,6 +4,7 @@
 #include <math.h>
 #include "include.hpp"
 #include <algorithm>
+#include <optional>
  
 /* Basic linear PID movement function */
 double Drive::move(Direction dir, double target, double timeOut, double maxVelocity){

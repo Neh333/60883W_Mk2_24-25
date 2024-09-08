@@ -1,6 +1,7 @@
 #pragma once
 #include "main.h"
 #include "util.hpp"
+#include <optional>
 #include <tuple>
 #include <utility>
 #include "odometry.hpp"
@@ -187,8 +188,9 @@ class Drive{
  void addErrorFunc(double onError, void input());
 
  /* Movement Functions, Return error after movement is finished */
- double move(Direction dir, double target, double timeOut, double maxVelocity);
- double turn(Direction dir, double target, double timeOut, double maxVelocity);
+ double move(Direction dir, double target, double timeOut, double maxVelocity = 100 );
+
+ double turn(Direction dir, double target, double timeOut, double maxVelocity = 70);
 
  /* Hardstop fn for PID motion chaining */ 
  double hardStop(Direction dir, double targetCutOff, double target, double maxVelocity);

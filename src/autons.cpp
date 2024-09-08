@@ -24,7 +24,6 @@ autonTextTuple autos[AUTO_COUNT] = {
   {"tune",tune}
 };
 
-
 Drive drive(leftMotors, rightMotors, imu);
 slewProfile mogoProfile{90, 30, 70};
 IntakeControl conveyor;
