@@ -4,7 +4,6 @@
 #include <math.h>
 #include "include.hpp"
 #include <algorithm>
-#include <optional>
  
 /* Basic linear PID movement function */
 double Drive::move(Direction dir, double target, double timeOut, double maxVelocity){
@@ -48,7 +47,7 @@ double Drive::move(Direction dir, double target, double timeOut, double maxVeloc
 
     /* Update error, do actual PID calculations, adjust for slew, and clamp the resulting value */
     error = tickTarget - fabs(driveAvgPos() - initialMotorAvg);
-    finalVolt = updatePID(myKP, myKI, myKD, error, lastError, integralActive, cycleCount, integral, derivative);
+    finalVolt = updatePID(myKP, myKI, myKD, error, lastError, integralActive, integral);
     calculateSlew(&finalVolt, actualVelocityAll(), &slewProf);
     finalVolt = std::clamp(finalVolt, -maxVolt, maxVolt);
 
@@ -124,7 +123,7 @@ double Drive::turn(Direction dir, double target, double timeOut, double maxVeloc
 
     /* Update error, do actual PID calculations, adjust for slew, and clamp the resulting value */
     error = target - fabs(imu->get_rotation() + 360 - initialAngle);
-    finalVolt = updatePID(myKP, myKI, myKD, error, lastError, integralActive_a, cycleCount, integral, derivative);
+    finalVolt = updatePID(myKP, myKI, myKD, error, lastError, integralActive, integral);
     calculateSlew(&finalVolt, actualVelocityLeft() - actualVelocityRight(), &slewProf_a);
     finalVolt = std::clamp(finalVolt, -maxVolt_a, maxVolt_a);
 
@@ -188,7 +187,7 @@ double Drive::hardStop(Direction dir, double targetCutOff, double target, double
     
      /* pdate the PD values */
      double zero = 0; // for I ref 
-     finalVolt = updatePID(myKP, myKI, myKD, error, lastError, zero, cycleCount, zero, derivative);
+     finalVolt = updatePID(myKP, myKI, myKD, error, lastError, integralActive, zero);
      
      //print error value for tuning
      controller.print(2,0, "Error: %.4f", tickToInch(error));
@@ -223,9 +222,17 @@ double Drive::swerve(Direction dir, double target, double target_a, double timeO
   const double initialMotorAvg = driveAvgPos();
   const double tickTarget = inchToTick(target);
   const double initialAngle = imu->get_rotation() + 360;
+
+  /* Scheduling variables */
+  bool scheduled = (swerveThresholds.first == NO_SCHEDULING);
+  bool scheduled_a = (swerveThresholds.second == NO_SCHEDULING);
+  double myKP = this->kP, myKI = this->kI, myKD = this->kD;
+  double myKP_a = this->kP_a, myKI_a = this->kI_a, myKD_a = this->kD_a;
+
   /* I & D declarationa */
   double integral = 0 , derivative = 0;
   double integral_a = 0 , derivative_a = 0;
+
   /* Motor output variable declarations */
   maxVolt = percentToVoltage(maxVel);
   maxVolt_a = percentToVoltage(maxVel_a);;
@@ -239,8 +246,7 @@ double Drive::swerve(Direction dir, double target, double target_a, double timeO
   uint16_t cycleCount = 0;
 
   /* Change the reverseVal and target if the direction input is shortest */
-  if(dir == forwardShortest || dir == backwardShortest)
-  {
+  if(dir == forwardShortest || dir == backwardShortest){
     target_a = fabs(fmod((target-imu->get_heading()+540),360) - 180);
     reverseVal_a = sgn(target_a);
     target_a = fabs(target_a);
@@ -257,12 +263,24 @@ double Drive::swerve(Direction dir, double target, double target_a, double timeO
   const uint32_t endTime = pros::millis() + timeOut*1000;
 
   /* Begin PID */
-  while(pros::millis() < endTime && !(standStill && standStill_a))
-  {
-    /********************************************DRIVE***************************************************/
+  while(pros::millis() < endTime && !(standStill && standStill_a)){
+    if(!scheduled && fabs(error) < swerveThresholds.first){
+     myKP = scheduledSwerveConstants.kP;
+     myKI = scheduledSwerveConstants.kI;
+     myKD = scheduledSwerveConstants.kD;
+     scheduled = true;
+    }
+
+    if(!scheduled && fabs(error_a) < swerveThresholds.second){
+      myKP_a = scheduledSwerveConstants.kP_a;
+      myKI_a = scheduledSwerveConstants.kI_a;
+      myKD_a = scheduledSwerveConstants.kD_a;
+      scheduled_a = true;
+    }
+
     /* Update error, do actual PID calculations, adjust for slew, and clamp the resulting value */
     error = tickTarget - fabs(driveAvgPos() - initialMotorAvg);
-    workingVolt = updatePID(kP, kI, kD, error, lastError, integralActive, cycleCount, integral, derivative);
+    workingVolt = updatePID(myKP, myKI, myKD, error, lastError, integralActive, integral);
     calculateSlew(&workingVolt, actualVelocityAll(), &slewProf);
     workingVolt = std::clamp(workingVolt, -maxVolt, maxVolt);
 
@@ -277,19 +295,25 @@ double Drive::swerve(Direction dir, double target, double target_a, double timeO
     /********************************************TURN****************************************************/
     /* Update error, do actual PID calculations, adjust for slew, and clamp the resulting value */
     error_a = target_a - fabs(imu->get_rotation() + 360 - initialAngle);
-    workingVolt = updatePID(kP_a, kI_a, kD_a, error_a, lastError_a, integralActive_a, cycleCount, integral_a, derivative_a);
+    workingVolt = updatePID(myKP_a, myKI_a, myKD_a, error_a, lastError_a, integralActive_a, integral);
     calculateSlew(&workingVolt, actualVelocityLeft() - actualVelocityRight(), &slewProf_a);
     workingVolt = std::clamp(workingVolt, -maxVolt_a, maxVolt_a);
 
     /* Calculate standstill */
-    updateStandstill(lateral_t, standStill_a, error_a, lastError_a, standStillCount_a);
+    updateStandstill(turn_t, standStill, error_a, lastError_a, standStillCount_a);
     
     /* Update lastError */
+    lastError = error;
     lastError_a = error_a;
-    
+  
+    finalVoltRight = reverseVal*workingVolt;
+    finalVoltLeft = reverseVal*workingVolt;
+
     finalVoltRight += reverseVal_a*(-workingVolt);
     finalVoltLeft += reverseVal_a*(workingVolt);
+
     /********************************************MOVE****************************************************/
+
     //print error value for tuning
     //controller.print(2,0,"E: %.4f, EA: %.4f", tickToInch(error), error_a);
     //controller.print(2,0, "EA: %.4f", error_a);

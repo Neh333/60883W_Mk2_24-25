@@ -114,7 +114,7 @@ class Drive{
   
  /* PID updater methods */ 
  double updatePID(double KP, double KI, double KD, double error, double lastError, double integralActiveDistance, 
-                    uint16_t &cycleCount, double &integral, double &derivative);
+                  double &integral);
 
  void updateIntegral(double error, double lastError, double integralActiveDistance, double &integral);
 
@@ -198,12 +198,13 @@ class Drive{
  /* Swerve Movemnet Function */                 
  double swerve(Direction dir, double target, double target_a, double timeOut, double maxVel, double maxVel_a);
 
- /*Odom movemnt functions*/
- double moveTo(Direction dir, std::pair<double, double> coord, double timeOut, double maxVelocity);
+ /*Odom*/
+ double moveTo(Direction dir, std::pair<double, double> targetCoord, double timeOut, double maxVelocity);
 
- double turnTo(Direction dir, std::pair<double, double> coord, double timeOut, double maxVelocity);
+ double turnTo(Direction dir, std::pair<double, double> targetCoord, double timeOut, double maxVelocity);
 
- double swerveTo(Direction dir, std::tuple<double, double, double> pose, double maxVel, double maxVel_a);
+ double swerveTo(Direction dir, std::tuple<double, double, double> targetPose, double timeOut, double maxVel, 
+                  double maxVel_a);
 
  void startOdom();
 

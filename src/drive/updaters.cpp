@@ -51,11 +51,11 @@ void Drive::updateStandstill(movement_Type type, bool &standStill, double error,
 }
 
 /* Returns the result of the PID calculation, updates integral */
-double Drive::updatePID(double KP, double KI, double KD, double error, double lastError, double integralActiveDistance, uint16_t &cycleCount,
-                        double &integral, double &derivative)
+double Drive::updatePID(double KP, double KI, double KD, double error, double lastError, double integralActiveDistance,
+                        double &integral)
 {
   updateIntegral(error, lastError, integralActiveDistance, integral);
-  return KP*error + KI*integral + KD*derivative;
+  return KP*error + KI*integral + KD*(lastError - error);
 }
 
 void Drive::updateVelocity(double targetVelocity, double& lastError, double &velocityIntegral, double &workingVolt){
