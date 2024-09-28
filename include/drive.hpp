@@ -65,16 +65,14 @@ class Drive{
   /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
     {14, 120,  0,  0,  30,   50,  0},/*50+ degree turns / gen lateral*/
 
-    {0,  80,  0,  0,  0,    40, 0}, /*mogo turning 50+ degree turn */ 
+    {20,  90,  0,  0,  36,   40,  0}, /*70-100 degree mogo turns / gen mogo lat*/ 
   
-    {0,  0,  0,   0, 0,   0, 0}, /*mogo turning 30+ degree turns, mogo lateral 22+*/
+    {0,  0,    0,  0,   0,    0,  0}, /*mogo turning 30+ degree turns, mogo lateral 22+*/
     
    /***********Scheduled**************/
    /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/ 
-    {0,   100, 0,  5,  0,   520,   0},/*scheduled for profile 50+ turns*/
+    {0,   100, 0,  5,   0,    530,   0},/*scheduled for profile 1*/
     
-    {0,   120, 0,  5,  0,   580,   0},/*scheduled for profile 50+ turns*/
-  
     /***********SWERVES**************/
 
     {21,  200,  0, 0,  50,  130,     0},/*AWP swerve*/

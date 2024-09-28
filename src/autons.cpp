@@ -59,10 +59,11 @@ void winPointBlue(){
 
  drive.setPID(2);
  drive.setScheduledConstants(5);
- drive.turn(left, imuTarget(250), 1, 70);
- pros::delay(2000);
+ drive.turn(left, imuTarget(260), 1, 70);
+  
+ drive.move(forward, 28, 1, 100);
 
-runOnError.remove();
+ runOnError.remove();
  drive.onErrorVector.clear();
 }
 
@@ -167,45 +168,53 @@ void tune(){
 
   
  drive.setPID(2);
- drive.setScheduledConstants(5);
+ drive.move(forward, 2, 1, 100);
+ pros::delay(1500);
+ drive.move(forward, 4, 1, 100);
+ pros::delay(1500);
+ drive.move(forward, 8, 1, 100);
+ pros::delay(1500);
+ drive.move(forward, 22, 1, 100);
+ pros::delay(1500);
+ drive.move(forward, 32, 2, 100);
+ pros::delay(1000);
+ drive.move(forward, 42, 2, 100);
+ pros::delay(2000);
+
 
  /* drive.setPID(1);
  drive.setScheduledConstants(6);
  drive.setScheduleThreshold_a(15);
  drive.setScheduleThreshold_l(NO_SCHEDULING);
  */
- drive.turn(right, 50, 1, 70);
- pros::delay(800);
  
- drive.turn(right, 60, 1, 70); 
- pros::delay(800);
+//  drive.turn(right, 70, 1, 70); 
+//  pros::delay(800);
 
- drive.turn(right, 75, 1, 70);
- pros::delay(800);
+//  drive.turn(right, 75, 1, 70);
+//  pros::delay(800);
 
- drive.turn(right, 80, 1, 70);
- pros::delay(800);
+//  drive.turn(right, 80, 1, 70);
+//  pros::delay(800);
 
- drive.turn(right, 100, 1, 70);
- pros::delay(800);
+//  drive.turn(right, 100, 1, 70);
+//  pros::delay(800);
 
- drive.turn(right, 120, 2, 70);
- pros::delay(800);
  
- drive.turn(right, 135, 2, 70);
- pros::delay(800);
+//  drive.turn(right, 135, 2, 70);
+//  pros::delay(800);
 
- drive.turn(right, 150, 2, 70);
- pros::delay(800);
+//  drive.turn(right, 150, 2, 70);
+//  pros::delay(800);
 
- drive.turn(right, 175, 2, 70);
- pros::delay(800);
+//  drive.turn(right, 175, 2, 70);
+//  pros::delay(800);
 
- drive.turn(right, 180, 2, 70);
- pros::delay(800);
+//  drive.turn(right, 180, 2, 70);
+//  pros::delay(800);
 
- drive.turn(right, 195, 2, 70);
- pros::delay(800);
+//  drive.turn(right, 195, 2, 70);
+//  pros::delay(800);
 
 
 //  drive.move(forward, 2, 1, 100);
