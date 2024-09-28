@@ -1,11 +1,29 @@
 #include "drive.hpp"
 #include "include.hpp"
 #include "autons.hpp"
+#include "util.hpp"
 uint8_t auton = AUTO_COUNT; 
 
-void AUTO_SWITCH(){
-	controller.print(2, 0, "%2.f", autos[auton%AUTO_COUNT].autoName + "%2.f", imu.get_heading());
-}
+// void AUTO_SWITCH(){
+// 	controller.print(2, 0, "%2.f", autos[auton%AUTO_COUNT].autoName + "%2.f", imu.get_heading());
+// }
+
+// #define AUTO_SWITCH(){ \
+// 	switch(auton%AUTO_COUNT){\
+//     case 0:   controller.print(2, 0, "WinP Red %.2f                ",imu.get_heading()); break;\
+//     case 1:   controller.print(2, 0, "WinP Blue %.2f               ",imu.get_heading()); break;\
+// 		case 2:   controller.print(2, 0, "GoalS Red %.2f               ",imu.get_heading()); break;\
+// 		case 3:   controller.print(2, 0, "GoalS Blue %.2f              ",imu.get_heading()); break;\
+// 		case 4:   controller.print(2, 0, "RingS Red %.2f               ",imu.get_heading()); break;\
+// 		case 5:   controller.print(2, 0, "RingS Blue %.2f              ",imu.get_heading()); break;\
+// 		case 6:   controller.print(2, 0, "GoalE Blue %.2f              ",imu.get_heading()); break;\
+// 		case 7:   controller.print(2, 0, "GoalE Red %.2f               ",imu.get_heading()); break;\
+// 		case 8:   controller.print(2, 0, "RingE Blue %.2f              ",imu.get_heading()); break;\
+// 		case 9:   controller.print(2, 0, "RingE Red %.2f               ",imu.get_heading()); break;\
+//     case 10:  controller.print(2, 0, "Skills      %.2f             ",imu.get_heading()); break;\
+// 		case 11:  controller.print(2, 0, "Tune %.2f                    ",imu.get_heading()); break;\
+// 	}\
+// }\
 
 void initialize(){
 	//initBarGraph();
@@ -17,7 +35,8 @@ void initialize(){
 
 void disabled(){
 	while(true){
-    AUTO_SWITCH();
+    //AUTO_SWITCH();
+    
 		//Change auton value
 		if(controller.get_digital_new_press(DIGITAL_LEFT)){auton--;}
 		if(controller.get_digital_new_press(DIGITAL_RIGHT)){auton++;}
@@ -64,11 +83,13 @@ void arcade_standard(double curve) {
 }
 
 void opcontrol() {
- bool backClampTog = false;
+ bool backClampTog = true;
+ //bool tiltTog = true;
 
  while (true) {
    /*Display current autonomous on the controller*/
-   AUTO_SWITCH();
+   controllerPrintAuto();
+   //AUTO_SWITCH();
 
    /*Change auton value*/
    if(controller.get_digital_new_press(DIGITAL_LEFT)){auton--;}
@@ -79,11 +100,7 @@ void opcontrol() {
       
    /*Reset all sensors*/
    if(controller.get_digital_new_press(DIGITAL_UP)){
-     imu.reset();
-     while(drive.imu->is_calibrating()){
-       controller.print(2,0,"Calibrating:");
-       pros::delay(20);
-     }
+    pauseAndCalibrateIMU();
    } 
 
    /*DRIVER CONTROL */
@@ -93,14 +110,26 @@ void opcontrol() {
    }
    else if (controller.get_digital(DIGITAL_L2)){
      intake.move_voltage(-12000);
+   } else {
+    intake.move_voltage(0);
    }
-   else {intake.move_voltage(0);}
+
+    if (controller.get_digital(DIGITAL_R1)){
+     arm.move_voltage(12000);
+   } else if (controller.get_digital(DIGITAL_R2)){
+     arm.move_voltage(-12000);
+   } else {
+    arm.move_voltage(0);
+   }
    
    if(controller.get_digital_new_press(DIGITAL_A)){ backClampTog = !backClampTog;}
    if (!backClampTog){
-      mogoMechPisses.set_value(true);
-    }else {
-      mogoMechPisses.set_value(false);
+      clampPis.set_value(true);
+      pros::delay(100);
+      tiltPis.set_value(true);
+    } else {
+      clampPis.set_value(false);
+      tiltPis.set_value(false);
     }
    pros::delay(20);
  }

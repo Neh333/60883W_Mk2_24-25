@@ -19,9 +19,3 @@ void goalElimBlue();
 
 void skills();
 void tune();
-
-struct autonTextTuple{
-    std::string autoName; 
-    std::function<void()> autonomous;
-};
-extern autonTextTuple autos[AUTO_COUNT];

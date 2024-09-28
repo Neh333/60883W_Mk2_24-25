@@ -6,7 +6,7 @@ void onError_fn(void* param){
   std::uint32_t startTime = pros::millis();
   while (true){
     onErrorMutex.take();
-    if(drive.getPIDStatus())
+    if(drive.PIDisActive())
     {
       auto iter = drive.onErrorVector.begin();
       while(iter != drive.onErrorVector.end())
@@ -31,9 +31,9 @@ void Drive::addErrorFunc(double onError, void input()){
 }
 
 const double Drive::getError(){
-   return this->error;
+  return this->error;
 }
 
-const bool Drive::getPIDStatus(){
-   return this->isNewPID;
+const bool Drive::PIDisActive(){
+  return this->runningPID;
 }

@@ -1,57 +1,112 @@
-#include <vector>
-#include "drive.hpp"
 #include "include.hpp"
-
+#include "util.hpp"
 
 /* Returns 1 if x is positive or zero or -1 if x is negative */
-int sgn(double x){
+int8_t sgn(double x){
   return (x >= 0) - (x < 0);
 }
 
+/* Return degrees given radians */
+double degrees(double radians)
+{
+  return(radians * (180/M_PI));
+}
 
-/* Find the shortest distance between current angle and a desired angle */
-double imuTarget(double target){
-  return(fabs(fmod((target-imu.get_heading()+540),360) - 180));
+/* Return radians given degrees */
+double radians(double degrees)
+{
+  return(degrees * (M_PI/180));
 }
 
 /*
-*1800 ticks/rev with 100 rpm cartridge
-*900 ticks/rev with 200 rpm cartridge
-*300 ticks/rev with 600 rpm cartridge
-*400 ticks for one full wheel rotation (300 * (48/36) or (4/3)) (reversed gear ratio)
-*Circumference of 3.25" omni = 10.2101761242 (3.25*pi)
-*400 ticks / 10.2101761242  = 39.1766013763 ticks per inch
-*/
-double inchToTick(double inch){
-  return (inch * 39.1766013763);
+ *1800 ticks/rev with 100 rpm cartridge
+ *900 ticks/rev with 200 rpm cartridge
+ *300 ticks/rev with 600 rpm cartridge
+
+ *400 ticks for one full wheel rotation (300 * (48/36) or (4/3)) (reversed gear ratio)
+ *Circumference of 2.75" omni = 8.63937979737 (2.75*pi)
+
+ *400 ticks / 8.63937979737 inches = 46.2996198086 ticks per inch
+ */
+double inchToTick(double inch) {
+  return (inch * 46.2996198086);
 }
 
-double tickToInch(double tick){
-  return (tick / 39.1766013763);
+double tickToInch(double tick) {
+  return (tick / 46.2996198086);
 }
 
-double percentToVoltage(double percent){
-  return (percent * 120);
+/* Return voltage given percent */
+double percentToVoltage(double percent)
+{
+  return(percent * 120);
 }
 
-// Max voltage is 12000, max velocity of standard motor is 200 (all that matters is the percent of max speed): 12000/60 = 200
-double voltageToVelocity(double voltage){
-  return (voltage / 60);
+/* Return velocity given voltage (assumes cartridge is not specified in motor instantiation) */
+double voltageToVelocity(double voltage)
+{
+  return(voltage / 60);
 }
 
-// 200*60 = 12000
-double velocityToVoltage(double velocity){
-  return (velocity * 60);
+/* Return voltage given velocity (assumes cartridge is not specified in motor instantiation) */
+double velocityToVoltage(double percent)
+{
+  return(percent * 60);
 }
 
-double radToDeg(double radian){
-  return (radian * (180 / M_PI));
+/* Returns 1 if x is positive or zero and -1 if x is negative */
+int signum(double x)
+{
+  return (x >= 0) - (x < 0);
 }
 
-double degToRad(double degree){
-  return (degree * (M_PI / 180));
+/* Find the shortest distance between two angles */
+double distBetweenAngles(double targetAngle, double currentAngle)
+{
+    return std::remainder(targetAngle-currentAngle,360);
 }
 
-float wrapAngle(float rad){
-  return std::remainder(rad, 2 * M_PI); 
+/* Find the shortest distance between current angle and a desired angle */
+double imuTarget(double target)
+{
+    return std::fabs(distBetweenAngles(target, imu.get_heading()));
+}
+
+/**
+ * Does trigonometry to assign values to attributes of a given Triangle struct
+ *
+ * \param obj
+ *        Reference to the Triangle object who's attributes will be set
+ * \param a
+ *        Leg A of the triangle
+ * \param reference
+ *        Angle to subtract from the current IMU heading. 
+ *        Will set hyp equal to A if reference and IMU heading are the same.   
+ */
+void findTri(struct Triangle *obj, double a, double reference)
+{
+  obj->beta = degrees(imu.get_heading() - reference);
+  obj->alpha = 90 - obj->beta;
+  obj->a = a;
+  obj->b =  a * tan(obj->beta);
+  obj->hyp = sqrt(a*a + obj->b*obj->b);
+}
+
+/* Print the currently selected auto, and some other information, to the controller */
+void controllerPrintAuto()
+{
+	controller.print(2, 0, "%s, %.2f            ", autos[auton%AUTO_COUNT].autoName, imu.get_heading());
+}
+
+/* Print a message informing of calibration, then calibrate */
+void pauseAndCalibrateIMU()
+{
+    imu.reset();
+    int iter = 0;
+    while(imu.is_calibrating())
+    {
+        controller.print(2,0,"Calibrating: %.2f    ", iter/1000.f);
+        iter += 20;
+        pros::delay(20);
+    }
 }

@@ -21,7 +21,7 @@ autonTextTuple autos[AUTO_COUNT] = {
   {"GEB",goalElimBlue},
 
   {"Skills",skills},
-  {"tune",tune}
+  {"Tune",tune}
 };
 
 Drive drive(leftMotors, rightMotors, imu);
@@ -152,60 +152,56 @@ void tune(){
   //  //170 degree angular movememt
   //  drive.swerve(forwardRight, 52, 40, 3, 60, 10);
   //  pros::delay(1000);
+
+
  drive.setPID(1);
- drive.setScheduledConstants(PIDConstants[4]);
+ drive.setScheduledConstants(6);
  drive.setScheduleThreshold_a(15);
  drive.setScheduleThreshold_l(10);
 
- drive.turn(right, 158, 2, 70);
- pros::delay(2000);
- /*
+//  drive.turn(right, 50, 1, 70);
+//  pros::delay(800);
+ 
+//  drive.turn(right, 60, 1, 70); 
+//  pros::delay(800);
+
+//  drive.turn(right, 75, 1, 70);
+//  pros::delay(800);
+
+//  drive.turn(right, 80, 1, 70);
+//  pros::delay(800);
+
+//  drive.turn(right, 100, 1, 70);
+//  pros::delay(800);
+
+//  drive.turn(right, 120, 2, 70);
+//  pros::delay(800);
+ 
+//  drive.turn(right, 135, 2, 70);
+//  pros::delay(800);
+
+//  drive.turn(right, 150, 2, 70);
+//  pros::delay(800);
+
+//  drive.turn(right, 175, 2, 70);
+//  pros::delay(800);
+
+//  drive.turn(right, 180, 2, 70);
+//  pros::delay(800);
+
+//  drive.turn(right, 195, 2, 70);
+//  pros::delay(800);
+
+
+ drive.move(forward, 12, 1, 100);
+ pros::delay(1500);
  drive.move(forward, 22, 1, 100);
- pros::delay(1000);
+ pros::delay(1500);
  drive.move(forward, 32, 2, 100);
  pros::delay(1000);
  drive.move(forward, 42, 2, 100);
  pros::delay(2000);
  
- 
- 
- //  drive.turn(right, 50, 1, 70);
- //  pros::delay(1000);
-
- drive.turn(right, 60, 1, 70);
- pros::delay(1000);
-
- drive.turn(right, 75, 1, 70);
- pros::delay(1000);
-
- drive.turn(right, 80, 1, 70);
- pros::delay(1000);
-
- drive.turn(right, 100, 1, 70);
- pros::delay(1000);
-
- drive.turn(right, 120, 2, 70);
- pros::delay(1000);
- 
- drive.turn(right, 135, 2, 70);
- pros::delay(1000);
-
-
- drive.turn(right, 150, 2, 70);
- pros::delay(1000);
-
- drive.turn(right, 175, 2, 70);
- pros::delay(1000);
-
- drive.turn(right, 180, 2, 70);
- pros::delay(1000);
-
- drive.turn(right, 195, 2, 70);
- pros::delay(1000);
-
- drive.turn(right, 205, 2, 70);
- pros::delay(1000);
-    */
 
  runOnError.remove();
  drive.onErrorVector.clear();

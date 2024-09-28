@@ -5,7 +5,17 @@
 #define MAX(a,b) ((a)>(b)?(a):(b)) /* takes param "A" & "B" if A is greather than than B then A if not then B */
 
 #define AUTO_COUNT 12 /* Can't used static types for array len or const uint soo womp cope */
-extern uint8_t auton; 
+
+struct autonTextTuple
+{
+    std::string autoName;
+    std::function<void()> autonomous;
+};
+
+
+/* Global Variable Declaration */
+extern uint8_t auton;
+extern autonTextTuple autos[];
 
 extern pros::Controller controller;
 
@@ -15,11 +25,24 @@ extern pros::MotorGroup rightMotors;
 
 extern pros::Motor intake;
 
+extern pros::Motor arm;
+
 /* Declare V5 sensors */
 extern pros::Imu imu;
 
 /* ADI Digital out */
-extern pros::adi::DigitalOut mogoMechPisses;
+extern pros::adi::DigitalOut clampPis;
+extern pros::adi::DigitalOut tiltPis;
+extern pros::adi::DigitalOut intakePis;
 
 /* Global vars */
 extern bool backClampTog;
+
+struct Triangle
+{
+    double a;
+    double b;
+    double hyp;
+    double alpha;
+    double beta;
+};
