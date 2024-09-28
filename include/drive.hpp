@@ -63,23 +63,17 @@ class Drive{
   /* PID Constants */
   const PIDprofile PIDConstants[9] = {
   /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
-    {12, 120,  0,  0,  0,   50,  0},/*50+ degree turns / lateral 12+*/
+    {14, 120,  0,  0,  30,   50,  0},/*50+ degree turns / gen lateral*/
 
-    {0,  0,   0,  0,  0,    0,    0},/*20+ degree turns / 2+ inch lateral (no scheduling)*/ 
-
-    {0,  0,  0,   0,  0,  0,   0}, /* 10+ degree turns, 40+ inch normal weight (no scheduling)*/ 
-
-    {0,  0,  0,   0, 0,   0, 0}, /*mogo turning 60+ degree turns, mogo lateral 22+*/ 
+    {0,  80,  0,  0,  0,    40, 0}, /*mogo turning 50+ degree turn */ 
   
     {0,  0,  0,   0, 0,   0, 0}, /*mogo turning 30+ degree turns, mogo lateral 22+*/
     
-    /***********Scheduled**************/
+   /***********Scheduled**************/
+   /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/ 
+    {0,   100, 0,  5,  0,   520,   0},/*scheduled for profile 50+ turns*/
     
-    {16, 130,  3,  12,  100,  560,   0},/*scheduled for profile 1, starting at 15 deg and 10 in of error*/
-
-    {30,  140, 0, 17, 100, 560,     20},/*scheduled for profile 4, starting at 20 deg and 10 in of error*/
-
-    {10,   90,  0, 0,   0,  400,     0},/*scheduled for profile 8, at 15 deg & 10 in of erorr*/
+    {0,   120, 0,  5,  0,   580,   0},/*scheduled for profile 50+ turns*/
   
     /***********SWERVES**************/
 

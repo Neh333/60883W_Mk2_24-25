@@ -221,7 +221,7 @@ double Drive::turn(PID_dir dir, double target, double timeOut, double maxVelocit
   setMaxTurnVoltage(maxVelocity);
   int finalVolt;
   /* Drive output multiplier */
-  int8_t reverseVal = (dir == right)?(-1):(1);
+  int8_t reverseVal = (dir == right)?(1):(-1);
   /* Standstill variable declarations */
   unsigned short standstillCounter = 0;
   bool standstill = false;
@@ -307,7 +307,7 @@ double Drive::swerve(PID_dir dir, double target, double target_a, double timeOut
   int finalVoltRight;
   /* Drive output multipliers */
   const int8_t reverseVal = (dir == backwardLeft || dir == backwardRight || dir == backwardShortest)?(-1):(1);
-  int8_t reverseVal_a = (dir == backwardRight || dir == forwardRight)?(-1):(1);
+  int8_t reverseVal_a = (dir == backwardRight || dir == forwardRight)?(1):(-1);
 
   /* Change the reverseVal and target if the direction input is shortest */
   if(dir == forwardShortest || dir == backwardShortest)

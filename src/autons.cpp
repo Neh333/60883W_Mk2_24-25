@@ -3,22 +3,23 @@
 #include "pros/rtos.hpp"
 #include "autons.hpp"
 #include "intake.hpp"
+#include "util.hpp"
 /* Create an array of auton wrappers  to be used with the auton-selector*/
 autonTextTuple autos[AUTO_COUNT] = {
-  {"WPR", winPointRed},
-  {"WPB", winPointBlue},
+  {"WinP R", winPointRed},
+  {"WinP B", winPointBlue},
 
-  {"RSR",ringSideRed},
-  {"RSB",ringSideBlue},
+  {"RingS R",ringSideRed},
+  {"RingS B",ringSideBlue},
 
-  {"GSR",goalSideRed},
-  {"GSB",goalSideBlue},
+  {"GoalsS R",goalSideRed},
+  {"GoalS B",goalSideBlue},
 
-  {"RER",ringElimRed},
-  {"REB",ringElimBlue},
+  {"RignE R",ringElimRed},
+  {"RingE B",ringElimBlue},
 
-  {"GER",goalElimRed},
-  {"GEB",goalElimBlue},
+  {"GoalE R",goalElimRed},
+  {"GoalE B",goalElimBlue},
 
   {"Skills",skills},
   {"Tune",tune}
@@ -33,24 +34,35 @@ PIDprofile deg90RingConsts{ 0,   250,  0,   0,   0,  200,    0};
 PIDprofile deg90RingScheduledConsts{ 0,  190,  0,  15,   0,  600,  0};
 PIDprofile deg60RingConsts{ 0,   200,  0,   0,   0,  200,    0};
 PIDprofile deg60RingSchedulesConsts{0,  125,  0,  15,   0,  320,  0};
+
 PIDprofile deg110RingConsts{ 0,   250,  0,   0,   0,  200,    0};
 PIDprofile deg110RingScheduledConsts{ 0,  190,  0,  15,   0,  600,  0};
 
 void winPointRed(){
  pros::Task runOnError(onError_fn);
- pros::Task runIntakeControl(IntakeControlSystem_fn);
-
- runOnError.remove();
- runIntakeControl.remove();
+  runOnError.remove();
  drive.onErrorVector.clear();
 }
 
 void winPointBlue(){
  pros::Task runOnError(onError_fn);
- pros::Task runIntakeControl(IntakeControlSystem_fn);
+ clampPis.set_value(false); //pull the clamp up 
 
- runOnError.remove();
- runIntakeControl.remove();
+ drive.move(backward, 22, 1, 100);
+
+ clampPis.set_value(true);
+ pros::delay(200);
+ tiltPis.set_value(true);
+ pros::delay(200);
+ intake.move_voltage(12000);
+ pros::delay(400);
+
+ drive.setPID(2);
+ drive.setScheduledConstants(5);
+ drive.turn(left, imuTarget(250), 1, 70);
+ pros::delay(2000);
+
+runOnError.remove();
  drive.onErrorVector.clear();
 }
 
@@ -153,54 +165,61 @@ void tune(){
   //  drive.swerve(forwardRight, 52, 40, 3, 60, 10);
   //  pros::delay(1000);
 
+  
+ drive.setPID(2);
+ drive.setScheduledConstants(5);
 
- drive.setPID(1);
+ /* drive.setPID(1);
  drive.setScheduledConstants(6);
  drive.setScheduleThreshold_a(15);
- drive.setScheduleThreshold_l(10);
-
-//  drive.turn(right, 50, 1, 70);
-//  pros::delay(800);
+ drive.setScheduleThreshold_l(NO_SCHEDULING);
+ */
+ drive.turn(right, 50, 1, 70);
+ pros::delay(800);
  
-//  drive.turn(right, 60, 1, 70); 
-//  pros::delay(800);
+ drive.turn(right, 60, 1, 70); 
+ pros::delay(800);
 
-//  drive.turn(right, 75, 1, 70);
-//  pros::delay(800);
+ drive.turn(right, 75, 1, 70);
+ pros::delay(800);
 
-//  drive.turn(right, 80, 1, 70);
-//  pros::delay(800);
+ drive.turn(right, 80, 1, 70);
+ pros::delay(800);
 
-//  drive.turn(right, 100, 1, 70);
-//  pros::delay(800);
+ drive.turn(right, 100, 1, 70);
+ pros::delay(800);
 
-//  drive.turn(right, 120, 2, 70);
-//  pros::delay(800);
+ drive.turn(right, 120, 2, 70);
+ pros::delay(800);
  
-//  drive.turn(right, 135, 2, 70);
-//  pros::delay(800);
+ drive.turn(right, 135, 2, 70);
+ pros::delay(800);
 
-//  drive.turn(right, 150, 2, 70);
-//  pros::delay(800);
+ drive.turn(right, 150, 2, 70);
+ pros::delay(800);
 
-//  drive.turn(right, 175, 2, 70);
-//  pros::delay(800);
+ drive.turn(right, 175, 2, 70);
+ pros::delay(800);
 
-//  drive.turn(right, 180, 2, 70);
-//  pros::delay(800);
+ drive.turn(right, 180, 2, 70);
+ pros::delay(800);
 
-//  drive.turn(right, 195, 2, 70);
-//  pros::delay(800);
+ drive.turn(right, 195, 2, 70);
+ pros::delay(800);
 
 
- drive.move(forward, 12, 1, 100);
- pros::delay(1500);
- drive.move(forward, 22, 1, 100);
- pros::delay(1500);
- drive.move(forward, 32, 2, 100);
- pros::delay(1000);
- drive.move(forward, 42, 2, 100);
- pros::delay(2000);
+//  drive.move(forward, 2, 1, 100);
+//  pros::delay(1500);
+//  drive.move(forward, 4, 1, 100);
+//  pros::delay(1500);
+//  drive.move(forward, 8, 1, 100);
+//  pros::delay(1500);
+//  drive.move(forward, 22, 1, 100);
+//  pros::delay(1500);
+//  drive.move(forward, 32, 2, 100);
+//  pros::delay(1000);
+//  drive.move(forward, 42, 2, 100);
+//  pros::delay(2000);
  
 
  runOnError.remove();
