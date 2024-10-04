@@ -14,4 +14,4 @@ pros::Imu imu(9);
 
 pros::adi::DigitalOut clampPis('A');
 pros::adi::DigitalOut tiltPis('C');
-pros::adi::DigitalOut lockPis('B');
+pros::adi::DigitalOut intakePis('B');

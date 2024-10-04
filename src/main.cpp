@@ -124,11 +124,11 @@ void opcontrol() {
    
    if(controller.get_digital_new_press(DIGITAL_A)){ backClampTog = !backClampTog;}
    if (!backClampTog){
-      clampPis.set_value(true);
+      clampPis.set_value(false);
       pros::delay(100);
       tiltPis.set_value(true);
     } else {
-      clampPis.set_value(false);
+      clampPis.set_value(true);
       tiltPis.set_value(false);
     }
    pros::delay(20);

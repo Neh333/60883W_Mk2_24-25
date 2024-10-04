@@ -46,22 +46,54 @@ void winPointRed(){
 
 void winPointBlue(){
  pros::Task runOnError(onError_fn);
- clampPis.set_value(false); //pull the clamp up 
+ clampPis.set_value(true); //pull the clamp up 
 
- drive.move(backward, 22, 1, 100);
+ drive.move(backward, 21, 1, 100);
 
- clampPis.set_value(true);
+ clampPis.set_value(false);
  pros::delay(200);
  tiltPis.set_value(true);
  pros::delay(200);
  intake.move_voltage(12000);
- pros::delay(400);
+ pros::delay(300);
 
  drive.setPID(2);
  drive.setScheduledConstants(5);
- drive.turn(left, imuTarget(260), 1, 70);
-  
+ drive.turn(left, imuTarget(257), 1, 70);
+
+ drive.addErrorFunc(10, LAMBDA(drive.setMaxVoltage(40))); 
  drive.move(forward, 28, 1, 100);
+
+                  /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
+ drive.setCustomPID({0,  75,  0,  0,    0,   60,  0}), /*70-100 degree mogo turns / gen mogo lat*/ 
+
+ drive.turn(right, imuTarget(64), 2, 70);
+ pros::delay(300);
+
+ clampPis.set_value(true);
+ pros::delay(300);
+ tiltPis.set_value(false);
+ pros::delay(300);
+ 
+ drive.setPID(1);
+ drive.move(forward, 40, 2, 100);
+ 
+ intakePis.set_value(true);
+ pros::delay(400);
+ 
+ drive.addErrorFunc(2, LAMBDA(intakePis.set_value(false)));
+ drive.move(forward, 10, 2, 50);
+
+ intake.move_voltage(0);
+ drive.turn(right, imuTarget(180), 1, 70);
+
+ drive.move(backward, 18, 1, 100);
+
+ intake.move_voltage(12000);
+
+ pros::delay(700);
+
+ drive.move(forward, 21, 1, 100);
 
  runOnError.remove();
  drive.onErrorVector.clear();
