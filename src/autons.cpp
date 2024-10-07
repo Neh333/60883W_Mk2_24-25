@@ -235,8 +235,8 @@ void skills(){
   
  //drop off 1st mogo
  drive.setPID(2);
- drive.turn(left, imuTarget(60), 1, 100);
- findTri(&tri, 10, 60);
+ drive.turn(left, imuTarget(50), 1, 100);
+ findTri(&tri, 10, 50);
  drive.move(backward, tri.hyp, 1, 100);
 
  clampPis.set_value(true);
@@ -245,24 +245,30 @@ void skills(){
  pros::delay(300);
  
  //Go to 2nd mogo 
- drive.move(forward, 24-tri.b, 1, 100);
- drive.turn(left, imuTarget(267), 3, 70);
+ drive.move(forward, 22-tri.b, 1, 100);
+
+                  /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
+ drive.setCustomPID({14, 82,  0,  6,  30,   50,  0});
+ drive.turn(left, imuTarget(270), 2, 100); //156 degree turn with custom prof cause needs to be less than 1 error everytime
  
- drive.move(backward, 48-tri.b, 10, 85);
+ drive.move(backward, 49-tri.b, 10, 80);
+
+ pros::delay(300); //let the mogo settle if its shaking
  
  clampPis.set_value(false);
  pros::delay(250);
  tiltPis.set_value(true);
  pros::delay(200);
  
- //Get rings
  drive.setPID(2);
  findTri(&tri, 7, 270);
  drive.move(backward, tri.hyp, 1, 100);
  
- drive.turn(left, imuTarget(117), 1, 90);
-
- drive.move(forward, 27-tri.b, 1, 100);
+ //Get offset ring
+ drive.turn(left, imuTarget(115), 1, 90);
+ 
+ //rings line
+ drive.move(forward, 24-tri.b, 1, 100);
  pros::delay(100);
 
  drive.move(backward, 25-tri.b, 1, 100);
@@ -271,11 +277,13 @@ void skills(){
  drive.setPID(4);
  drive.turn(left, imuTarget(90), 1, 70);
 
- drive.move(forward, 10, 2, 100);
+ drive.move(forward, 16, 1, 100);
  pros::delay(300);
 
- drive.move(forward, 8, 2, 100);
+ drive.move(forward, 16, 1, 100);
  pros::delay(300);
+
+ drive.move(backward, 8, 1, 100);
  
  drive.setPID(3);
  drive.turn(left, imuTarget(0), 1, 90);
@@ -283,12 +291,12 @@ void skills(){
  drive.move(forward, 16, 3, 80);
  pros::delay(100);
  
-//  drive.turn(left, imuTarget(270), 1, 90);
+ drive.turn(left, imuTarget(270), 1, 90);
  
-//  drive.move(forward, 34, 2, 100);
+ drive.move(forward, 34, 2, 100);
 
-//  drive.setPID(3);
-//  drive.turn(right, imuTarget(315), 1, 90);
+ drive.setPID(3);
+ drive.turn(right, imuTarget(315), 1, 90);
 
 //  drive.move(forward, 24, 1, 100);
 
@@ -308,8 +316,11 @@ void skills(){
 }
 
 void tune(){
- pros::Task runOnError(onError_fn);\
- drive.turn(left, 30, 1, 70);
+ pros::Task runOnError(onError_fn);
+                  /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
+ drive.setCustomPID({14, 82,  0,  4,  30,   58,  0});
+ drive.turn(left, 160, 2, 100);
+ pros::delay(1000);
 
  runOnError.remove();
  drive.onErrorVector.clear();
