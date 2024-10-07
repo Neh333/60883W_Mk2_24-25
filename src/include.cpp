@@ -1,5 +1,6 @@
 #include "include.hpp"
 #include "pros/motors.hpp"
+#include "pros/optical.hpp"
 
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
@@ -11,6 +12,7 @@ pros::Motor intake(-10);
 pros::Motor arm(1);
 
 pros::Imu imu(9);
+pros::Optical optical(4);
 
 pros::adi::DigitalOut clampPis('A');
 pros::adi::DigitalOut tiltPis('C');

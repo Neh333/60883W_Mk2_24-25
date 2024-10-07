@@ -10,6 +10,7 @@ const double INTEGRAL_MAX = 800.0;
 
 #define NO_SCHEDULING -1.f
 
+
 enum PID_dir{
   forward,
   backward,
@@ -64,17 +65,15 @@ class Drive{
   /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
     {14, 120,  0,  0,  30,   50,  0},/*50+ degree turns / gen lateral*/
 
-    {20,  90,  0,  0,  36,   40,  0}, /*70-100 degree mogo turns / gen mogo lat*/ 
-  
-    {0,  0,    0,  0,   0,    0,  0}, /*mogo turning 30+ degree turns, mogo lateral 22+*/
+    {20,  90,  0, 13,  36,  193, 0}, /*70+ degree mogo turns (90%) / gen mogo lat*/ 
     
-   /***********Scheduled**************/
-   /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/ 
-    {0,   100, 0,  5,   0,    530,   0},/*scheduled for profile 1*/
-    
+    {20, 143,  0, 8,   36,  300, 0}, /*40-60 degree mogo turns (90%) / gen mogo lat*/
+
+    {20, 237,  0, 8,   36,  70,  0}, /* random turn (70%) / gen mogo*/    
+
     /***********SWERVES**************/
 
-    {21,  200,  0, 0,  50,  130,     0},/*AWP swerve*/
+    {21,  200,  0, 0,  50,  130,  0},/**/
   };
 
   double kP, kP_a, kI, kI_a, kD, kD_a, kP_d;

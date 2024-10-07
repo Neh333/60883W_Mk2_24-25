@@ -1,4 +1,6 @@
 #pragma once
+#include "pros/colors.hpp"
+#include "util.hpp"
 #include <cstdint>
 #define LAMBDA(func) [](){func;}
 
@@ -17,8 +19,25 @@ double imuTarget(double target);
 double radToDeg(double rad);
 double degToRad(double deg);
 
-float wrapAngle(float rad);
+struct Triangle
+{
+    double a;
+    double b;
+    double hyp;
+    double alpha;
+    double beta;
+};
+
+void findTri(struct Triangle *obj, double a, double reference); 
 
 void controllerPrintAuto();
 
 void pauseAndCalibrateIMU();
+
+enum autoColor{
+    red,
+    blue
+};
+
+// void intakeToRedirect(void* param);
+void intakeToRedirect(autoColor color);

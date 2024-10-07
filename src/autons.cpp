@@ -30,17 +30,13 @@ slewProfile mogoProfile{90, 30, 70};
 IntakeControl conveyor;
 
 //weird profiles for reuse 
-PIDprofile deg90RingConsts{ 0,   250,  0,   0,   0,  200,    0};
-PIDprofile deg90RingScheduledConsts{ 0,  190,  0,  15,   0,  600,  0};
-PIDprofile deg60RingConsts{ 0,   200,  0,   0,   0,  200,    0};
-PIDprofile deg60RingSchedulesConsts{0,  125,  0,  15,   0,  320,  0};
-
-PIDprofile deg110RingConsts{ 0,   250,  0,   0,   0,  200,    0};
-PIDprofile deg110RingScheduledConsts{ 0,  190,  0,  15,   0,  600,  0};
+              /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
+//drive.setCustomPID({14, 157,  0,  0,  30,   56,  0}); //30 deg turn
 
 void winPointRed(){
  pros::Task runOnError(onError_fn);
-  runOnError.remove();
+
+ runOnError.remove();
  drive.onErrorVector.clear();
 }
 
@@ -48,10 +44,10 @@ void winPointBlue(){
  pros::Task runOnError(onError_fn);
  clampPis.set_value(true); //pull the clamp up 
 
- drive.move(backward, 21, 1, 100);
+ drive.move(backward, 22, 1, 100);
 
  clampPis.set_value(false);
- pros::delay(200);
+ pros::delay(250);
  tiltPis.set_value(true);
  pros::delay(200);
  intake.move_voltage(12000);
@@ -62,13 +58,12 @@ void winPointBlue(){
  drive.turn(left, imuTarget(257), 1, 70);
 
  drive.addErrorFunc(10, LAMBDA(drive.setMaxVoltage(40))); 
- drive.move(forward, 28, 1, 100);
+ drive.move(forward, 29, 2, 100);
 
                   /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
- drive.setCustomPID({0,  75,  0,  0,    0,   60,  0}), /*70-100 degree mogo turns / gen mogo lat*/ 
-
- drive.turn(right, imuTarget(64), 2, 70);
- pros::delay(300);
+ drive.setCustomPID({0,  77,  0,  0,    0,  82,  0}), /*70-100 degree mogo turns / gen mogo lat*/ 
+ drive.turn(right, imuTarget(66), 2, 70);
+ pros::delay(1000); //bring down to 300ms
 
  clampPis.set_value(true);
  pros::delay(300);
@@ -76,24 +71,24 @@ void winPointBlue(){
  pros::delay(300);
  
  drive.setPID(1);
- drive.move(forward, 40, 2, 100);
+ drive.move(forward, 41, 2, 100);
  
  intakePis.set_value(true);
- pros::delay(400);
+ pros::delay(500);
  
- drive.addErrorFunc(2, LAMBDA(intakePis.set_value(false)));
- drive.move(forward, 10, 2, 50);
+ drive.addErrorFunc(4, LAMBDA(intakePis.set_value(false)));
+ drive.move(forward, 12, 3, 60);
 
  intake.move_voltage(0);
- drive.turn(right, imuTarget(180), 1, 70);
+ drive.turn(right, imuTarget(180), 2, 70);
 
- drive.move(backward, 18, 1, 100);
+ drive.move(backward, 22, 1, 100);
 
  intake.move_voltage(12000);
 
- pros::delay(700);
+ pros::delay(1200);
 
- drive.move(forward, 21, 1, 100);
+ drive.swerve(forwardLeft, 30, imuTarget(180), 3, 90, 50);
 
  runOnError.remove();
  drive.onErrorVector.clear();
@@ -174,6 +169,138 @@ void goalElimBlue(){
 void skills(){
  pros::Task runOnError(onError_fn);
  pros::Task runIntakeControl(IntakeControlSystem_fn);
+ Triangle tri;
+
+ setIntake(400);
+ startIntake();
+ clampPis.set_value(true); // Pull the clamp up 
+
+ drive.moveDriveVoltage(-6000);
+ pros::delay(1500);
+ drive.moveDriveVoltage(0);
+
+ drive.move(forward, 13, 1, 100);
+
+ drive.turn(right, imuTarget(90), 1, 70);
+
+ drive.move(backward, 17, 1, 100);
+
+ clampPis.set_value(false);
+ pros::delay(250);
+ clampPis.set_value(false);
+ tiltPis.set_value(true);
+ pros::delay(200);
+ 
+ // Get rings
+ drive.move(backward, 9, 1, 100);
+ 
+ drive.setPID(2);
+ drive.turn(left, imuTarget(0), 1, 90);
+ 
+ drive.move(forward, 24, 1, 100);
+
+ drive.turn(left, imuTarget(270), 1, 90);
+
+ drive.move(forward, 24, 1, 100);
+ 
+ //go to ring in front of wall stake 
+ drive.setPID(2);
+ drive.turn(right, imuTarget(330), 1, 90);
+
+ findTri(&tri, 17, 330);
+
+ drive.move(forward, tri.hyp, 1, 100);
+
+ drive.move(backward, tri.hyp,  1, 100);
+
+ drive.turn(left, imuTarget(212), 1, 100);
+ 
+ //out of line ring
+ findTri(&tri, 20, 212);
+
+ drive.move(forward, tri.hyp, 1, 100);
+
+ drive.move(backward, tri.hyp+2, 1, 100); 
+ 
+ //get last two rings onto 1st mogo
+ //needs tuned
+ drive.setPID(4);  
+ drive.turn(left, imuTarget(180), 1, 70);
+
+ drive.move(forward, 22, 1, 90);
+ pros::delay(500);
+
+ drive.move(forward, 12, 1, 100);
+ pros::delay(400);
+  
+ //drop off 1st mogo
+ drive.setPID(2);
+ drive.turn(left, imuTarget(60), 1, 100);
+ findTri(&tri, 10, 60);
+ drive.move(backward, tri.hyp, 1, 100);
+
+ clampPis.set_value(true);
+ pros::delay(300);
+ tiltPis.set_value(false);
+ pros::delay(300);
+ 
+ //Go to 2nd mogo 
+ drive.move(forward, 24-tri.b, 1, 100);
+ drive.turn(left, imuTarget(267), 3, 70);
+ 
+ drive.move(backward, 48-tri.b, 10, 85);
+ 
+ clampPis.set_value(false);
+ pros::delay(250);
+ tiltPis.set_value(true);
+ pros::delay(200);
+ 
+ //Get rings
+ drive.setPID(2);
+ findTri(&tri, 7, 270);
+ drive.move(backward, tri.hyp, 1, 100);
+ 
+ drive.turn(left, imuTarget(117), 1, 90);
+
+ drive.move(forward, 27-tri.b, 1, 100);
+ pros::delay(100);
+
+ drive.move(backward, 25-tri.b, 1, 100);
+
+ //22 deg turn needs tuned 
+ drive.setPID(4);
+ drive.turn(left, imuTarget(90), 1, 70);
+
+ drive.move(forward, 10, 2, 100);
+ pros::delay(300);
+
+ drive.move(forward, 8, 2, 100);
+ pros::delay(300);
+ 
+ drive.setPID(3);
+ drive.turn(left, imuTarget(0), 1, 90);
+ 
+ drive.move(forward, 16, 3, 80);
+ pros::delay(100);
+ 
+//  drive.turn(left, imuTarget(270), 1, 90);
+ 
+//  drive.move(forward, 34, 2, 100);
+
+//  drive.setPID(3);
+//  drive.turn(right, imuTarget(315), 1, 90);
+
+//  drive.move(forward, 24, 1, 100);
+
+//  drive.move(backward, 72, 3, 100);
+
+//  clampPis.set_value(true);
+//  pros::delay(300);
+//  tiltPis.set_value(false);
+//  pros::delay(300);
+
+ //Go to 1st wall stake
+
 
  runOnError.remove();
  runIntakeControl.remove();
@@ -181,87 +308,8 @@ void skills(){
 }
 
 void tune(){
- pros::Task runOnError(onError_fn);
- /*
- drive.setScheduleThreshold_l(10);
- drive.setPID(4);
- drive.setScheduledConstants(PIDConstants[5]);
- drive.setScheduleThreshold_a(20);
-
- drive.setSlew(mogoProfile);
- */
-  //  drive.setPID(8);
-  //  drive.setScheduleThresholds_s(0, 10);
-  //  drive.setScheduledSwerveConstants(PIDConstants[6]);
-  
-  //  //170 degree angular movememt
-  //  drive.swerve(forwardRight, 52, 40, 3, 60, 10);
-  //  pros::delay(1000);
-
-  
- drive.setPID(2);
- drive.move(forward, 2, 1, 100);
- pros::delay(1500);
- drive.move(forward, 4, 1, 100);
- pros::delay(1500);
- drive.move(forward, 8, 1, 100);
- pros::delay(1500);
- drive.move(forward, 22, 1, 100);
- pros::delay(1500);
- drive.move(forward, 32, 2, 100);
- pros::delay(1000);
- drive.move(forward, 42, 2, 100);
- pros::delay(2000);
-
-
- /* drive.setPID(1);
- drive.setScheduledConstants(6);
- drive.setScheduleThreshold_a(15);
- drive.setScheduleThreshold_l(NO_SCHEDULING);
- */
- 
-//  drive.turn(right, 70, 1, 70); 
-//  pros::delay(800);
-
-//  drive.turn(right, 75, 1, 70);
-//  pros::delay(800);
-
-//  drive.turn(right, 80, 1, 70);
-//  pros::delay(800);
-
-//  drive.turn(right, 100, 1, 70);
-//  pros::delay(800);
-
- 
-//  drive.turn(right, 135, 2, 70);
-//  pros::delay(800);
-
-//  drive.turn(right, 150, 2, 70);
-//  pros::delay(800);
-
-//  drive.turn(right, 175, 2, 70);
-//  pros::delay(800);
-
-//  drive.turn(right, 180, 2, 70);
-//  pros::delay(800);
-
-//  drive.turn(right, 195, 2, 70);
-//  pros::delay(800);
-
-
-//  drive.move(forward, 2, 1, 100);
-//  pros::delay(1500);
-//  drive.move(forward, 4, 1, 100);
-//  pros::delay(1500);
-//  drive.move(forward, 8, 1, 100);
-//  pros::delay(1500);
-//  drive.move(forward, 22, 1, 100);
-//  pros::delay(1500);
-//  drive.move(forward, 32, 2, 100);
-//  pros::delay(1000);
-//  drive.move(forward, 42, 2, 100);
-//  pros::delay(2000);
- 
+ pros::Task runOnError(onError_fn);\
+ drive.turn(left, 30, 1, 70);
 
  runOnError.remove();
  drive.onErrorVector.clear();

@@ -1,4 +1,6 @@
 #include "include.hpp"
+#include "pros/optical.h"
+#include "pros/rtos.hpp"
 #include "util.hpp"
 
 /* Returns 1 if x is positive or zero or -1 if x is negative */
@@ -54,12 +56,6 @@ double velocityToVoltage(double percent)
   return(percent * 60);
 }
 
-/* Returns 1 if x is positive or zero and -1 if x is negative */
-int signum(double x)
-{
-  return (x >= 0) - (x < 0);
-}
-
 /* Find the shortest distance between two angles */
 double distBetweenAngles(double targetAngle, double currentAngle)
 {
@@ -85,8 +81,8 @@ double imuTarget(double target)
  */
 void findTri(struct Triangle *obj, double a, double reference)
 {
-  obj->beta = degrees(imu.get_heading() - reference);
-  obj->alpha = 90 - obj->beta;
+  obj->beta = radians(imu.get_heading() - reference);
+  obj->alpha = M_PI/2 - obj->beta;
   obj->a = a;
   obj->b =  a * tan(obj->beta);
   obj->hyp = sqrt(a*a + obj->b*obj->b);
@@ -109,4 +105,28 @@ void pauseAndCalibrateIMU()
         iter += 20;
         pros::delay(20);
     }
+}
+
+
+void intakeToRedirect(autoColor color){
+  optical.set_led_pwm(100);
+  int cycleCounter;
+  while (true) {
+    if (color == red) {
+      if (optical.get_hue() >= 0 && optical.get_hue() <= 16){
+        cycleCounter++;
+      }
+    }
+    else{
+      if(optical.get_hue() >= 216 && optical.get_hue() <= 232){
+        cycleCounter++;
+      }
+    }
+    while (cycleCounter < 20) {
+      intake.move_voltage(12000);
+      pros::delay(20);
+    }
+  }
+  intake.move_voltage(-12000);
+  pros::delay(700);
 }

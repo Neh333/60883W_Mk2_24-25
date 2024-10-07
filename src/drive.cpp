@@ -379,7 +379,7 @@ double Drive::swerve(PID_dir dir, double target, double target_a, double timeOut
     finalVoltRight += reverseVal_a * (-workingVolt);
     finalVoltLeft += reverseVal_a * (workingVolt);
     /********************************************MOVE****************************************************/
-    //master.print(2,0,"%.2f ,%.2f, %.2f            ", tickToInch(error), error_a, target_a);
+    controller.print(2,0,"%.2f, %.2f            ", tickToInch(error), error_a);
 
     /* Move Drivetrain */
     moveRightDriveVoltage(finalVoltRight);

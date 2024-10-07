@@ -1,35 +1,18 @@
 #include "drive.hpp"
 #include "include.hpp"
 #include "autons.hpp"
+#include "pros/llemu.hpp"
+#include "pros/misc.h"
+#include "pros/motors.h"
 #include "util.hpp"
 uint8_t auton = AUTO_COUNT; 
-
-// void AUTO_SWITCH(){
-// 	controller.print(2, 0, "%2.f", autos[auton%AUTO_COUNT].autoName + "%2.f", imu.get_heading());
-// }
-
-// #define AUTO_SWITCH(){ \
-// 	switch(auton%AUTO_COUNT){\
-//     case 0:   controller.print(2, 0, "WinP Red %.2f                ",imu.get_heading()); break;\
-//     case 1:   controller.print(2, 0, "WinP Blue %.2f               ",imu.get_heading()); break;\
-// 		case 2:   controller.print(2, 0, "GoalS Red %.2f               ",imu.get_heading()); break;\
-// 		case 3:   controller.print(2, 0, "GoalS Blue %.2f              ",imu.get_heading()); break;\
-// 		case 4:   controller.print(2, 0, "RingS Red %.2f               ",imu.get_heading()); break;\
-// 		case 5:   controller.print(2, 0, "RingS Blue %.2f              ",imu.get_heading()); break;\
-// 		case 6:   controller.print(2, 0, "GoalE Blue %.2f              ",imu.get_heading()); break;\
-// 		case 7:   controller.print(2, 0, "GoalE Red %.2f               ",imu.get_heading()); break;\
-// 		case 8:   controller.print(2, 0, "RingE Blue %.2f              ",imu.get_heading()); break;\
-// 		case 9:   controller.print(2, 0, "RingE Red %.2f               ",imu.get_heading()); break;\
-//     case 10:  controller.print(2, 0, "Skills      %.2f             ",imu.get_heading()); break;\
-// 		case 11:  controller.print(2, 0, "Tune %.2f                    ",imu.get_heading()); break;\
-// 	}\
-// }\
 
 void initialize(){
 	//initBarGraph();
 	//pros::Task brainDisplayTask(updateBarGraph_fn);
   pros::lcd::initialize();
   drive.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
+  arm.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
   imu.reset();
 } 
 
@@ -84,12 +67,10 @@ void arcade_standard(double curve) {
 
 void opcontrol() {
  bool backClampTog = true;
- //bool tiltTog = true;
-
  while (true) {
+   //pros::lcd::print(0, "%.2f", optical.get_hue());
    /*Display current autonomous on the controller*/
    controllerPrintAuto();
-   //AUTO_SWITCH();
 
    /*Change auton value*/
    if(controller.get_digital_new_press(DIGITAL_LEFT)){auton--;}
@@ -124,10 +105,12 @@ void opcontrol() {
    
    if(controller.get_digital_new_press(DIGITAL_A)){ backClampTog = !backClampTog;}
    if (!backClampTog){
+      //intakePis.set_value(true);
       clampPis.set_value(false);
       pros::delay(100);
       tiltPis.set_value(true);
     } else {
+      //intakePis.set_value(true);
       clampPis.set_value(true);
       tiltPis.set_value(false);
     }
