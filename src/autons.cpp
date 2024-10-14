@@ -319,9 +319,14 @@ void skills(){
 
 void tune(){
  pros::Task runOnError(onError_fn);
-  
+
+ //drive.setScheduledConstants(5);
+ //drive.setScheduleThreshold_a(15);
+
  drive.turn(right, 50, 1, 70);
  pros::delay(1000);
+
+
 
  drive.turn(right, 65, 1, 70);
  pros::delay(1000);
@@ -329,26 +334,26 @@ void tune(){
  drive.turn(right, 80, 1, 70);
  pros::delay(1000);
 
-  drive.turn(right, 95, 1, 70);
-  pros::delay(1000);
+ drive.turn(right, 95, 1, 70);
+ pros::delay(1000);
 
-  drive.turn(right, 115, 2, 70);
-  pros::delay(1000);
+ drive.turn(right, 115, 2, 70);
+ pros::delay(1000);
 
-  drive.turn(right, 130, 2, 70);
-  pros::delay(1000);
+ drive.turn(right, 130, 2, 70);
+ pros::delay(1000);
 
-  drive.turn(right, 145, 2, 70);
-  pros::delay(1000);
+ drive.turn(right, 145, 2, 70);
+ pros::delay(1000);
 
-  drive.turn(right, 160, 2, 70);
-  pros::delay(1000);
+ drive.turn(right, 160, 2, 70);
+ pros::delay(1000);
 
-  drive.turn(right, 175, 2, 70);
-  pros::delay(1000);
-  
-  drive.turn(right, 180, 2, 70);
-  pros::delay(1000);
+ drive.turn(right, 175, 2, 70);
+ pros::delay(1000);
+
+ drive.turn(right, 180, 2, 70);
+ pros::delay(1000);
 
  runOnError.remove();
  drive.onErrorVector.clear();

@@ -227,8 +227,7 @@ double Drive::turn(PID_dir dir, double target, double timeOut, double maxVelocit
   bool standstill = false;
 
   /* Change the reverseVal and target if the direction input is shortest */
-  if(dir == shortest)
-  {
+  if(dir == shortest){
     target = fabs(fmod((target-imu->get_heading()+540),360) - 180);
     reverseVal = sgn(target);
     target = fabs(target);
@@ -239,11 +238,9 @@ double Drive::turn(PID_dir dir, double target, double timeOut, double maxVelocit
   const uint32_t endTime = pros::millis() + timeOut*1000;
 
   /* Begin PID */
-  while((pros::millis() < endTime && !standstill))
-  {
+  while((pros::millis() < endTime && !standstill)){
     /* Maybe schedule constants */
-    if(!scheduled && fabs(error) < scheduleThreshold_a)
-    {
+    if(!scheduled && fabs(error) < scheduleThreshold_a){
       myKP = scheduledConstants.kP_a;
       myKI = scheduledConstants.kI_a;
       myKD = scheduledConstants.kD_a;
@@ -257,6 +254,7 @@ double Drive::turn(PID_dir dir, double target, double timeOut, double maxVelocit
     finalVolt = std::clamp(finalVolt, -maxVolt_a, maxVolt_a);
 
     /* Print statement used for testing */
+    //controller.print(2, 0, "Sche. kP_A: %.4f", scheduledConstants.kP_a);
     controller.print(2, 0, "Error: %.4f", error);
     //controller.print(2, 0, "Final Volt: %.4f", finalVolt);
     
