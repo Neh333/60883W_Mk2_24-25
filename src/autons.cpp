@@ -4,6 +4,7 @@
 #include "autons.hpp"
 #include "intake.hpp"
 #include "util.hpp"
+#include <optional>
 /* Create an array of auton wrappers  to be used with the auton-selector*/
 autonTextTuple autos[AUTO_COUNT] = {
   {"WinP R", winPointRed},
@@ -170,22 +171,27 @@ void skills(){
  pros::Task runOnError(onError_fn);
  pros::Task runIntakeControl(IntakeControlSystem_fn);
  Triangle tri;
-
- setIntake(400);
+ 
+ optical.set_led_pwm(100);
+ setIntake(400, std::nullopt);
  startIntake();
  clampPis.set_value(true); // Pull the clamp up 
 
  pros::delay(100);
 
  drive.moveDriveVoltage(-6000);
- pros::delay(1500);
+ pros::delay(800);
  drive.moveDriveVoltage(0);
 
- drive.move(forward, 13, 1, 100);
 
+                  /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
+ drive.setCustomPID({18, 87,  0,  10,  30,   90,  0});
+ drive.move(forward, 14.5, 1, 100);
+ 
+ drive.setPID(1);
  drive.turn(right, imuTarget(90), 1, 70);
 
- drive.move(backward, 17, 1, 100);
+ drive.move(backward, 16, 1, 100);
 
  clampPis.set_value(false);
  pros::delay(250);
@@ -194,7 +200,8 @@ void skills(){
  pros::delay(200);
  
  // Get rings
- drive.move(backward, 9, 1, 100);
+ drive.setPID(2);
+ drive.move(backward, 10, 1, 100);
  
  drive.setPID(2);
  drive.turn(left, imuTarget(0), 1, 90);
@@ -207,22 +214,22 @@ void skills(){
  
  //go to ring in front of wall stake 
  drive.setPID(2);
- drive.turn(right, imuTarget(330), 1, 90);
+ drive.turn(right, imuTarget(335), 1, 90);
 
- findTri(&tri, 17, 330);
+ findTri(&tri, 18, 335);
 
- drive.move(forward, tri.hyp, 1, 100);
+ drive.move(forward, tri.hyp, 2, 70);
 
  drive.move(backward, tri.hyp,  1, 100);
 
- drive.turn(left, imuTarget(212), 1, 100);
+ drive.turn(left, imuTarget(210), 1, 100);
  
  //out of line ring
- findTri(&tri, 20, 212);
+ findTri(&tri, 18, 210);
 
  drive.move(forward, tri.hyp, 1, 100);
 
- drive.move(backward, tri.hyp+2, 1, 100); 
+ drive.move(backward, tri.hyp+3, 1, 100); 
  
  //get last two rings onto 1st mogo
  //needs tuned
@@ -237,8 +244,8 @@ void skills(){
   
  //drop off 1st mogo
  drive.setPID(2);
- drive.turn(left, imuTarget(50), 1, 100);
- findTri(&tri, 10, 50);
+ drive.turn(left, imuTarget(55), 1, 100);
+ findTri(&tri, 10, 55);
  drive.move(backward, tri.hyp, 1, 100);
 
  clampPis.set_value(true);
@@ -247,7 +254,7 @@ void skills(){
  pros::delay(300);
  
  //Go to 2nd mogo 
- drive.move(forward, 22-tri.b, 1, 100);
+ drive.move(forward, 27-tri.b, 1, 100);
 
                   /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
  drive.setCustomPID({14, 82,  0,  6,  30,   50,  0});
@@ -255,7 +262,7 @@ void skills(){
  
  drive.move(backward, 49-tri.b, 10, 80);
 
- pros::delay(300); //let the mogo settle if its shaking
+ pros::delay(100); //let the mogo settle if its shaking
  
  clampPis.set_value(false);
  pros::delay(250);
@@ -270,12 +277,11 @@ void skills(){
  drive.turn(left, imuTarget(115), 1, 90);
  
  //rings line
- drive.move(forward, 24-tri.b, 1, 100);
+ drive.move(forward, 18-tri.b, 1, 100);
  pros::delay(100);
 
- drive.move(backward, 25-tri.b, 1, 100);
+ drive.move(backward, 22-tri.b, 1, 100);
 
- //22 deg turn needs tuned 
  drive.setPID(4);
  drive.turn(left, imuTarget(90), 1, 70);
 
@@ -285,31 +291,40 @@ void skills(){
  drive.move(forward, 16, 1, 100);
  pros::delay(300);
 
- drive.move(backward, 8, 1, 100);
+ drive.move(backward, 5, 1, 100);
  
  drive.setPID(3);
  drive.turn(left, imuTarget(0), 1, 90);
- 
- drive.move(forward, 16, 3, 80);
- pros::delay(100);
+
+ drive.setPID(2); 
+ drive.move(forward, 24, 2, 50);
+ pros::delay(200);
  
  drive.turn(left, imuTarget(270), 1, 90);
  
- drive.move(forward, 34, 2, 100);
+ drive.move(forward, 23, 2, 100);
 
  drive.setPID(3);
  drive.turn(right, imuTarget(315), 1, 90);
 
-//  drive.move(forward, 24, 1, 100);
 
-//  drive.move(backward, 72, 3, 100);
+ drive.setPID(2);
+ drive.move(forward, 25, 1, 100);
+ pros::delay(200);
 
-//  clampPis.set_value(true);
-//  pros::delay(300);
-//  tiltPis.set_value(false);
-//  pros::delay(300);
+ findTri(&tri, 72, 315);
+
+ drive.move(backward, tri.hyp, 3, 100);
+
+ clampPis.set_value(true);
+ pros::delay(300);
+ tiltPis.set_value(false);
+ pros::delay(300);
 
  //Go to 1st wall stake
+ drive.move(forward, 32, 1, 100);
+ setIntake(320, red);
+
 
 
  runOnError.remove();
@@ -320,41 +335,6 @@ void skills(){
 void tune(){
  pros::Task runOnError(onError_fn);
 
- //drive.setScheduledConstants(5);
- //drive.setScheduleThreshold_a(15);
-
- drive.turn(right, 50, 1, 70);
- pros::delay(1000);
-
-
-
- drive.turn(right, 65, 1, 70);
- pros::delay(1000);
-
- drive.turn(right, 80, 1, 70);
- pros::delay(1000);
-
- drive.turn(right, 95, 1, 70);
- pros::delay(1000);
-
- drive.turn(right, 115, 2, 70);
- pros::delay(1000);
-
- drive.turn(right, 130, 2, 70);
- pros::delay(1000);
-
- drive.turn(right, 145, 2, 70);
- pros::delay(1000);
-
- drive.turn(right, 160, 2, 70);
- pros::delay(1000);
-
- drive.turn(right, 175, 2, 70);
- pros::delay(1000);
-
- drive.turn(right, 180, 2, 70);
- pros::delay(1000);
-
- runOnError.remove();
+runOnError.remove();
  drive.onErrorVector.clear();
 }

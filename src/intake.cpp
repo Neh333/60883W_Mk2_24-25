@@ -1,5 +1,6 @@
 #include "intake.hpp"
 #include "include.hpp"
+#include <optional>
 
 bool JAM_PROTECTION_ACTIVE = true;
 bool JAM_PROTECTION_INACTIVE = false;
@@ -14,11 +15,26 @@ void IntakeControl::stopIntake(){
     notifyOff = true;
 }
 
-void IntakeControl::setIntake(int16_t velocity){
+void IntakeControl::setIntake(int16_t velocity, std::optional<autoColor> color){
     //Input will range from -400 to 400, voltage ranges from -12000 to 12000
     //12000 / 400 = 30
     intakeSpeed = velocity*30;
     intakeVel = velocity/2;
+    
+    optical.set_led_pwm(100);
+    if (color == red) {
+        lookingRed = true;
+        lookingBlue = false;    
+    }
+    else if (color ==  blue) {
+        lookingRed = false;
+        lookingBlue = true;
+    }
+    else {
+        lookingRed = false; 
+        lookingRed = false;
+        optical.set_led_pwm(0);
+    }
 }
 
 void IntakeControl::setJamThresh(int16_t velocity){
@@ -45,7 +61,49 @@ void IntakeControl::run(){
         intake.move_voltage(0);
     }
     if(isRunning){
-     //controller.print(2,0,"%i, %i, %i", jamCycles, deadCycles, reverseCycles);
+        //controller.print(2,0,"%i, %i, %i", jamCycles, deadCycles, reverseCycles) 
+     if(lookingBlue){ 
+        auto lookingBlueVal = lookingBlue ? "True" : "False";
+        pros::lcd::print(3, "Looking Blue: %s", lookingBlueVal);
+        switch (intakeFlag) {
+            //No rings are past redirect 
+            case 0:
+            intake.move_voltage(intakeSpeed);
+            pros::lcd::print(4, "Intake flag: %i", intakeFlag);
+            if(optical.get_hue() >= 216 && optical.get_hue() <= 232){detectCycles++;}
+            if(detectCycles >= detectThreshold){++intakeFlag;}
+            break;
+
+            //ring is past platform stage 
+            case 1:
+            intake.move_voltage(-12000); 
+            pros::lcd::print(4, "Intake flag: %i", intakeFlag);
+            if(!(optical.get_hue() >= 216 && optical.get_hue() <= 232)){noDetectCycles++;}
+            if(noDetectCycles >= NoDetectThreshold){noDetectCycles = 0; detectCycles = 0; intakeFlag = 0;}
+        }
+     }
+     else if (lookingRed) {    
+        auto lookingRedVal = lookingRed ? "True" : "False";
+        pros::lcd::print(2, "Looking Red: %s", lookingRedVal);
+        switch (intakeFlag) {
+            //No rings are past redirect 
+            case 0:
+            intake.move_voltage(intakeSpeed);
+            pros::lcd::print(4, "Intake flag: %i", intakeFlag);
+            if(optical.get_hue() >= 6 && optical.get_hue() <= 16){detectCycles++;}
+            if(detectCycles >= detectThreshold){++intakeFlag;}
+            break;
+
+            //ring is past platform stage 
+            case 1:
+            intake.move_voltage(-12000); 
+            pros::lcd::print(4, "Intake flag: %i", intakeFlag);
+            if(!(optical.get_hue() >= 6 && optical.get_hue() <= 16)){noDetectCycles++;}
+            if(noDetectCycles >= NoDetectThreshold){noDetectCycles = 0; detectCycles = 0; intakeFlag = 0;}
+        }
+        
+     }
+     else{
         switch(intakeFlag){
             //Intake is not jammed or in the process of unjamming
             case 0:
@@ -74,12 +132,13 @@ void IntakeControl::run(){
             if(reverseCycles >= dejamThreshold){reverseCycles = 0; intakeFlag = 0; lastJamDead = 0;}
             break;
         }
+     }
     }
    ringControlMutex.give();
 }
 
 //Set the Intakes speed to run at when operating
-void setIntake(int16_t velocity){conveyor.setIntake(velocity);}
+void setIntake(int16_t velocity, std::optional<autoColor> color){conveyor.setIntake(velocity, color);}
 //Begin running the Intake at the previously specified speed
 void startIntake(){conveyor.startIntake();}
 //Stop running the Intake (Does not continously run at zero, rather set speed to zero then quits)

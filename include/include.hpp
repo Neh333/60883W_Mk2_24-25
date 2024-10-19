@@ -7,6 +7,11 @@
 
 #define AUTO_COUNT 12 /* Can't used static types for array len or const uint soo womp cope */
 
+enum autoColor{
+    red,
+    blue
+};
+
 struct autonTextTuple
 {
     std::string autoName;

@@ -5,6 +5,7 @@
 #include "pros/misc.h"
 #include "pros/motors.h"
 #include "util.hpp"
+#include "intake.hpp"
 uint8_t auton = AUTO_COUNT; 
 
 void initialize(){
@@ -67,8 +68,17 @@ void arcade_standard(double curve) {
 
 void opcontrol() {
  bool backClampTog = true;
+ 
+ optical.set_led_pwm(100);
+
+//  pros::Task runIntakeControl(IntakeControlSystem_fn);
+//  setIntake(300, red);
+
  while (true) {
-   //pros::lcd::print(0, "%.2f", optical.get_hue());
+   pros::lcd::print(0, "Hue Val: %.2f", optical.get_hue());
+   
+   pros::lcd::print(1, "Led Val: %.2f", optical.get_led_pwm());
+
    /*Display current autonomous on the controller*/
    controllerPrintAuto();
 
@@ -86,14 +96,17 @@ void opcontrol() {
 
    /*DRIVER CONTROL */
    arcade_standard(5);
-   if (controller.get_digital(DIGITAL_L1)){
-     intake.move_voltage(12000);
+   if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)){
+    startIntake();
    }
-   else if (controller.get_digital(DIGITAL_L2)){
-     intake.move_voltage(-12000);
-   } else {
-    intake.move_voltage(0);
-   }
+  //  if (controller.get_digital(DIGITAL_L1)){
+  //    intake.move_voltage(12000);
+  //  }
+  //  else if (controller.get_digital(DIGITAL_L2)){
+  //    intake.move_voltage(-12000);
+  //  } else {
+  //   intake.move_voltage(0);
+  //  }
 
     if (controller.get_digital(DIGITAL_R1)){
      arm.move_voltage(12000);

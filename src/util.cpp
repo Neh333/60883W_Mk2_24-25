@@ -106,27 +106,3 @@ void pauseAndCalibrateIMU()
         pros::delay(20);
     }
 }
-
-
-void intakeToRedirect(autoColor color){
-  optical.set_led_pwm(100);
-  int cycleCounter;
-  while (true) {
-    if (color == red) {
-      if (optical.get_hue() >= 0 && optical.get_hue() <= 16){
-        cycleCounter++;
-      }
-    }
-    else{
-      if(optical.get_hue() >= 216 && optical.get_hue() <= 232){
-        cycleCounter++;
-      }
-    }
-    while (cycleCounter < 20) {
-      intake.move_voltage(12000);
-      pros::delay(20);
-    }
-  }
-  intake.move_voltage(-12000);
-  pros::delay(700);
-}

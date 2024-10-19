@@ -34,10 +34,6 @@ void controllerPrintAuto();
 
 void pauseAndCalibrateIMU();
 
-enum autoColor{
-    red,
-    blue
-};
 
 // void intakeToRedirect(void* param);
-void intakeToRedirect(autoColor color);
+// void intakeToRedirect(autoColor color);
