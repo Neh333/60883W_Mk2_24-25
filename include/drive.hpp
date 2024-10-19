@@ -69,7 +69,7 @@ class Drive{
     
     {20, 143,  0, 8,   36,  300, 0}, /*40-60 degree mogo turns (90%) / gen mogo lat*/
 
-    {20, 237,  0, 8,   36,  70,  0}, /* random turn (70%) / gen mogo*/    
+    {20, 237,  0, 8,   36,  70,  0}, /* random turn (70%) / gen mogo lat*/    
 
     /***********SWERVES**************/
 

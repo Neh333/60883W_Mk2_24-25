@@ -96,17 +96,17 @@ void opcontrol() {
 
    /*DRIVER CONTROL */
    arcade_standard(5);
-   if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)){
-    startIntake();
+  //  if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)){
+  //   startIntake();
+  //  }
+   if (controller.get_digital(DIGITAL_L1)){
+     intake.move_voltage(12000);
    }
-  //  if (controller.get_digital(DIGITAL_L1)){
-  //    intake.move_voltage(12000);
-  //  }
-  //  else if (controller.get_digital(DIGITAL_L2)){
-  //    intake.move_voltage(-12000);
-  //  } else {
-  //   intake.move_voltage(0);
-  //  }
+   else if (controller.get_digital(DIGITAL_L2)){
+     intake.move_voltage(-12000);
+   } else {
+    intake.move_voltage(0);
+   }
 
     if (controller.get_digital(DIGITAL_R1)){
      arm.move_voltage(12000);
