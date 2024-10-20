@@ -322,11 +322,11 @@ void skills(){
  findTri(&tri, 70, 315);
 
  drive.addErrorFunc(tri.hyp-30, LAMBDA(arm.move_voltage(12000)));
- drive.addErrorFunc(tri.hyp-50, LAMBDA(arm.move_voltage(-12000)));
- drive.addErrorFunc(tri.hyp-60, LAMBDA(arm.move_voltage(0)));
+ drive.addErrorFunc(tri.hyp-50, LAMBDA(arm.move_voltage(0)));
+ //drive.addErrorFunc(tri.hyp-60, LAMBDA(arm.move_voltage(0)));
  drive.move(backward, tri.hyp, 3, 100);
 
- 
+ arm.move_voltage(-12000);
  //drop off 2nd mogo mech
  clampPis.set_value(true);
  pros::delay(250);
@@ -378,7 +378,7 @@ void skills(){
 
  stopIntake();
 
- drive.turn(left, imuTarget(210), 1, 70);
+ drive.turn(right, imuTarget(137), 1, 70);
 
  runOnError.remove();
  runIntakeControl.remove();
