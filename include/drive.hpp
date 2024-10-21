@@ -1,7 +1,6 @@
 #pragma once
 #include "main.h"
 #include "util.hpp"
-#include "odometry.hpp"
 
 //better than a macro soo
 const double INTEGRAL_MAX = 800.0;
@@ -9,7 +8,6 @@ const double INTEGRAL_MAX = 800.0;
 #define DEFAULT_STANDSTILL_EXIT 7
 
 #define NO_SCHEDULING -1.f
-
 
 enum PID_dir{
   forward,
