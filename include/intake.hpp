@@ -11,7 +11,8 @@ class IntakeControl{
 private:
     const uint16_t jamCycleThreshold = 10;
     const uint16_t dejamThreshold = 15;
-    const uint16_t detectThreshold = 17;
+
+    const uint16_t detectThreshold = 18;
     const uint16_t NoDetectThreshold = 17;
 
     int16_t intakeVel;
