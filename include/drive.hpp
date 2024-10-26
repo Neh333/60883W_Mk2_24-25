@@ -60,15 +60,19 @@ class Drive{
   private:
   const PIDprofile PIDConstants[9] = {
   /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
-    {14, 87,  0,  10,  30,   90,  0},/*50+ degree turns (70%) / gen lateral*/
+    {14, 87,  0,  10,  30,   90,  0},/*50+ degree turns (70%) / gen lat*/
 
-    {20,  90, 0, 13,  36,  193, 0}, /*70+ degree mogo turns (90%) / gen mogo lat*/ 
+    {20, 90,   0, 13,  36,  193, 0}, /*70+ degree mogo turns (90%) / gen mogo lat*/ 
     
     {20, 143,  0, 8,   36,  300, 0}, /*40-60 degree mogo turns (90%) / gen mogo lat*/
 
     {20, 237,  0, 8,   36,  70,  0}, /* random turn (70%) / gen mogo lat*/  
       
     {20, 210,  0, 0,   36,  450,  0}, /* 30 deg mogo turns (70%) / gen mogo lat*/ 
+
+    {20, 87,   0, 0,   30,  490,  0}, /*25 deg turn (mogo?) (70%) / gen lat*/
+
+    {20, 67,   0, 0,   30,  490,  0} /*180 deg turn (mogo?) (90%) / gen mogo  lat*/
   };
 
   double kP, kP_a, kI, kI_a, kD, kD_a, kP_d;

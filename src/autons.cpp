@@ -99,7 +99,58 @@ void winPointBlue(){
 void ringSideRed(){
  pros::Task runOnError(onError_fn);
  pros::Task runIntakeControl(IntakeControlSystem_fn);
+ Triangle tri;
 
+ stopIntake(); // weird issue starting before start intake is called
+ 
+ //get mogo
+ drive.move(backward, 26, 2, 100);
+
+ clampPis.set_value(false);
+ pros::delay(250);
+ clampPis.set_value(false);
+ tiltPis.set_value(true);
+ pros::delay(100);
+
+ setIntake(400, std::nullopt);
+ startIntake();
+ 
+ //go get 1st ring
+ drive.turn(right, imuTarget(90), 2, 90);
+ 
+ findTri(&tri, 27, 90);
+ drive.move(forward, tri.hyp, 2, 70);
+ 
+ //go get 2nd ring
+ drive.turn(right, imuTarget(195), 2, 90);
+
+ drive.move(forward, 14-tri.b, 1, 100);
+ pros::delay(200);
+
+ //go get 3rd ring
+ findTri(&tri, 6, 195);
+ drive.move(backward, tri.hyp, 1, 100);
+ 
+ drive.setPID(6);
+ drive.turn(left, imuTarget(150), 1, 90);
+
+ drive.move(forward, 7-tri.b, 1, 100);
+ pros::delay(200);
+ 
+ //go touch bar
+ drive.setPID(2);
+ drive.move(backward, 10, 1, 100);
+
+ drive.turn(right, imuTarget(270), 2, 90);
+
+ drive.move(forward, 34, 3, 50);
+ 
+
+ clampPis.set_value(true);
+ pros::delay(200);
+ tiltPis.set_value(false);
+ pros::delay(150);
+ 
  runOnError.remove();
  runIntakeControl.remove();
  drive.onErrorVector.clear();
@@ -108,6 +159,54 @@ void ringSideRed(){
 void ringSideBlue(){
  pros::Task runOnError(onError_fn);
  pros::Task runIntakeControl(IntakeControlSystem_fn);
+ Triangle tri;
+ 
+ //get mogo
+ drive.move(backward, 26, 2, 100);
+
+ clampPis.set_value(false);
+ pros::delay(250);
+ clampPis.set_value(false);
+ tiltPis.set_value(true);
+ pros::delay(100);
+
+ setIntake(400, std::nullopt);
+ startIntake();
+ 
+ //go get 1st ring
+ drive.turn(left, imuTarget(270), 2, 90);
+ 
+ findTri(&tri, 27, 90);
+ drive.move(forward, tri.hyp, 2, 70);
+ 
+ //go get 2nd ring
+ drive.turn(left, imuTarget(165), 2, 90);
+
+ drive.move(forward, 14-tri.b, 1, 100);
+ pros::delay(200);
+
+ //go get 3rd ring
+ findTri(&tri, 6, 195);
+ drive.move(backward, tri.hyp, 1, 100);
+ 
+ drive.setPID(6);
+ drive.turn(right, imuTarget(210), 1, 90);
+
+ drive.move(forward, 7-tri.b, 1, 100);
+ pros::delay(200);
+ 
+ //go touch bar
+ drive.setPID(2);
+ drive.move(backward, 10, 1, 100);
+
+ drive.turn(left, imuTarget(90), 2, 90);
+
+ drive.move(forward, 34, 3, 50);
+ 
+ clampPis.set_value(true);
+ pros::delay(200);
+ tiltPis.set_value(false);
+ pros::delay(150);
 
  runOnError.remove();
  runIntakeControl.remove();
@@ -115,9 +214,41 @@ void ringSideBlue(){
 }
 
 void goalSideRed(){
-  pros::Task runOnError(onError_fn);
+ pros::Task runOnError(onError_fn);
  pros::Task runIntakeControl(IntakeControlSystem_fn);
+ Triangle tri;
 
+ stopIntake(); // weird issue starting before start intake is called
+ 
+ //get mogo
+ drive.move(backward, 28, 2, 100);
+
+ clampPis.set_value(false);
+ pros::delay(250);
+ clampPis.set_value(false);
+ tiltPis.set_value(true);
+ pros::delay(100);
+
+ setIntake(400, std::nullopt);
+ startIntake();
+
+ //go get 1st ring
+ drive.setPID(2);
+ drive.turn(left, imuTarget(270), 2, 90);
+ 
+ findTri(&tri, 27, 270);
+ drive.move(forward, tri.hyp, 2, 70);
+ 
+ drive.setPID(7);
+ drive.turn(shortest, 90, 2, 90);
+
+ drive.move(forward, 32, 3, 50);
+
+ clampPis.set_value(true);
+ pros::delay(200);
+ tiltPis.set_value(false);
+ pros::delay(150);
+ 
  runOnError.remove();
  runIntakeControl.remove();
  drive.onErrorVector.clear();
@@ -336,7 +467,7 @@ void skills(){
                   /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
  drive.setCustomPID({14, 97,  0,  10,  30,   90,  0}),
  drive.addErrorFunc(25, LAMBDA(stopIntake()));
- drive.turn(left, imuTarget(268), 1, 70);
+ drive.turn(left, imuTarget(268), 1, 70); //47 deg turn
 
  //get 3rd mogo
  drive.addErrorFunc(28-tri.b, LAMBDA(drive.setMaxVoltage(50)));
@@ -406,7 +537,7 @@ void skills(){
 void tune(){
  pros::Task runOnError(onError_fn);
  
- drive.turn(right,  45, 10, 70);
+ drive.turn(right,  180, 2, 90);
  pros::delay(1000);
 
  runOnError.remove();
