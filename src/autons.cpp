@@ -184,7 +184,6 @@ void skills(){
  pros::delay(800);
  drive.moveDriveVoltage(0);
 
-
                   /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
  drive.setCustomPID({18, 87,  0,  10,  30,   90,  0});
  drive.move(forward, 14.5, 1, 100);
@@ -211,20 +210,20 @@ void skills(){
 
  drive.turn(left, imuTarget(270), 1, 90);
 
- drive.move(forward, 23, 1, 100);
+ drive.move(forward, 24, 1, 100);
  
  //go to ring in front of wall stake 
  drive.setPID(2);
- drive.turn(right, imuTarget(334.5), 1, 90);
+ drive.turn(right, imuTarget(331), 1, 90);
 
- findTri(&tri, 18, 335);
+ findTri(&tri, 15, 331);
  
- drive.addErrorFunc(tri.hyp-8, LAMBDA(drive.setMaxVoltage(70)));
+ drive.addErrorFunc(tri.hyp-10, LAMBDA(drive.setMaxVoltage(70)));
  drive.move(forward, tri.hyp, 3, 100);
 
- pros::delay(500);
+ pros::delay(400);
 
- drive.move(backward, tri.hyp,  1, 100);
+ drive.move(backward, 17-tri.b,  1, 100);
 
  drive.turn(left, imuTarget(210), 1, 100);
  
@@ -233,47 +232,40 @@ void skills(){
 
  drive.move(forward, tri.hyp, 1, 100);
 
- drive.move(backward, tri.hyp+3, 1, 100); 
+ drive.move(backward, 19-tri.b, 1, 100); 
  
  //get last two rings onto 1st mogo
- 
- //needs tuned
- drive.setPID(4);  
- drive.turn(left, imuTarget(180), 1, 90);
+ drive.setPID(5);  
+ drive.turn(left, imuTarget(180), 2, 70);
 
  drive.move(forward, 22, 1, 100);
- pros::delay(400);
+ pros::delay(300);
 
  drive.move(forward, 12, 1, 100);
- pros::delay(400);
+ pros::delay(200);
   
  //drop off 1st mogo
  drive.setPID(2);
- drive.turn(left, imuTarget(55), 1, 100);
- findTri(&tri, 10, 55);
+ drive.turn(left, imuTarget(65), 1, 90);
+
+ findTri(&tri, 9, 65);
  drive.move(backward, tri.hyp, 1, 100);
 
  clampPis.set_value(true);
  pros::delay(200);
  tiltPis.set_value(false);
- pros::delay(100);
- 
- //Specfic vals for lat and angualr constants 
-                  /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
- drive.setCustomPID({16, 78,  0,  6,  37,   52,  0});
-
- //Go to 2nd mogo 
- findTri(&tri, 26, 55);
- drive.move(forward, tri.hyp, 1, 100);
-
- drive.turn(left, imuTarget(270), 2, 100); //156 degree turn with custom prof cause needs to be less than 1 error everytime
+ pros::delay(150);
 
  drive.setPID(1); 
- drive.addErrorFunc(28, LAMBDA(drive.setMaxVoltage(40)));
- drive.move(backward, 49.5-tri.b, 6, 100);
  
- //let mogo settle 
- pros::delay(200);
+ //Go to 2nd mogo 
+ drive.move(forward, 32.5-tri.b, 1, 100);
+
+ drive.turn(left, imuTarget(272), 2, 70);
+
+ drive.setPID(1); 
+ drive.addErrorFunc(28, LAMBDA(drive.setMaxVoltage(50)));
+ drive.move(backward, 47.5, 10, 100);
 
  clampPis.set_value(false);
  pros::delay(250);
@@ -290,31 +282,30 @@ void skills(){
  drive.move(forward, 18-tri.b, 1, 100);
  pros::delay(100);
 
- drive.move(backward, 20, 1, 100);
- 
  //in line rings
- drive.setPID(4);
- drive.turn(left, imuTarget(90), 1, 70);
+ drive.move(backward, 24, 1, 100);
+
+                  /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
+ drive.setCustomPID({20, 230,  0, 0,   36,  490,  0});
+ drive.turn(left, imuTarget(90), 1, 70); // 25 deg turn 
 
  drive.move(forward, 18, 1, 100);
- pros::delay(550);
+ pros::delay(200);
 
- drive.move(forward, 15, 1, 100);
- pros::delay(250);
-
- drive.move(backward, 2, 1, 100);
+ drive.move(forward, 12, 1, 100);
+ pros::delay(100);
  
  drive.setPID(2);
  drive.turn(left, imuTarget(0), 1, 90);
  
  drive.addErrorFunc(12, LAMBDA(drive.setMaxVoltage(70)));
- drive.move(forward, 24, 2, 100);
- pros::delay(200);
+ drive.move(forward, 21, 2, 100);
  
  drive.turn(left, imuTarget(270), 1, 90);
  
- drive.move(forward, 23, 2, 100);
-
+ drive.move(forward, 24, 2, 100);
+ 
+ //get ring under climbing tower 
  drive.setPID(3);
  drive.turn(right, imuTarget(315), 1, 90);
 
@@ -322,69 +313,34 @@ void skills(){
  drive.move(forward, 25, 1, 100);
  pros::delay(200);
 
+ //drop off 2nd mogo mech
  findTri(&tri, 71, 315);
-
+                  /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
+ drive.setCustomPID({16, 442,  0,   0, 50,  1000, 300});
+//  drive.swerve(backwardShortest, tri.hyp, 315, 3, 100, 50);
  drive.move(backward, tri.hyp, 3, 100);
 
- arm.move_voltage(-12000);
-
- //drop off 2nd mogo mech
  clampPis.set_value(true);
  pros::delay(250);
  tiltPis.set_value(false);
  pros::delay(100);
 
- //Go to 2nd wall stake
- drive.setPID(1);
- findTri(&tri, 38.5, 315);
+ //Go to 3rd mogo
+ findTri(&tri, 146, 315);
  
- arm.move_voltage(12000);
- drive.addErrorFunc(tri.hyp-29, LAMBDA(arm.move_voltage(-12000)));
- drive.move(forward, tri.hyp, 3, 100);
+                    /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
+ drive.setCustomPID({16, 442,  0,   0, 50,  1000, 300});
+ drive.addErrorFunc(48, LAMBDA(drive.setMaxVoltage(60)));
+ drive.move(forward, tri.hyp, 15, 100); 
 
- drive.turn(right, imuTarget(44), 1, 70);
+                  /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
+ drive.setCustomPID({14, 97,  0,  10,  30,   90,  0}),
+ drive.addErrorFunc(25, LAMBDA(stopIntake()));
+ drive.turn(left, imuTarget(268), 1, 70);
 
- setIntake(400, red);
- 
- drive.addErrorFunc(26-tri.b, LAMBDA(drive.setMaxVoltage(50)));
- drive.move(forward, 35-tri.b, 2, 100);
-
- //pick up ring for redirect 
- pros::delay(2000);
-
- arm.move_voltage(12000);
- pros::delay(1700);
- arm.move_voltage(0);
-
- drive.turn(right, imuTarget(73), 1, 70);
- 
- //score on wall stake 
- arm.move_voltage(-12000);
- pros::delay(300);
-
- drive.move(backward, 8, 2, 40);
- setIntake(400, std::nullopt);
-
- arm.move_voltage(0);
- 
- //pick up two rings
- drive.turn(left, imuTarget(350), 1, 70);
-
- drive.move(forward, 30, 2, 70);
- 
- drive.addErrorFunc(5, LAMBDA(stopIntake()));
- drive.turn(left, imuTarget(270), 1, 70);
- stopIntake();
-
- drive.addErrorFunc(10, LAMBDA(startIntake()));
- drive.move(forward, 22, 1, 50);
- pros::delay(200);
-
- stopIntake();
- 
- drive.turn(left, imuTarget(125), 1, 70);
- 
- drive.move(backward, 38, 2, 100);
+ //get 3rd mogo
+ drive.addErrorFunc(28-tri.b, LAMBDA(drive.setMaxVoltage(50)));
+ drive.move(backward, 38-tri.b, 4, 100);
 
  clampPis.set_value(false);
  pros::delay(250);
@@ -392,17 +348,55 @@ void skills(){
  tiltPis.set_value(true);
  pros::delay(100);
 
- drive.setPID(3);
- drive.turn(left, imuTarget(85), 1, 90);
-
- drive.move(backward, 72, 3, 100); 
+ startIntake();
  
- //drop off 3rd mogo mech
+ // Get 3 right side rings
+ drive.setPID(2);
+ drive.move(backward, 27, 1, 100);
+
+ drive.turn(left, imuTarget(180), 1, 90);
+
+ drive.move(forward, 24, 1, 100);
+ pros::delay(150);
+
+ drive.turn(left, imuTarget(90), 1, 90);
+
+ drive.move(forward, 24, 1, 100); 
+ pros::delay(150);
+ 
+ drive.setPID(3);
+ drive.turn(right, imuTarget(140), 1, 90);
+
+ drive.move(forward, 18, 1, 100);
+ pros::delay(150);
+
+ drive.turn(right, imuTarget(180), 1, 90);
+
+ findTri(&tri, 48, 180);
+ drive.move(backward, tri.hyp, 5, 100);
+ 
  clampPis.set_value(true);
  pros::delay(250);
  tiltPis.set_value(false);
+ pros::delay(100);
+ 
+ //go to push 4th mogo 
+ drive.setPID(1);
+ drive.move(forward, 20-tri.b, 1, 100);
 
- drive.move(forward, 24, 1, 100);
+ drive.turn(left,imuTarget(90), 1, 100);
+
+ drive.move(backward, 50, 1, 100);
+
+ drive.turn(right, imuTarget(180), 1, 70);
+
+ drive.move(backward, 16, 1, 100);
+
+ drive.turn(left, imuTarget(90), 1, 70);
+
+ drive.moveDriveTrain(-12000, 1.3);
+
+ drive.moveDriveTrain(12000, .5);
 
  runOnError.remove();
  runIntakeControl.remove();
@@ -412,12 +406,9 @@ void skills(){
 void tune(){
  pros::Task runOnError(onError_fn);
  
- 
-
- drive.setPID(5);  
- drive.turn(left, 180, 1, 90);
+ drive.turn(right,  45, 10, 70);
  pros::delay(1000);
 
-runOnError.remove();
+ runOnError.remove();
  drive.onErrorVector.clear();
 }

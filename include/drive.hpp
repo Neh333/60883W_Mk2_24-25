@@ -68,7 +68,7 @@ class Drive{
 
     {20, 237,  0, 8,   36,  70,  0}, /* random turn (70%) / gen mogo lat*/  
       
-    {20,  82, 0, 13,   36,  205, 0}, /* 180 deg mogo turns (90%) / gen mogo lat*/ 
+    {20, 210,  0, 0,   36,  450,  0}, /* 30 deg mogo turns (70%) / gen mogo lat*/ 
   };
 
   double kP, kP_a, kI, kI_a, kD, kD_a, kP_d;

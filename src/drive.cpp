@@ -193,8 +193,8 @@ double Drive::move(PID_dir dir, double target, double timeOut, double maxVelocit
     proportionDrift = errorDrift * kP_d;
 
     /* Move Drivetrain */
-    moveRightDriveVoltage((reverseVal * finalVolt) + proportionDrift);
-    moveLeftDriveVoltage((reverseVal * finalVolt) - proportionDrift);
+    moveRightDriveVoltage((reverseVal * finalVolt) - proportionDrift);
+    moveLeftDriveVoltage((reverseVal * finalVolt) + proportionDrift);
     
     /* Give PROS time to keep itself in order */
     pros::delay(MS_DELTA_TIME);
