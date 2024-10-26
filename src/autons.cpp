@@ -36,63 +36,35 @@ IntakeControl conveyor;
 //drive.setCustomPID({14, 157,  0,  0,  30,   56,  0}); //30 deg turn
 
 void winPointRed(){
- pros::Task runOnError(onError_fn);
+
+ pros::Task runOnError(onError_fn); 
+ pros::Task runIntakeControl(IntakeControlSystem_fn);
+ Triangle tri;
+
+ clampPis.set_value(true); //pull the clamp up 
+
+ drive.move(backward, 18, 1, 100);
+
+ drive.turn(right, imuTarget(90), 1, 70);
 
  runOnError.remove();
- drive.onErrorVector.clear();
+
 }
 
 void winPointBlue(){
- pros::Task runOnError(onError_fn);
+ pros::Task runOnError(onError_fn); 
+ pros::Task runIntakeControl(IntakeControlSystem_fn);
+ Triangle tri;
+
  clampPis.set_value(true); //pull the clamp up 
 
- drive.move(backward, 22, 1, 100);
+ drive.move(backward, 18, 1, 100);
 
- clampPis.set_value(false);
- pros::delay(250);
- tiltPis.set_value(true);
- pros::delay(200);
- intake.move_voltage(12000);
- pros::delay(300);
+ drive.turn(left, imuTarget(270), 1, 70);
 
- drive.setPID(2);
- drive.setScheduledConstants(5);
- drive.turn(left, imuTarget(257), 1, 70);
-
- drive.addErrorFunc(10, LAMBDA(drive.setMaxVoltage(40))); 
- drive.move(forward, 29, 2, 100);
-
-                  /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
- drive.setCustomPID({0,  77,  0,  0,    0,  82,  0}), /*70-100 degree mogo turns / gen mogo lat*/ 
- drive.turn(right, imuTarget(66), 2, 70);
- pros::delay(1000); //bring down to 300ms
-
- clampPis.set_value(true);
- pros::delay(300);
- tiltPis.set_value(false);
- pros::delay(300);
  
- drive.setPID(1);
- drive.move(forward, 41, 2, 100);
- 
- intakePis.set_value(true);
- pros::delay(500);
- 
- drive.addErrorFunc(4, LAMBDA(intakePis.set_value(false)));
- drive.move(forward, 12, 3, 60);
-
- intake.move_voltage(0);
- drive.turn(right, imuTarget(180), 2, 70);
-
- drive.move(backward, 22, 1, 100);
-
- intake.move_voltage(12000);
-
- pros::delay(1200);
-
- drive.swerve(forwardLeft, 30, imuTarget(180), 3, 90, 50);
-
  runOnError.remove();
+ runIntakeControl.remove();
  drive.onErrorVector.clear();
 }
 
@@ -240,9 +212,9 @@ void goalSideRed(){
  drive.move(forward, tri.hyp, 2, 70);
  
  drive.setPID(7);
- drive.turn(shortest, 90, 2, 90);
+ drive.turn(left, imuTarget(90), 2, 90);
 
- drive.move(forward, 32, 3, 50);
+ drive.move(forward, 38, 3, 50);
 
  clampPis.set_value(true);
  pros::delay(200);
@@ -257,6 +229,39 @@ void goalSideRed(){
 void goalSideBlue(){
  pros::Task runOnError(onError_fn);
  pros::Task runIntakeControl(IntakeControlSystem_fn);
+
+ Triangle tri;
+
+ stopIntake(); // weird issue starting before start intake is called
+ 
+ //get mogo
+ drive.move(backward, 28, 2, 100);
+
+ clampPis.set_value(false);
+ pros::delay(250);
+ clampPis.set_value(false);
+ tiltPis.set_value(true);
+ pros::delay(100);
+
+ setIntake(400, std::nullopt);
+ startIntake();
+
+ //go get 1st ring
+ drive.setPID(2);
+ drive.turn(right, imuTarget(90), 2, 90);
+ 
+ findTri(&tri, 27, 270);
+ drive.move(forward, tri.hyp, 2, 70);
+ 
+ drive.setPID(7);
+ drive.turn(right, imuTarget(270), 2, 90);
+
+ drive.move(forward, 38, 3, 50);
+
+ clampPis.set_value(true);
+ pros::delay(200);
+ tiltPis.set_value(false);
+ pros::delay(150);
 
  runOnError.remove();
  runIntakeControl.remove();
@@ -536,8 +541,9 @@ void skills(){
 
 void tune(){
  pros::Task runOnError(onError_fn);
- 
- drive.turn(right,  180, 2, 90);
+  
+ drive.setPID(7);
+ drive.turn(right, 180, 2, 90);
  pros::delay(1000);
 
  runOnError.remove();
