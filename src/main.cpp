@@ -68,11 +68,13 @@ void arcade_standard(double curve) {
 
 void opcontrol() {
  bool backClampTog = true;
+ bool redirectTog = false;
  
  optical.set_led_pwm(100);
 
- //pros::Task runIntakeControl(IntakeControlSystem_fn);
- //setIntake(300, red);
+ pros::Task runIntakeControl(IntakeControlSystem_fn);
+ runIntakeControl.suspend();
+ setIntake(400, any);
 
  while (true) {
    pros::lcd::print(0, "Hue Val: %.2f", optical.get_hue());
@@ -97,16 +99,26 @@ void opcontrol() {
    /*DRIVER CONTROL */
    arcade_standard(5);
    
-  //  if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)){
-  //   startIntake();
-  //  }
-   if (controller.get_digital(DIGITAL_L1)){
-     intake.move_voltage(12000);
+   if(controller.get_digital_new_press(DIGITAL_B)){
+     redirectTog = !redirectTog;
    }
-   else if (controller.get_digital(DIGITAL_L2)){
-     intake.move_voltage(-12000);
-   } else {
-    intake.move_voltage(0);
+   if(redirectTog){
+    runIntakeControl.resume();
+    startIntake();
+   }
+   else{ 
+     runIntakeControl.suspend();
+     stopIntake(); 
+    }
+   if(!redirectTog){
+     if (controller.get_digital(DIGITAL_L1)){
+       intake.move_voltage(12000);
+     }
+     else if (controller.get_digital(DIGITAL_L2)){
+       intake.move_voltage(-12000);
+     } else {
+      intake.move_voltage(0);
+     }
    }
 
     if (controller.get_digital(DIGITAL_R1)){

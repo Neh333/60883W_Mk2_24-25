@@ -25,11 +25,19 @@ void IntakeControl::setIntake(int16_t velocity, std::optional<autoColor> color){
     if (color == red) {
         lookingRed = true;
         lookingBlue = false;    
+        lookingAny = false;
     }
     else if (color ==  blue) {
         lookingRed = false;
         lookingBlue = true;
+        lookingAny = false;
     }
+    if(color == any) {
+        lookingRed = false;
+        lookingBlue = false;
+        lookingAny = true;
+    }
+
     else {
         lookingRed = false; 
         lookingRed = false;
@@ -101,7 +109,27 @@ void IntakeControl::run(){
             if(!(optical.get_hue() >= 6 && optical.get_hue() <= 16)){noDetectCycles++;}
             if(noDetectCycles >= NoDetectThreshold){noDetectCycles = 0; detectCycles = 0; intakeFlag = 0;}
         }
-        
+     }
+     else if (lookingAny) {
+        auto lookingBlueVal = lookingBlue ? "True" : "False";
+        pros::lcd::print(3, "Looking Blue: %s", lookingBlueVal);
+        switch (intakeFlag) {
+            //No rings are past redirect 
+            case 0:
+            intake.move_voltage(intakeSpeed);
+            pros::lcd::print(4, "Intake flag: %i", intakeFlag);
+            if((optical.get_hue() >= 216 && optical.get_hue() <= 232) || (optical.get_hue() >= 6 && optical.get_hue() <= 16)){detectCycles++;}
+            if(detectCycles >= detectThreshold){++intakeFlag;}
+            break;
+
+            //ring is past platform stage 
+            case 1:
+            intake.move_voltage(-12000); 
+            pros::lcd::print(4, "Intake flag: %i", intakeFlag);
+            if(!(optical.get_hue() >= 216 && optical.get_hue() <= 232) || !(optical.get_hue() >= 6 && optical.get_hue() <= 16)){noDetectCycles++;}
+            if(noDetectCycles >= NoDetectThreshold){noDetectCycles = 0; detectCycles = 0; intakeFlag = 0;}
+        }
+     
      }
      else{
         switch(intakeFlag){

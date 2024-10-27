@@ -4,7 +4,6 @@
 extern bool JAM_PROTECTION_ACTIVE;
 extern bool JAM_PROTECTION_INACTIVE;
 
-
 extern pros::Mutex ringControlMutex;
 
 class IntakeControl{
@@ -12,7 +11,7 @@ private:
     const uint16_t jamCycleThreshold = 10;
     const uint16_t dejamThreshold = 15;
 
-    const uint16_t detectThreshold = 18;
+    const uint16_t detectThreshold = 10;
     const uint16_t NoDetectThreshold = 17;
 
     int16_t intakeVel;
@@ -32,6 +31,7 @@ private:
     bool lastJamDead = true;
     bool lookingRed = false;
     bool lookingBlue = false; 
+    bool lookingAny;
     
 
 public:

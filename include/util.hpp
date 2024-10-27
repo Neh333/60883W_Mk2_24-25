@@ -33,7 +33,3 @@ void findTri(struct Triangle *obj, double a, double reference);
 void controllerPrintAuto();
 
 void pauseAndCalibrateIMU();
-
-
-// void intakeToRedirect(void* param);
-// void intakeToRedirect(autoColor color);
