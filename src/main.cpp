@@ -74,7 +74,7 @@ void opcontrol() {
 
  pros::Task runIntakeControl(IntakeControlSystem_fn);
  runIntakeControl.suspend();
- setIntake(400, any);
+ setIntake(390, any);
 
  while (true) {
    pros::lcd::print(0, "Hue Val: %.2f", optical.get_hue());
@@ -142,4 +142,5 @@ void opcontrol() {
     }
    pros::delay(20);
  }
+ runIntakeControl.remove();
 }

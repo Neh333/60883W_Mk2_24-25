@@ -1,6 +1,5 @@
 #include "drive.hpp"
 #include "include.hpp"
-#include "pros/motors.h"
 #include "pros/rtos.hpp"
 #include "autons.hpp"
 #include "intake.hpp"
@@ -129,6 +128,7 @@ void winPointBlue(){
  
  setIntake(400, std::nullopt);
  startIntake();
+ 
  pros::delay(950);
 
  drive.moveDriveVoltage(0);
@@ -446,7 +446,7 @@ void skills(){
  drive.setPID(1);
  drive.turn(right, imuTarget(90), 1, 70);
 
- drive.move(backward, 16, 1, 100);
+ drive.hardStop(backward, 6, 48, 1, 100);
 
  clampPis.set_value(false);
  pros::delay(250);
@@ -504,12 +504,12 @@ void skills(){
  drive.turn(left, imuTarget(65), 1, 90);
 
  findTri(&tri, 9, 65);
- drive.move(backward, tri.hyp, 1, 100);
+ drive.hardStop(backward, tri.hyp, 48, 1, 100);
 
  clampPis.set_value(true);
  pros::delay(200);
  tiltPis.set_value(false);
- pros::delay(150);
+ pros::delay(100);
 
  drive.setPID(1); 
  
