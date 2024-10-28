@@ -118,7 +118,7 @@ void IntakeControl::run(){
             case 0:
             intake.move_voltage(intakeSpeed);
             pros::lcd::print(4, "Intake flag: %i", intakeFlag);
-            if((optical.get_hue() >= 216 && optical.get_hue() <= 232) || (optical.get_hue() >= 6 && optical.get_hue() <= 16)){detectCycles++;}
+            if((optical.get_proximity() >= 100)){detectCycles++;}
             if(detectCycles >= detectThreshold){++intakeFlag;}
             break;
 
@@ -126,7 +126,7 @@ void IntakeControl::run(){
             case 1:
             intake.move_voltage(-12000); 
             pros::lcd::print(4, "Intake flag: %i", intakeFlag);
-            if(!(optical.get_hue() >= 216 && optical.get_hue() <= 232) || !(optical.get_hue() >= 6 && optical.get_hue() <= 16)){noDetectCycles++;}
+            if(optical.get_proximity() < 100){noDetectCycles++;}
             if(noDetectCycles >= NoDetectThreshold){noDetectCycles = 0; detectCycles = 0; intakeFlag = 0;}
         }
      
