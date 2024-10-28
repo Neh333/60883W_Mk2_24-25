@@ -37,11 +37,12 @@ void IntakeControl::setIntake(int16_t velocity, std::optional<autoColor> color){
         lookingRed = false;
         lookingBlue = false;
         lookingAny = true;
+        optical.set_led_pwm(0);
     }
-
-    else {
+    else if(color == std::nullopt) { //explicit for eliminating error while testing 
         lookingRed = false; 
         lookingRed = false;
+        lookingAny = false;
         optical.set_led_pwm(0);
     }
 }
@@ -134,7 +135,7 @@ void IntakeControl::run(){
         }
      
      }
-     else{
+     else {
         switch(intakeFlag){
             //Intake is not jammed or in the process of unjamming
             case 0:

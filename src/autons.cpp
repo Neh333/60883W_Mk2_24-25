@@ -5,7 +5,8 @@
 #include "intake.hpp"
 #include "util.hpp"
 #include <optional>
-/* Create an array of auton wrappers  to be used with the auton-selector*/
+
+/* Create an array of auton wrappers to be used with the auton-selector*/
 autonTextTuple autos[AUTO_COUNT] = {
   {"WinP R", winPointRed},
   {"WinP B", winPointBlue},
@@ -29,10 +30,6 @@ autonTextTuple autos[AUTO_COUNT] = {
 Drive drive(leftMotors, rightMotors, imu);
 slewProfile mogoProfile{90, 30, 70};
 IntakeControl conveyor;
-
-//weird profiles for reuse 
-              /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
-//drive.setCustomPID({14, 157,  0,  0,  30,   56,  0}); //30 deg turn
 
 void winPointRed(){
  pros::Task runOnError(onError_fn); 
@@ -424,20 +421,21 @@ void goalElimBlue(){
 }
            
 void skills(){
- pros::Task runOnError(onError_fn);
+ pros::Task runOnError(onError_fn); 
  pros::Task runIntakeControl(IntakeControlSystem_fn);
  Triangle tri;
+
+ drive.moveDriveVoltage(-6500);
  
- optical.set_led_pwm(100);
- setIntake(400, std::nullopt);
- startIntake();
- clampPis.set_value(true); // Pull the clamp up 
-
- pros::delay(100);
-
- drive.moveDriveVoltage(-6000);
+ intake.move_voltage(12000);
  pros::delay(800);
  drive.moveDriveVoltage(0);
+
+ intake.move_voltage(0);
+
+ 
+ setIntake(400, std::nullopt);
+ startIntake();
 
                   /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
  drive.setCustomPID({18, 87,  0,  10,  30,   90,  0});
@@ -446,7 +444,7 @@ void skills(){
  drive.setPID(1);
  drive.turn(right, imuTarget(90), 1, 70);
 
- drive.hardStop(backward, 6, 48, 1, 100);
+ drive.move(backward, 16, 1, 100);
 
  clampPis.set_value(false);
  pros::delay(250);
@@ -456,7 +454,7 @@ void skills(){
  
  // Get rings
  drive.setPID(2);
- drive.move(backward, 8.5, 1, 100);
+ drive.move(backward, 10, 1, 100);
  
  drive.setPID(2);
  drive.turn(left, imuTarget(0), 1, 90);
@@ -504,12 +502,12 @@ void skills(){
  drive.turn(left, imuTarget(65), 1, 90);
 
  findTri(&tri, 9, 65);
- drive.hardStop(backward, tri.hyp, 48, 1, 100);
+ drive.move(backward, tri.hyp, 1, 100);
 
  clampPis.set_value(true);
  pros::delay(200);
  tiltPis.set_value(false);
- pros::delay(100);
+ pros::delay(150);
 
  drive.setPID(1); 
  
@@ -538,7 +536,7 @@ void skills(){
  pros::delay(100);
 
  //in line rings
- drive.move(backward, 23, 1, 100);
+ drive.move(backward, 24, 1, 100);
 
                   /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
  drive.setCustomPID({20, 230,  0, 0,   36,  490,  0});
@@ -559,7 +557,6 @@ void skills(){
  drive.turn(left, imuTarget(270), 1, 90);
  
  drive.move(forward, 24, 2, 100);
- pros::delay(50);
  
  //get ring under climbing tower 
  drive.setPID(3);
@@ -582,7 +579,7 @@ void skills(){
  pros::delay(100);
 
  //Go to 3rd mogo
- findTri(&tri, 147, 315);
+ findTri(&tri, 146, 315);
  
                     /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
  drive.setCustomPID({16, 442,  0,   0, 50,  1000, 300});
@@ -596,7 +593,7 @@ void skills(){
 
  //get 3rd mogo
  drive.addErrorFunc(28-tri.b, LAMBDA(drive.setMaxVoltage(50)));
- drive.move(backward, 36-tri.b, 4, 100);
+ drive.move(backward, 38-tri.b, 4, 100);
 
  clampPis.set_value(false);
  pros::delay(250);
@@ -638,7 +635,7 @@ void skills(){
  
  //go to push 4th mogo 
  drive.setPID(1);
- drive.move(forward, 18-tri.b, 1, 100);
+ drive.move(forward, 20-tri.b, 1, 100);
 
  drive.turn(left,imuTarget(90), 1, 100);
 
@@ -650,13 +647,14 @@ void skills(){
 
  drive.turn(left, imuTarget(90), 1, 70);
 
- drive.moveDriveTrain(-12000, 1.1);
+ drive.moveDriveTrain(-12000, 1.3);
 
  drive.moveDriveTrain(12000, .5);
 
  runOnError.remove();
  runIntakeControl.remove();
  drive.onErrorVector.clear();
+
 }
 
 void tune(){
