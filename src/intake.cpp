@@ -1,5 +1,6 @@
 #include "intake.hpp"
 #include "include.hpp"
+#include "pros/llemu.hpp"
 #include <optional>
 
 bool JAM_PROTECTION_ACTIVE = true;
@@ -114,18 +115,20 @@ void IntakeControl::run(){
         auto lookingBlueVal = lookingBlue ? "True" : "False";
         pros::lcd::print(3, "Looking Blue: %s", lookingBlueVal);
         switch (intakeFlag) {
-            //No rings are past redirect 
+            //All rings are below ramp or in the arm 
             case 0:
             intake.move_voltage(intakeSpeed);
             pros::lcd::print(4, "Intake flag: %i", intakeFlag);
+            pros::lcd::print(5, "Proximity Value: %i", optical.get_proximity());
             if((optical.get_proximity() >= 100)){detectCycles++;}
             if(detectCycles >= detectThreshold){++intakeFlag;}
             break;
 
-            //ring is past platform stage 
+            //ring is past platform stage and can be loaded into arm 
             case 1:
             intake.move_voltage(-12000); 
             pros::lcd::print(4, "Intake flag: %i", intakeFlag);
+            pros::lcd::print(5, "Proximity Value: %i", optical.get_proximity());
             if(optical.get_proximity() < 100){noDetectCycles++;}
             if(noDetectCycles >= NoDetectThreshold){noDetectCycles = 0; detectCycles = 0; intakeFlag = 0;}
         }
