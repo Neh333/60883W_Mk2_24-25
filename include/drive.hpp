@@ -55,6 +55,20 @@ struct slewProfile{
   double slew_upper_thresh;
 };
 
+struct MoveParams {
+  int minSpeed = 0;
+  /** distance between the robot and target point where the movement will exit. Only has an effect if minSpeed is
+   * non-zero.*/
+  float earlyExitRange = 0;
+};
+
+struct TurnParams {
+  int minSpeed = 0;
+  /** angle between the robot and target point where the movement will exit. Only has an effect if minSpeed is
+   * non-zero.*/
+  float earlyExitRange = 0;
+};
+
 
 class Drive{
   private:
@@ -110,8 +124,29 @@ class Drive{
   struct slewProfile slewProf;
   struct slewProfile slewProf_a;
 
+  struct MoveParams moveParams;
+  struct TurnParams turnParams;
+
   public:
-  Drive(pros::MotorGroup &leftMotors, pros::MotorGroup &rightMotors, pros::Imu &imu);
+  Drive(pros::MotorGroup &leftMotors, pros::MotorGroup &rightMotors, pros::Imu &imu){
+   setPID(1);
+   setScheduleThreshold_l(NO_SCHEDULING);
+   setScheduleThreshold_a(NO_SCHEDULING);
+
+   setSlew({0, 0, 0});
+   setSlew_a({0, 0, 0});
+
+   setMoveParams({0,0});
+   setTurnParams({0,0});
+
+   this->leftMotors      = &leftMotors;
+   this->rightMotors     = &rightMotors;
+   this->imu             = &imu;
+
+   setStandstillExit(DEFAULT_STANDSTILL_EXIT);
+  }
+
+
 
   /* "Virtual" Drivetrain attributes and methods */ 
   pros::MotorGroup *rightMotors;
@@ -142,6 +177,9 @@ class Drive{
   void setSlew(slewProfile profile);
   void setSlew_a(slewProfile profile);
 
+  void setMoveParams(MoveParams params);
+  void setTurnParams(TurnParams params);
+  
   void setStandstillExit(int exitOn);
 
   /* Getters */
@@ -149,7 +187,7 @@ class Drive{
   const bool PIDisActive();
   
   /* Movement Functions, Return error after movement is finished */
-  double move(PID_dir dir, double target, double timeOut, double maxVelocity);
+  double move(PID_dir dir, double target, double timeOut, double maxVelocity, Triangle tri);
   double turn(PID_dir dir, double target, double timeOut, double maxVelocity);
   double swerve(PID_dir dir, double target, double target_a, double timeOut, double maxVel, double maxVel_a);
   double hardStop(PID_dir dir, double targetCutOff, double target, double timeOut, double maxVelocity);

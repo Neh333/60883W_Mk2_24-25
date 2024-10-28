@@ -1,140 +1,15 @@
 #include "drive.hpp"
 #include "util.hpp"
 #include "include.hpp"
+#include <optional>
 
 #define STANDSTILL_DISTANCE_THRESHOLD 2
 #define STANDSTILL_TURN_THRESHOLD 0.2
 
 #define MS_DELTA_TIME 20
 
-/* Set PID constants */
-void Drive::setPID(char n)
-{
-  n--;
-  kP = PIDConstants[n].kP;
-  kP_a = PIDConstants[n].kP_a;
-  kI = PIDConstants[n].kI;
-  kI_a = PIDConstants[n].kI_a;
-  kD = PIDConstants[n].kD;
-  kD_a = PIDConstants[n].kD_a;
-  kP_d = PIDConstants[n].kP_d;
-}
-
-
-void Drive::setScheduledConstants(char n)
-{
-  n--;
-  scheduledConstants.kP = PIDConstants[n].kP;
-  scheduledConstants.kP_a = PIDConstants[n].kP_a;
-  scheduledConstants.kI = PIDConstants[n].kI;
-  scheduledConstants.kI_a = PIDConstants[n].kI_a;
-  scheduledConstants.kD = PIDConstants[n].kD;
-  scheduledConstants.kD_a = PIDConstants[n].kD_a;
-  scheduledConstants.kP_d = PIDConstants[n].kP_d;
-}
-
-
-/* Use specified PID constants */
-void Drive::setCustomPID(PIDprofile profile)
-{
-  kP = profile.kP;
-  kP_a = profile.kP_a;
-  kI = profile.kI; 
-  kI_a = profile.kI_a;
-  kD = profile.kD;
-  kD_a = profile.kD_a;
-  kP_d = profile.kP_d;
-}
-
-void Drive::setScheduleThreshold_l(double error)
-{
-  scheduleThreshold_l = error;
-}
-
-
-void Drive::setScheduleThreshold_a(double error)
-{
-  scheduleThreshold_a = error;
-}
-
-/* Set max linear velocity */
-void Drive::setMaxVoltage(double pctVoltage)
-{
-  maxVolt = percentToVoltage(pctVoltage);
-}
-
-
-/* Set max angular voltage by percent */
-void Drive::setMaxTurnVoltage(double pctVoltage)
-{
-  maxVolt_a = percentToVoltage(pctVoltage);
-}
-
-
-/* Update slewProf given profile */
-void Drive::setSlew(slewProfile profile)
-{
-  slewProf = profile;
-}
-
-
-/* Update slewProf given profile */
-void Drive::setSlew_a(slewProfile profile)
-{
-  slewProf_a = profile;
-}
-
-/* Set standstillExitCount, will not execute standstill if 0 */
-void Drive::setStandstillExit(int exitOn)
-{
-  standstillExitCount = exitOn;
-}
-
-/* Returns the result of the PID calculation, updates integral */
-double Drive::update(double KP, double KI, double KD, double error, double lastError, double *integral, double integralActive)
-{
-  /* Reset integral to zero if the robot has crossed zero-error or is outside of integral range, otherwise integrate */
-  if((fabs(error) > integralActive) || (sgn(error) != sgn(lastError))) *integral = 0;
-  else *integral += error;
-
-  const double derivative = error - lastError;
-
-  return KP*error + KI*(*integral) + KD*derivative;
-}
-
-/* Updates voltage given the slewProfile */
-void Drive::adjustForSlew(int *voltage, double actualVelocity, struct slewProfile *profile)
-{
-  if(profile->slew && (fabs(actualVelocity) > profile->slew_lower_thresh) && (fabs(actualVelocity) < profile->slew_upper_thresh))
-  {
-    double deltaVelocity = voltageToVelocity(*voltage) - actualVelocity;
-    if(fabs(deltaVelocity) > profile->slew)
-    {
-      *voltage = velocityToVoltage(actualVelocity + (profile->slew * sgn(deltaVelocity)));
-    }
-  }
-}
-
-/* Update standstillCounter, return the new value for standstill */
-bool Drive::updateStandstill(unsigned short *standstillCounter, double error, double lastError, double errorThreshold)
-{
-  /* standstillExitCount being 0 indicates standstill should not be calculated */
-  if(standstillExitCount)
-  {
-    /* Increment the counter and maybe return true if derivative is low enough, otherwise reset it to 0 */
-    if(fabs(error-lastError) <= errorThreshold)
-    {
-      (*standstillCounter)++;
-      return *standstillCounter > standstillExitCount;
-    }
-    else *standstillCounter = 0;
-  }
-  return false;
-}
-
-
 /* Basic linear PID movement function */
-double Drive::move(PID_dir dir, double target, double timeOut, double maxVelocity){
+double Drive::move(PID_dir dir, double target, double timeOut, double maxVelocity, Triangle tri){
   /* Error values */
   double lastError;
   double errorDrift;
@@ -159,6 +34,12 @@ double Drive::move(PID_dir dir, double target, double timeOut, double maxVelocit
   runningPID = true;
   const uint32_t endTime = pros::millis() + timeOut*1000;
 
+  /*motion chaining and early exit variables*/
+  double prevOut;
+  bool close = false;
+  const bool side = false;
+  std::optional<bool> prevSide = std::nullopt;
+
   /* Begin PID */
   while(pros::millis() < endTime && !standstill)
   {
@@ -176,6 +57,7 @@ double Drive::move(PID_dir dir, double target, double timeOut, double maxVelocit
     finalVolt = update(myKP, myKI, myKD, error, lastError, &integral, integralActive);
     adjustForSlew(&finalVolt, actualVelocityAll(), &slewProf);
     finalVolt = std::clamp(finalVolt, -maxVolt, maxVolt);
+    prevOut = finalVolt;
 
     /* Print statement used for testing */
     controller.print(2, 0, "Error: %.4f", tickToInch(error));
@@ -185,8 +67,26 @@ double Drive::move(PID_dir dir, double target, double timeOut, double maxVelocit
     /* Calculate standstill */
     standstill = updateStandstill(&standstillCounter, error, lastError, STANDSTILL_DISTANCE_THRESHOLD);
     
+    /* update distance traveled */
+    double distTraveled = target-lastError; //gotta think about this 
+
     /* Update lastError */
     lastError = error;
+    
+    /* check if the robot is close enough to the target to start settling */
+    if (target < 7.5 && close == false) {
+        close = true;
+        maxVolt = fmax(fabs(prevOut), 60);
+    }
+
+    // motion chaining
+    const bool side =
+              (tri.a - tri.b) * -sin(tri.alpha) <= (tri.a - tri.b) * cos(tri.alpha) + moveParams.earlyExitRange;
+    if (prevSide == std::nullopt) prevSide = side;
+    const bool sameSide = side == prevSide;
+    // exit if close
+    if (!sameSide && moveParams.minSpeed != 0) break;
+    prevSide = side;
   
     /* Calculate the product of heading drift and kP_d */
     errorDrift = fmod((initialHeading-(imu->get_heading())+540),360) - 180;
@@ -245,7 +145,7 @@ double Drive::turn(PID_dir dir, double target, double timeOut, double maxVelocit
       myKI = scheduledConstants.kI_a;
       myKD = scheduledConstants.kD_a;
       scheduled = true;
-    }
+    } 
 
     /* Update error, do PID calculations, adjust for slew, and clamp the resulting value */
     error = target - fabs(imu->get_rotation() + 360 - initialAngle);
@@ -260,7 +160,7 @@ double Drive::turn(PID_dir dir, double target, double timeOut, double maxVelocit
     
     /* Calculate standstill */
     standstill = updateStandstill(&standstillCounter, error, lastError, STANDSTILL_TURN_THRESHOLD);
-    
+
     /* Update lastError */
     lastError = error;
 
@@ -445,65 +345,7 @@ double Drive::hardStop(PID_dir dir, double targetCutOff, double target, double t
   return tickToInch(error);
 }
 
-/*CONSTRUCTOR*/
-Drive::Drive(pros::MotorGroup &leftMotors, pros::MotorGroup &rightMotors, pros::Imu &imu){
- setPID(1);
- setScheduleThreshold_l(NO_SCHEDULING);
- setScheduleThreshold_a(NO_SCHEDULING);
-
- setSlew({0, 0, 0});
- setSlew_a({0, 0, 0});
-
- this->leftMotors      = &leftMotors;
- this->rightMotors     = &rightMotors;
- this->imu             = &imu;
-
- setStandstillExit(DEFAULT_STANDSTILL_EXIT);
-}
-
 /*********************************************************************************************************/
-/*DRIVE METHODS*/
-
-double Drive::leftDriveAvgPos(){
-  double value = 0;
-  for (int i = 0; i<(leftMotors->size()); i++) {
-    value += this->leftMotors->get_position(i);
-  }
-  return value/leftMotors->size();
-}
-
-double Drive::rightDriveAvgPos(){
-   double value = 0;
-   for (int i = 0; i<(rightMotors->size()); i++) 
-   {
-    value += this->rightMotors->get_position(i);
-   }
-  return value/rightMotors->size();
-}
-
-double Drive::driveAvgPos(){
- return (leftDriveAvgPos()+rightDriveAvgPos())/2;
-}
-
-double Drive::actualVelocityLeft(){
- double value = 0;
- for (int i = 0; i<(leftMotors->size()); i++) {
-    value += this->leftMotors->get_actual_velocity(i);
- }
- return value/leftMotors->size();
-}
-
-double Drive::actualVelocityRight(){
-   double value = 0;
-   for (int i = 0; i<rightMotors->size(); i++) {
-    value += this->rightMotors->get_actual_velocity(i);
-  }
-  return value/rightMotors->size();
-}
-
-double Drive::actualVelocityAll(){
-   return (actualVelocityLeft()+actualVelocityRight())/2;
-}
 
 void Drive::moveLeftDriveVoltage(int voltage){
   leftMotors->move_voltage(voltage);
@@ -524,7 +366,3 @@ void Drive::moveDriveTrain(int voltage, float time){
   moveDriveVoltage(0);
 }
 
-void Drive::setBrakeMode(pros::motor_brake_mode_e brakeMode){
-  leftMotors->set_brake_mode_all(brakeMode);
-  rightMotors->set_brake_mode_all(brakeMode);
-}

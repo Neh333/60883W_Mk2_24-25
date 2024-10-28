@@ -123,7 +123,7 @@ void IntakeControl::run(){
             if((optical.get_proximity() >= 100)){detectCycles++;}
             if(detectCycles >= detectThreshold){++intakeFlag;}
             break;
-
+            
             //ring is past platform stage and can be loaded into arm 
             case 1:
             intake.move_voltage(-12000); 
@@ -132,7 +132,6 @@ void IntakeControl::run(){
             if(optical.get_proximity() < 100){noDetectCycles++;}
             if(noDetectCycles >= NoDetectThreshold){noDetectCycles = 0; detectCycles = 0; intakeFlag = 0;}
         }
-     
      }
      else{
         switch(intakeFlag){
