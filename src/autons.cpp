@@ -519,13 +519,13 @@ void skills(){
  drive.setPID(1); 
  
  //Go to 2nd mogo 
- drive.move(forward, 35-tri.b, 3, 100);
+ drive.move(forward, 34.5-tri.b, 3, 100);
 
  drive.turn(left, imuTarget(270), 2, 70);
 
  drive.setPID(1); 
  drive.addErrorFunc(28, LAMBDA(drive.setMaxVoltage(50)));
- drive.move(backward, 46, 10, 100);
+ drive.move(backward, 45, 10, 100);
 
  clampPis.set_value(false);
  pros::delay(300);
@@ -533,11 +533,11 @@ void skills(){
  pros::delay(100);
  
  drive.setPID(2);
- findTri(&tri, 7, 270);
+ findTri(&tri, 6, 270);
  drive.move(backward, tri.hyp, 1, 100);
  
  //Get offset ring
- drive.turn(left, imuTarget(116), 1, 90);
+ drive.turn(left, imuTarget(120), 1, 90);
 
  drive.move(forward, 18-tri.b, 1, 100);
  pros::delay(300);
@@ -570,44 +570,45 @@ void skills(){
  
  //get ring under climbing tower 
  drive.setPID(3);
- drive.turn(right, imuTarget(313), 1, 90);
+ drive.turn(right, imuTarget(310), 1, 90);
 
  drive.setPID(2);
- drive.move(forward, 24, 1, 100);
+ drive.move(forward, 22, 1, 100);
  pros::delay(200);
 
- drive.setPID(3);
- drive.turn(left, imuTarget(300), 1, 90);
+//  drive.setPID(3);
+//  drive.turn(left, imuTarget(300), 1, 90);
  
  //drop off 2nd mogo mech
- findTri(&tri, 71, 313);
+ findTri(&tri, 71, 310);
                   /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
  drive.setCustomPID({16, 442,  0,   0, 50,  1000, 300});
  //drive.swerve(backwardShortest, tri.hyp, 315, 3, 100, 50);
  drive.move(backward, tri.hyp, 3, 100);
-
- pros::delay(1000);
+ 
+ pros::delay(2000);
  
  clampPis.set_value(true);
  pros::delay(300);
  tiltPis.set_value(false);
  pros::delay(250);
+
  
-//  if(imu.get_heading()<314){
-//     drive.move(forward, 4-tri.b, 1, 100);
-//     drive.setPID(8);
-//     drive.turn(right, imuTarget(320), 1, 100); //~12-30 error ?
-//   } else if (imu.get_heading()>340) {
-//     drive.move(forward, 4-tri.b, 1, 100);
-//     drive.setPID(8);
-//     drive.turn(left, imuTarget(320), 1, 100);
-//   }
+ if(imu.get_heading()<310){
+    drive.move(forward, 4-tri.b, 1, 100);
+    drive.setPID(8);
+    drive.turn(right, imuTarget(315), 1, 100); //~10-30 error
+  } else if (imu.get_heading()>320) {
+    drive.move(forward, 4-tri.b, 1, 100);
+    drive.setPID(8);
+    drive.turn(left, imuTarget(315), 1, 100);
+  }
 
 
  //Go to 3rd mogo
- findTri(&tri, 148, 313); 
+ findTri(&tri, 139, 313); 
                     /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
- drive.setCustomPID({14, 442,  0,   0, 30,  1000, 300});
+ drive.setCustomPID({14, 442,  0,   0, 30,  1000, 350});
  drive.move(forward, tri.hyp, 7, 100); 
 
 //  //drive.move(forward, tri.hyp-76, 7, 70);  //72 in with 0 error
