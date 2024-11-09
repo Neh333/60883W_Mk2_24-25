@@ -4,6 +4,8 @@
 #include "pros/llemu.hpp"
 #include "pros/misc.h"
 #include "pros/motors.h"
+#include "pros/rotation.hpp"
+#include "pros/rtos.hpp"
 #include "util.hpp"
 #include "intake.hpp"
 uint8_t auton = AUTO_COUNT; 
@@ -66,15 +68,13 @@ void arcade_standard(double curve) {
  set_tank(fwd_stick + turn_stick, fwd_stick - turn_stick);
 }
 
+
 void opcontrol() {
  bool backClampTog = true;
  bool redirectTog = false;
- 
- optical.set_led_pwm(100);
-
  pros::Task runIntakeControl(IntakeControlSystem_fn);
  runIntakeControl.suspend();
- setIntake(390, any);
+ setIntake(400, any);
 
  while (true) {
    pros::lcd::print(0, "Hue Val: %.2f", optical.get_hue());
@@ -97,7 +97,7 @@ void opcontrol() {
    } 
 
    /*DRIVER CONTROL */
-   arcade_standard(5);
+   arcade_standard(4);
    
    if(controller.get_digital_new_press(DIGITAL_B)){
      redirectTog = !redirectTog;

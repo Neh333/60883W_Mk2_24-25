@@ -58,7 +58,7 @@ struct slewProfile{
 
 class Drive{
   private:
-  const PIDprofile PIDConstants[7] = {
+  const PIDprofile PIDConstants[8] = {
   /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
     {14, 87,  0,  10,  30,   90,  0},/*50+ degree turns (70%) / gen lat*/
 
@@ -72,7 +72,9 @@ class Drive{
 
     {20, 87,   0, 0,   30,  490,  0}, /*25 deg turn (mogo?) (70%) / gen lat*/
 
-    {20, 88,   0, 0,   30,  257,  0} /*180 deg turn (mogo?) (90%) / gen mogo  lat*/
+    {20, 88,   0, 0,   30,  257,  0}, /*180 deg turn (mogo?) (90%) / gen mogo  lat*/
+    
+    {20, 220,  0,  10,  30, 400,  0} /*10-30 deg turn (100%) / gen lat*/
   };
 
   double kP, kP_a, kI, kI_a, kD, kD_a, kP_d;
