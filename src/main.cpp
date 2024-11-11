@@ -72,6 +72,7 @@ void arcade_standard(double curve) {
 void opcontrol() {
  bool backClampTog = true;
  bool redirectTog = false;
+ optical.set_led_pwm(100);
  pros::Task runIntakeControl(IntakeControlSystem_fn);
  runIntakeControl.suspend();
  setIntake(400, any);

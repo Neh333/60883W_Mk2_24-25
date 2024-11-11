@@ -233,7 +233,7 @@ void ringSideRed(){
 
  drive.turn(right, imuTarget(270), 2, 90);
 
- drive.move(forward, 35, 3, 50);
+ drive.move(forward, 36, 5, 60);
  
 
  clampPis.set_value(true);
@@ -291,7 +291,7 @@ void ringSideBlue(){
 
  drive.turn(left, imuTarget(90), 2, 90);
 
- drive.move(forward, 35, 3, 50);
+ drive.move(forward, 36, 5, 60);
  
  clampPis.set_value(true);
  pros::delay(200);
@@ -492,7 +492,7 @@ void skills(){
 
  pros::delay(500);
 
- drive.move(backward, 18-tri.b, 1, 100); 
+ drive.move(backward, 20-tri.b, 1, 100); 
  
  //get last two rings onto 1st mogo
  drive.setPID(5);  
@@ -519,7 +519,7 @@ void skills(){
  drive.setPID(1); 
  
  //Go to 2nd mogo 
- drive.move(forward, 34.5-tri.b, 3, 100);
+ drive.move(forward, 33.5-tri.b, 3, 100);
 
  drive.turn(left, imuTarget(270), 2, 70);
 
