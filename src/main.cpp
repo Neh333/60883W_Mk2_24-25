@@ -17,6 +17,7 @@ void initialize(){
   drive.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
   arm.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
   imu.reset();
+  optical.set_led_pwm(100);
 } 
 
 void disabled(){

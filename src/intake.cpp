@@ -1,6 +1,7 @@
 #include "intake.hpp"
 #include "include.hpp"
 #include "pros/llemu.hpp"
+#include "pros/rtos.hpp"
 #include <optional>
 
 bool JAM_PROTECTION_ACTIVE = true;
@@ -76,20 +77,23 @@ void IntakeControl::run(){
         auto lookingBlueVal = lookingBlue ? "True" : "False";
         pros::lcd::print(3, "Looking Blue: %s", lookingBlueVal);
         switch (intakeFlag) {
-            //No rings are past redirect 
+            //Rings are intaking as normal 
             case 0:
             intake.move_voltage(intakeSpeed);
             pros::lcd::print(4, "Intake flag: %i", intakeFlag);
-            if(optical.get_hue() >= 216 && optical.get_hue() <= 232){detectCycles++;}
+            if(optical.get_hue() >= 216*(optical.get_brightness()) && optical.get_hue() <= 232*(optical.get_brightness()))
+            {
+                detectCycles++;
+            }
             if(detectCycles >= detectThreshold){++intakeFlag;}
             break;
 
             //ring is past platform stage 
             case 1:
             intake.move_voltage(-12000); 
+            pros::delay(300);
             pros::lcd::print(4, "Intake flag: %i", intakeFlag);
-            if(!(optical.get_hue() >= 216 && optical.get_hue() <= 232)){noDetectCycles++;}
-            if(noDetectCycles >= NoDetectThreshold){noDetectCycles = 0; detectCycles = 0; intakeFlag = 0;}
+            noDetectCycles = 0; detectCycles = 0; intakeFlag = 0;
         }
      }
      else if (lookingRed) {    
@@ -100,16 +104,20 @@ void IntakeControl::run(){
             case 0:
             intake.move_voltage(intakeSpeed);
             pros::lcd::print(4, "Intake flag: %i", intakeFlag);
-            if(optical.get_hue() >= 6 && optical.get_hue() <= 16){detectCycles++;}
+            if(optical.get_hue() >= 6*(optical.get_brightness()) && optical.get_hue() <= 16*(optical.get_brightness()))
+            {
+                detectCycles++;
+            }
             if(detectCycles >= detectThreshold){++intakeFlag;}
             break;
 
             //ring is past platform stage 
             case 1:
             intake.move_voltage(-12000); 
+            pros::delay(300);
             pros::lcd::print(4, "Intake flag: %i", intakeFlag);
-            if(!(optical.get_hue() >= 6 && optical.get_hue() <= 16)){noDetectCycles++;}
-            if(noDetectCycles >= NoDetectThreshold){noDetectCycles = 0; detectCycles = 0; intakeFlag = 0;}
+            noDetectCycles = 0; detectCycles = 0; intakeFlag = 0;
+
         }
      }
      else if (lookingAny) {
