@@ -3,18 +3,19 @@
 #include "include.hpp"
 
 enum armState{
+    standby,
     load,
     score
 };
 
-const int scoring = 247, loading = 121;
+const int scoringTarget = 250, loadingTarget = 130, standByTarget = 98;
 
 class Arm{
     private:
     //Initialize PID Values
-    const double kP = 100;
-    const double kI = 0;
-    const double kD = 0;
+    double kP = 72;
+    double kI = 0;
+    double kD = 0;
     const double intergralActive = 10;
     const double intergralLimit = 10000;
 
@@ -24,7 +25,7 @@ class Arm{
     double intergral = 0;
 
     public: 
-    float target = loading;
+    float target = loadingTarget;
 
     void move();
     void waitUntilTargetReached(float timeOut);

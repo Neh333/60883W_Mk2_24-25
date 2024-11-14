@@ -6,10 +6,13 @@
 Arm armControl;
 
 void Arm::setTarget(armState state){
-    if(state == load){
-        target = loading;
+    if(state == standby){
+        target = standByTarget;
+    }
+    else if(state == load){
+        target = loadingTarget;
     } else {
-        target = scoring;
+        target = scoringTarget;
     }
 }
 
@@ -26,6 +29,10 @@ void Arm::move(){
     pros::lcd::print(3, "Arm PID Error : %.2d", this->error);
     
     float proportion = error;
+
+    if(error < 32){
+        this->kP = 120;
+    }
 
     if(fabs(error) <= intergralActive){intergral += error;}
     else{intergral = 0;}

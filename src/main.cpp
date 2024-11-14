@@ -74,6 +74,7 @@ void arcade_standard(double curve) {
 void opcontrol() {
  bool backClampTog = false;
  bool redirectTog = false;
+ int armTog = 0;
 
  optical.set_led_pwm(100);
  arm.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
@@ -132,14 +133,21 @@ void opcontrol() {
      }
    }
 
-    if (controller.get_digital_new_press(DIGITAL_R1)){
+    if (controller.get_digital_new_press(DIGITAL_R2)){
+      ++armTog;
+      armTog = armTog>2 ? 0 : armTog;
+    }
+    if(armTog == 0){
+      armControl.setTarget(standby);
+    }
+    else if (armTog == 1) {
       armControl.setTarget(load);
     }
-    else if (controller.get_digital_new_press(DIGITAL_R2)){
+    else if (armTog == 2){
       armControl.setTarget(score);
     }
    
-   if(controller.get_digital_new_press(DIGITAL_A)){ backClampTog = !backClampTog;}
+   if(controller.get_digital_new_press(DIGITAL_R1)){ backClampTog = !backClampTog;}
    if (!backClampTog){
       //intakePis.set_value(true);
       clampPis.set_value(false);
