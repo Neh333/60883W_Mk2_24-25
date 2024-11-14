@@ -27,8 +27,10 @@ autonTextTuple autos[AUTO_COUNT] = {
   {"Tune",tune}
 };
 
+
 Drive drive(leftMotors, rightMotors, imu);
-slewProfile mogoProfile{90, 30, 70};
+slewProfile genSlewProfile{85, 30, 80};
+slewProfile mogoProfile{70, 30, 70};
 IntakeControl conveyor;
 
 void winPointRed(){
@@ -654,22 +656,29 @@ void skills(){
 void tune(){
  pros::Task runOnError(onError_fn);
  
- drive.setPID(4);
+ drive.setPID(2);
+ drive.setSlew({70, 30, 70});
+ 
+ drive.move(forward, 24, 2, 100);
+ pros::delay(1000);
 
-  drive.turn(right, 20, 1, 100);
-  pros::delay(1000);
+ drive.move(forward, 48, 3, 100);
+ pros::delay(1000);
 
-  drive.turn(right, 25, 1, 100);
-  pros::delay(1000);
+  // drive.turn(right, 20, 1, 100);
+  // pros::delay(1000);
+
+  // drive.turn(right, 25, 1, 100);
+  // pros::delay(1000);
   
-  drive.turn(right, 40, 1, 100);
-  pros::delay(1000);
+  // drive.turn(right, 40, 1, 100);
+  // pros::delay(1000);
 
-  drive.turn(right, 55, 1, 100);
-  pros::delay(1000);
+  // drive.turn(right, 55, 1, 100);
+  // pros::delay(1000);
   
-  drive.turn(right, 70, 1, 100);
-  pros::delay(1000);
+  // drive.turn(right, 70, 1, 100);
+  // pros::delay(1000);
   
   
 //  drive.turn(right, 60, 1, 70);

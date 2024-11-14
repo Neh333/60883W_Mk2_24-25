@@ -28,7 +28,6 @@ class Arm{
     float target = loadingTarget;
 
     void move();
-    void waitUntilTargetReached(float timeOut);
     void setTarget(armState state);
 };
 

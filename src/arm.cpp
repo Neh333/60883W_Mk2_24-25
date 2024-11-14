@@ -16,13 +16,6 @@ void Arm::setTarget(armState state){
     }
 }
 
-void Arm::waitUntilTargetReached(float timeOut){
-    const uint32_t endTime = pros::millis() + timeOut*1000;
-    // while(pros::millis() < endTime && fabs(error) < 3){
-    //     pros::delay(10);
-    // }
-}
-
 void Arm::move(){
     this->error = target - (float)armPot.get_angle()/100;
     

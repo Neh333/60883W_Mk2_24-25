@@ -437,8 +437,8 @@ double Drive::hardStop(PID_dir dir, double targetCutOff, double target, double t
     proportionDrift = errorDrift * kP_d;
 
     /* Move Drivetrain */
-    moveRightDriveVoltage((reverseVal * finalVolt) + proportionDrift);
-    moveLeftDriveVoltage((reverseVal * finalVolt) - proportionDrift);
+    moveRightDriveVoltage((reverseVal * finalVolt) - proportionDrift);
+    moveLeftDriveVoltage((reverseVal * finalVolt) + proportionDrift);
     
     /* Give PROS time to keep itself in order */
     pros::delay(MS_DELTA_TIME);

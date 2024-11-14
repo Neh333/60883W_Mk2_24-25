@@ -26,16 +26,16 @@ double radians(double degrees)
  *300 ticks/rev with 600 rpm cartridge
 
  *400 ticks for one full wheel rotation (300 * (48/36) or (4/3)) (reversed gear ratio)
- *Circumference of 2.75" omni = 8.63937979737 (2.75*pi)
+ *Circumference of 3.25" omni = 10.2101761242 (3.25*pi)
 
- *400 ticks / 8.63937979737 inches = 46.2996198086 ticks per inch
+ *400 ticks / 10.2101761242 inches = 39.1766013763 ticks per inch
  */
 double inchToTick(double inch) {
-  return (inch * 46.2996198086);
+  return (inch * 39.1766013763);
 }
 
 double tickToInch(double tick) {
-  return (tick / 46.2996198086);
+  return (tick / 39.1766013763);
 }
 
 /* Return voltage given percent */
