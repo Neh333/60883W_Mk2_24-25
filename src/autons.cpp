@@ -416,7 +416,7 @@ void skills(){
  setIntake(400, std::nullopt);
  startIntake();
 
- pros::delay(800); //score on allince stake
+ pros::delay(700); //score on allince stake with preload 
  
  drive.moveDriveVoltage(0);
  
@@ -428,8 +428,8 @@ void skills(){
 
  drive.move(backward, 26-tri.b, 1, 100);
 
- clampPis.set_value(true);
- pros::delay(200);
+ clampPis.set_value(true); //clamp goal one 
+ pros::delay(100);
 
  drive.move(backward, 7, 1, 100);
  
@@ -449,21 +449,21 @@ void skills(){
  //pros::delay(2000); // for checking error (remove after testing)
 
  drive.setPID(2);
- drive.turn(right, imuTarget(150), 2, 90);
+ drive.turn(right, imuTarget(155), 2, 90); //turn to ring in front of wall stake 
 
- armControl.setTarget(load);
+ armControl.setTarget(load); //prime the wall stake mech
  
- findTri(&tri, 22, 153);
+ findTri(&tri, 24, 153);
  drive.move(forward, tri.hyp, 1, 100);
 
  drive.setPID(4);
- drive.turn(left, imuTarget(110), 1, 100);
+ drive.turn(left, imuTarget(105), 1, 100);
 
- armControl.setTarget(score);
+ armControl.setTarget(score);  //score wall stake
  pros::delay(1000);
 
  drive.setPID(2);
- drive.move(backward, 16-tri.b, 1, 100);
+ drive.move(backward, 12-tri.b, 1, 100);
 
  drive.setPID(4);
  drive.turn(right, imuTarget(180), 1, 100);
@@ -478,19 +478,39 @@ void skills(){
 
  drive.move(forward, 15-tri.b, 1, 100);
 
- drive.turn(left, imuTarget(320), 2, 90);
+ drive.turn(left, imuTarget(322), 2, 90);
 
- findTri(&tri, 17, 320);
+ findTri(&tri, 14, 320);
  drive.move(backward, tri.hyp, 1, 100);
 
  clampPis.set_value(false);
- pros::delay(100);
+ pros::delay(150);
  
  drive.setPID(1);
  drive.setSlew(genSlewProfile);
- drive.move(forward, 24-tri.b, 1, 100);
+
+ drive.move(forward, 14-tri.b, 1, 100);
 
  drive.turn(right, imuTarget(90), 1, 70);
+
+ findTri(&tri, 54, 90);
+ drive.setPID(4);
+ drive.move(backward, tri.hyp, 7, 100); //very slow
+
+ clampPis.set_value(true);
+ pros::delay(100);
+
+ drive.setPID(2);
+ drive.setSlew(mogoSlewProfile);
+ drive.move(backward, 7-tri.b, 3, 100);
+
+ drive.turn(left, imuTarget(0), 1, 90);
+
+ findTri(&tri, 27, 360);
+ drive.move(forward, tri.hyp, 1, 100);
+
+
+ 
   
  runOnError.remove();
  runIntakeControl.remove();
