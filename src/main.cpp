@@ -75,14 +75,10 @@ void opcontrol() {
  bool backClampTog = false;
  bool redirectTog = false;
  int armTog = 0;
-
  optical.set_led_pwm(100);
  arm.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
- 
  pros::Task runIntakeControl(IntakeControlSystem_fn);
-
  pros::Task armControlTask(armControl_fn);
-
  runIntakeControl.suspend();
  setIntake(400, any);
 

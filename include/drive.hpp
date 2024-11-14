@@ -66,7 +66,9 @@ class Drive{
     
     {16, 140,  0, 12,  30,  400,  250}, /*10-55 deg turn (100%) / 25-72in lat*/ 
     
-    {20, 143,  0,  8,  36,  350,  0}, /*20-70 degree mogo turns (100%) / gen mogo lat*/      
+    {20, 143, 0,  8,   50,  350,  500}, /*20-70 degree mogo turns (100%) / 50-72 mogo lat*/    
+    
+    {15, 24,    0,  2, 38,  394,  0} /*skills swerve 1  */    
 
   };
 
