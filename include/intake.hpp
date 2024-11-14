@@ -8,8 +8,8 @@ extern pros::Mutex ringControlMutex;
 
 class IntakeControl{
 private:
-    const uint16_t jamCycleThreshold = 10;
-    const uint16_t dejamThreshold = 15;
+    const uint16_t jamCycleThreshold = 8;
+    const uint16_t dejamThreshold = 20;
 
     const uint16_t detectThreshold = 15;
     const uint16_t NoDetectThreshold = 17;
