@@ -74,8 +74,6 @@ void winPointRed(){
  clampPis.set_value(false);
  pros::delay(250);
  clampPis.set_value(false);
- tiltPis.set_value(true);
- pros::delay(100);
  
  drive.move(backward, 8-tri.b, 4, 100);
  
@@ -101,9 +99,7 @@ void winPointRed(){
  
  clampPis.set_value(true);
  pros::delay(200);
- tiltPis.set_value(false);
- pros::delay(150);
- 
+
  runOnError.remove();
  runIntakeControl.remove();
  drive.onErrorVector.clear();
@@ -153,9 +149,7 @@ void winPointBlue(){
  clampPis.set_value(false);
  pros::delay(250);
  clampPis.set_value(false);
- tiltPis.set_value(true);
- pros::delay(100);
- 
+
  //go get 1st ring
  drive.turn(left, imuTarget(360), 2, 90);
  
@@ -178,8 +172,6 @@ void winPointBlue(){
  
  clampPis.set_value(true);
  pros::delay(200);
- tiltPis.set_value(false);
- pros::delay(150);
 
  runOnError.remove();
  runIntakeControl.remove();
@@ -199,8 +191,6 @@ void ringSideRed(){
  clampPis.set_value(false);
  pros::delay(250);
  clampPis.set_value(false);
- tiltPis.set_value(true);
- pros::delay(100);
 
  setIntake(400, std::nullopt);
  startIntake();
@@ -238,8 +228,7 @@ void ringSideRed(){
 
  clampPis.set_value(true);
  pros::delay(200);
- tiltPis.set_value(false);
- pros::delay(150);
+
  
  runOnError.remove();
  runIntakeControl.remove();
@@ -256,9 +245,7 @@ void ringSideBlue(){
 
  clampPis.set_value(false);
  pros::delay(250);
- clampPis.set_value(false);
- tiltPis.set_value(true);
- pros::delay(100);
+
 
  setIntake(400, std::nullopt);
  startIntake();
@@ -295,8 +282,6 @@ void ringSideBlue(){
  
  clampPis.set_value(true);
  pros::delay(200);
- tiltPis.set_value(false);
- pros::delay(150);
 
  runOnError.remove();
  runIntakeControl.remove();
@@ -316,8 +301,6 @@ void goalSideRed(){
  clampPis.set_value(false);
  pros::delay(250);
  clampPis.set_value(false);
- tiltPis.set_value(true);
- pros::delay(100);
 
  setIntake(400, std::nullopt);
  startIntake();
@@ -336,9 +319,7 @@ void goalSideRed(){
 
  clampPis.set_value(true);
  pros::delay(200);
- tiltPis.set_value(false);
- pros::delay(150);
- 
+
  runOnError.remove();
  runIntakeControl.remove();
  drive.onErrorVector.clear();
@@ -358,8 +339,6 @@ void goalSideBlue(){
  clampPis.set_value(false);
  pros::delay(250);
  clampPis.set_value(false);
- tiltPis.set_value(true);
- pros::delay(100);
 
  setIntake(400, std::nullopt);
  startIntake();
@@ -378,8 +357,6 @@ void goalSideBlue(){
 
  clampPis.set_value(true);
  pros::delay(200);
- tiltPis.set_value(false);
- pros::delay(150);
 
  runOnError.remove();
  runIntakeControl.remove();
@@ -448,9 +425,7 @@ void skills(){
  clampPis.set_value(false);
  pros::delay(250);
  clampPis.set_value(false);
- tiltPis.set_value(true);
- pros::delay(100);
- 
+
  // Get rings
  drive.setPID(2);
  drive.move(backward, 8, 1, 100);
@@ -513,8 +488,6 @@ void skills(){
 
  clampPis.set_value(true);
  pros::delay(300);
- tiltPis.set_value(false);
- pros::delay(250);
 
  drive.setPID(1); 
  
@@ -529,8 +502,6 @@ void skills(){
 
  clampPis.set_value(false);
  pros::delay(300);
- tiltPis.set_value(true);
- pros::delay(100);
  
  drive.setPID(2);
  findTri(&tri, 6, 270);
@@ -590,10 +561,7 @@ void skills(){
  
  clampPis.set_value(true);
  pros::delay(300);
- tiltPis.set_value(false);
- pros::delay(250);
 
- 
  if(imu.get_heading()<310){
     drive.move(forward, 4-tri.b, 1, 100);
     drive.setPID(8);
@@ -685,15 +653,52 @@ void skills(){
 
 void tune(){
  pros::Task runOnError(onError_fn);
+ 
+ drive.setPID(4);
+
+  drive.turn(right, 20, 1, 100);
+  pros::delay(1000);
+
+  drive.turn(right, 25, 1, 100);
+  pros::delay(1000);
+  
+  drive.turn(right, 40, 1, 100);
+  pros::delay(1000);
+
+  drive.turn(right, 55, 1, 100);
+  pros::delay(1000);
+  
+  drive.turn(right, 70, 1, 100);
+  pros::delay(1000);
+  
+  
+//  drive.turn(right, 60, 1, 70);
+//  pros::delay(1000);
                      
-                  /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
- drive.setCustomPID({20, 220,  0,  10,  30, 400,  0}), /*10-30 deg turn (100%) / gen lat*/
- drive.turn(right, 10, 1, 100); //~12-30 error ?
- pros::delay(1000);
- drive.turn(right, 20, 1, 100);
- pros::delay(1000);
- drive.turn(right, 30, 1, 100);
- pros::delay(1000);
+//  drive.turn(right, 65, 1, 70);
+//  pros::delay(1000);
+
+//  drive.turn(right, 80, 1, 70);
+//  pros::delay(1000);
+
+//   drive.turn(right, 95, 1, 70);
+//   pros::delay(1000);
+
+//   drive.turn(right, 115, 2, 70);
+//   pros::delay(1000);
+
+//   drive.turn(right, 130, 2, 70);
+//   pros::delay(1000);
+
+//   drive.turn(right, 145, 2, 70);
+//   pros::delay(1000);
+
+//   drive.turn(right, 160, 2, 70);
+//   pros::delay(1000);
+
+//   drive.turn(right, 175, 2, 70);
+//   pros::delay(1000);
+
 
  runOnError.remove();
  drive.onErrorVector.clear();

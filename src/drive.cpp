@@ -1,6 +1,7 @@
 #include "drive.hpp"
 #include "util.hpp"
 #include "include.hpp"
+#include <algorithm>
 
 #define STANDSTILL_DISTANCE_THRESHOLD 2
 #define STANDSTILL_TURN_THRESHOLD 0.2
@@ -252,6 +253,10 @@ double Drive::turn(PID_dir dir, double target, double timeOut, double maxVelocit
     finalVolt = update(myKP, myKI, myKD, error, lastError, &integral, integralActive_a);
     //adjustForSlew(&finalVolt, actualVelocityLeft() - actualVelocityRight(), &slewProf_a);
     finalVolt = std::clamp(finalVolt, -maxVolt_a, maxVolt_a);
+
+    // if(error < 2){
+    //   std::clamp(finalVolt, -5000, 5000);
+    // }
 
     /* Print statement used for testing */
     //controller.print(2, 0, "Sche. kP_A: %.4f", scheduledConstants.kP_a);

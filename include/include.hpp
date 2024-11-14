@@ -37,10 +37,10 @@ extern pros::Motor arm;
 /* Declare V5 sensors */
 extern pros::Imu imu;
 extern pros::Optical optical;
+extern pros::Rotation armPot;
 
 /* ADI Digital out */
 extern pros::adi::DigitalOut clampPis;
-extern pros::adi::DigitalOut tiltPis;
 extern pros::adi::DigitalOut intakePis;
 
 /* Global vars */

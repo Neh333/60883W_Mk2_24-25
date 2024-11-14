@@ -1,0 +1,38 @@
+#include <algorithm>
+#include "main.h"
+#include "include.hpp"
+
+enum armState{
+    load,
+    score
+};
+
+const int scoring = 247, loading = 121;
+
+class Arm{
+    private:
+    //Initialize PID Values
+    const double kP = 100;
+    const double kI = 0;
+    const double kD = 0;
+    const double intergralActive = 10;
+    const double intergralLimit = 10000;
+
+    //Variables that need to be read after each PID scope is destroyed
+    double error = 0;
+    double lastError = 0;
+    double intergral = 0;
+
+    public: 
+    float target = loading;
+
+    void move();
+    void waitUntilTargetReached(float timeOut);
+    void setTarget(armState state);
+};
+
+extern Arm armControl;
+
+
+extern float armTimeOut;
+void armControl_fn(void *param);
