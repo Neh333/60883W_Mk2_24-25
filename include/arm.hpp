@@ -8,12 +8,12 @@ enum armState{
     score
 };
 
-const int scoringTarget = 250, loadingTarget = 130, standByTarget = 98;
+const int scoringTarget = 233, loadingTarget = 127, standByTarget = 98;
 
 class Arm{
     private:
     //Initialize PID Values
-    double kP = 72;
+    double kP = 74;
     double kI = 0;
     double kD = 0;
     const double intergralActive = 10;

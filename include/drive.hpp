@@ -1,6 +1,8 @@
 #pragma once
 #include "main.h"
 #include "util.hpp"
+#include <tuple>
+#include <utility>
 
 //better than a macro soo
 const double INTEGRAL_MAX = 800.0;
@@ -107,6 +109,8 @@ class Drive{
   struct slewProfile slewProf;
   struct slewProfile slewProf_a;
 
+  std::tuple<double, double, double> pose; //{x, y, theta/headiing}
+
   public:
   Drive(pros::MotorGroup &leftMotors, pros::MotorGroup &rightMotors, pros::Imu &imu);
 
@@ -145,6 +149,9 @@ class Drive{
   const double getError();
   const bool PIDisActive();
   
+  /*Tracking fn */
+  void tracking();
+  
   /* Movement Functions, Return error after movement is finished */
   double move(PID_dir dir, double target, double timeOut, double maxVelocity);
   double turn(PID_dir dir, double target, double timeOut, double maxVelocity);
@@ -156,3 +163,5 @@ class Drive{
 
 /* Declare, but do not create, an instance of Drive */
 extern Drive drive;
+
+void startTracking_fn(void* param);

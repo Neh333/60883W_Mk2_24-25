@@ -22,10 +22,15 @@ void Arm::move(){
     pros::lcd::print(3, "Arm PID Error : %.2d", this->error);
     
     float proportion = error;
-
-    if(error < 32){
-        this->kP = 120;
+    if(target == scoringTarget){
+        this->kP = 74;
     }
+    else if (target == loadingTarget) {
+        this->kP = 280;
+    }
+    // else(error < 32 && target != loadingTarget){
+    //     this->kP = 120;
+    // }
 
     if(fabs(error) <= intergralActive){intergral += error;}
     else{intergral = 0;}

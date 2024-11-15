@@ -450,6 +450,18 @@ double Drive::hardStop(PID_dir dir, double targetCutOff, double target, double t
   return tickToInch(error);
 }
 
+void Drive::tracking(){
+  
+}
+
+void startTracking_fn(void *param){
+    uint32_t startTime = pros::millis();
+    while(true){
+        drive.tracking();
+        pros::Task::delay_until(&startTime, 20);
+    }
+}
+
 /*CONSTRUCTOR*/
 Drive::Drive(pros::MotorGroup &leftMotors, pros::MotorGroup &rightMotors, pros::Imu &imu){
  setPID(1);

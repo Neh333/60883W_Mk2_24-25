@@ -36,7 +36,7 @@ private:
 
 public:
     IntakeControl(){
-        setJamThresh(370);
+        setJamThresh(365);
         setJamSpeed(-400);
         setJamProtection(JAM_PROTECTION_ACTIVE);
     }
