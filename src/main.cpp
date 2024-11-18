@@ -24,8 +24,6 @@ void initialize(){
 
 void disabled(){
 	while(true){
-    //AUTO_SWITCH();
-    
 		//Change auton value
 		if(controller.get_digital_new_press(DIGITAL_LEFT)){auton--;}
 		if(controller.get_digital_new_press(DIGITAL_RIGHT)){auton++;}

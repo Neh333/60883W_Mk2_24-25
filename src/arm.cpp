@@ -54,24 +54,6 @@ void Arm::move(){
     arm.move_voltage(-finalVolt);
 
 
-//  if(target == scoring){
-//   if(armPot.get_angle()/100 < scoring){
-//     arm.move(-12000);
-//   }
-//   else {
-//     arm.move_voltage(0);
-//   }
-//  } 
-//  else if (target == loading){
-//    if(armPot.get_angle()/100 > loading) {
-//      arm.move(4000);
-//    }
-//    else {
-//     arm.move_voltage(0);
-//   }
-//  }
-
-
 }
 
 void armControl_fn(void *param){

@@ -8,7 +8,7 @@ enum armState{
     score
 };
 
-const int scoringTarget = 233, loadingTarget = 127, standByTarget = 98;
+const int scoringTarget = 238, loadingTarget = 127, standByTarget = 98;
 
 class Arm{
     private:
