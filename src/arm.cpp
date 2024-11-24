@@ -23,14 +23,11 @@ void Arm::move(){
     
     float proportion = error;
     if(target == scoringTarget){
-        this->kP = 74;
+        this->kP = 100; //74
     }
     else if (target == loadingTarget) {
         this->kP = 280;
     }
-    // else(error < 32 && target != loadingTarget){
-    //     this->kP = 120;
-    // }
 
     if(fabs(error) <= intergralActive){intergral += error;}
     else{intergral = 0;}
@@ -48,12 +45,8 @@ void Arm::move(){
     //Set finalVolt to range
     finalVolt = std::clamp(finalVolt, -12000, 12000);
 
-    //master.print(2,0,"%.2f, %.0f                ", error, target);
-
     //Set final lift speeds
     arm.move_voltage(-finalVolt);
-
-
 }
 
 void armControl_fn(void *param){
