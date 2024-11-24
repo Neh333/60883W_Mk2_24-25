@@ -23,7 +23,7 @@ void Arm::move(){
     
     float proportion = error;
     if(target == scoringTarget){
-        this->kP = 100; //74
+        this->kP = 150; //74
     }
     else if (target == loadingTarget) {
         this->kP = 280;
