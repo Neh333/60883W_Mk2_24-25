@@ -14,8 +14,10 @@ pros::Motor arm(1);
 
 pros::Imu imu(17);
 pros::Rotation armPot(2);
-pros::Optical optical(4);
+pros::Optical optical(9);
 
 pros::adi::DigitalOut clampPis('H');
-pros::adi::DigitalOut sweeper('C');
+pros::adi::DigitalOut mogoArm('G');
+pros::adi::DigitalOut mogoArmClamp('F');
+
 pros::adi::DigitalOut intakePis('B');

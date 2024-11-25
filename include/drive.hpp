@@ -64,7 +64,7 @@ class Drive{
   /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
     {30, 87,  0,  13,  120, 100,  150},/*60+ degree turns (70%) / 5-24in lat*/
 
-    {17, 82,  0, 14.5, 36,  227,  500}, /*75+ degree mogo turns (90%) / 5-48 mogo lat*/ 
+    {31, 82,  0, 14.5, 100,  227,  500}, /*75+ degree mogo turns (90%) / 5-48 mogo lat*/ 
     
     {16, 140,  0, 12,  30,  400,  250}, /*10-55 deg turn (100%) / 25-72in lat*/ 
     

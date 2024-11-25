@@ -75,20 +75,19 @@ void IntakeControl::run(){
         //controller.print(2,0,"%i, %i, %i", jamCycles, deadCycles, reverseCycles) 
      if(lookingBlue){ 
         auto lookingBlueVal = lookingBlue ? "True" : "False";
-        pros::lcd::print(3, "Looking Blue: %s", lookingBlueVal);
+        pros::lcd::print(5, "Looking Blue: %s", lookingBlueVal);
         switch (intakeFlag) {
             //Rings are intaking as normal 
             case 0:
             intake.move_voltage(intakeSpeed);
             pros::lcd::print(4, "Intake flag: %i", intakeFlag);
-            if(optical.get_hue() >= 216*(optical.get_brightness()) && optical.get_hue() <= 232*(optical.get_brightness()))
+            if(optical.get_hue()>200)
             {
                 detectCycles++;
             }
-            if(detectCycles >= detectThreshold){++intakeFlag;}
+            if(detectCycles >= blueDetectThreshold){++intakeFlag;}
             break;
-
-            //ring is past platform stage 
+            //ring is blue
             case 1:
             intake.move_voltage(-12000); 
             pros::delay(300);
@@ -98,20 +97,19 @@ void IntakeControl::run(){
      }
      else if (lookingRed) {    
         auto lookingRedVal = lookingRed ? "True" : "False";
-        pros::lcd::print(2, "Looking Red: %s", lookingRedVal);
+        pros::lcd::print(5, "Looking Red: %s", lookingRedVal);
         switch (intakeFlag) {
             //No rings are past redirect 
             case 0:
             intake.move_voltage(intakeSpeed);
             pros::lcd::print(4, "Intake flag: %i", intakeFlag);
-            if(optical.get_hue() >= 6*(optical.get_brightness()) && optical.get_hue() <= 16*(optical.get_brightness()))
+            if(optical.get_hue()<34)
             {
                 detectCycles++;
             }
-            if(detectCycles >= detectThreshold){++intakeFlag;}
+            if(detectCycles >= redDetectThreshold){++intakeFlag;}
             break;
-
-            //ring is past platform stage 
+            //ring is red
             case 1:
             intake.move_voltage(-12000); 
             pros::delay(300);
@@ -119,7 +117,7 @@ void IntakeControl::run(){
             noDetectCycles = 0; detectCycles = 0; intakeFlag = 0;
 
         }
-     }
+     } //only for redirect robots 
      else if (lookingAny) {
         auto lookingBlueVal = lookingBlue ? "True" : "False";
         pros::lcd::print(3, "Looking Blue: %s", lookingBlueVal);

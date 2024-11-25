@@ -11,8 +11,10 @@ private:
     const uint16_t jamCycleThreshold = 8;
     const uint16_t dejamThreshold = 20;
 
-    const uint16_t detectThreshold = 15;
-    const uint16_t NoDetectThreshold = 17;
+    const uint16_t detectThreshold = 3;
+    const uint16_t redDetectThreshold = 3;
+    const uint16_t blueDetectThreshold = 1;
+    const uint16_t NoDetectThreshold = 5;
 
     int16_t intakeVel;
     int16_t jamThresh;

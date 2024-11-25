@@ -42,7 +42,10 @@ extern pros::Rotation armPot;
 /* ADI Digital out */
 extern pros::adi::DigitalOut clampPis;
 extern pros::adi::DigitalOut intakePis;
+extern pros::adi::DigitalOut mogoArm;
+extern pros::adi::DigitalOut mogoArmClamp;
 
 /* Global vars */
 extern bool backClampTog;
+extern autoColor currentColor;
 
