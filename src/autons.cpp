@@ -1,6 +1,5 @@
 #include "drive.hpp"
 #include "include.hpp"
-#include "pros/misc.h"
 #include "pros/rtos.hpp"
 #include "autons.hpp"
 #include "intake.hpp"
@@ -10,20 +9,20 @@
 
 /* Create an array of auton wrappers to be used with the auton-selector*/
 autonTextTuple autos[AUTO_COUNT] = {
-  {"WinP R", winPointRed},
-  {"WinP B", winPointBlue},
+  {"WinP Red", winPointRed},
+  {"WinP Blu", winPointBlue},
 
-  {"RingS R",ringSideRed},
-  {"RingS B",ringSideBlue},
+  {"RingS Red",ringSideRed},
+  {"RingS Blu",ringSideBlue},
 
-  {"GoalsS R",goalSideRed},
-  {"GoalS B",goalSideBlue},
+  {"GoalsS Red",goalSideRed},
+  {"GoalS Blu",goalSideBlue},
 
-  {"RignE R",ringElimRed},
-  {"RingE B",ringElimBlue},
+  {"RignE Red",ringElimRed},
+  {"RingE Blu",ringElimBlue},
 
-  {"GoalE R",goalElimRed},
-  {"GoalE B",goalElimBlue},
+  {"GoalE Red",goalElimRed},
+  {"GoalE Blu",goalElimBlue},
 
   {"Skills",skills},
   {"Tune",tune}
@@ -41,6 +40,7 @@ void winPointRed(){
  Triangle tri;
  setIntake(400, std::nullopt);
 
+ //drive.move(backward, 14.5, 1, 100);
  drive.move(backward, 14.5, 1, 100);
 
  drive.turn(right, imuTarget(90), 1, 70);
@@ -49,43 +49,40 @@ void winPointRed(){
 
  startIntake();
  
- pros::delay(300);
+ pros::delay(270);
  
  drive.move(forward, 3, 1, 100);
  
  drive.turn(right, imuTarget(180), 1, 70);
 
- drive.move(backward, 24, 2, 100);
+ drive.move(backward, 24, 1, 100);
 
  drive.turn(right, imuTarget(270), 1, 70);
 
- drive.addErrorFunc(14, LAMBDA(drive.setMaxVoltage(20)));
+ drive.addErrorFunc(10, LAMBDA(drive.setMaxVoltage(20)));
  drive.addErrorFunc(1, LAMBDA(clampPis.set_value(true)));
- drive.move(backward, 27, 2, 100);
-
- /*  clampPis.set_value(true);
- pros::delay(200); */
+ drive.move(backward, 25, 2, 30);
+ pros::delay(100); //let clamp lock 
 
  drive.setPID(2);
  drive.setSlew(mogoSlewProfile);
 
- //drive.move(backward, 8, 1, 100);
-
  drive.turn(right, imuTarget(0), 1, 90);
 
- drive.move(forward, 24, 2, 80);
- pros::delay(100);
+ drive.move(forward, 22, 2, 80);
+ pros::delay(100); //get 1st ring on mogo 
  
  drive.setPID(4);
- drive.turn(right, imuTarget(73), 1, 90);
+ drive.turn(right, imuTarget(76.5), 1, 90);
 
  setIntake(400, blue);
 
- drive.move(forward, 13.5, 1, 100);
- pros::delay(200);
+ drive.move(forward, 16, 1, 100);
+ pros::delay(350);
 
  drive.turn(right, imuTarget(190), 2, 90);
- drive.move(forward, 41, 2, 100);
+
+ drive.move(forward, 41, 2, 100); // touch elevation tower 
  
  runOnError.remove();
  runIntakeControl.remove();
