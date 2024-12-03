@@ -107,6 +107,10 @@ void opcontrol() {
 
    /*DRIVER CONTROL */
    arcade_standard(5);
+
+   if(controller.get_digital_new_press(DIGITAL_A)){
+    
+   }
    
    if(controller.get_digital_new_press(DIGITAL_B)){
      sortTog = !sortTog;

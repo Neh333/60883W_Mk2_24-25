@@ -40,6 +40,8 @@ void winPointRed(){
  Triangle tri;
  setIntake(400, std::nullopt);
 
+ currentColor = red;
+
  drive.move(backward, 14.5, 1, 100);
 
  drive.turn(right, imuTarget(90), 1, 70);
@@ -100,6 +102,8 @@ void winPointBlue(){
  Triangle tri;
  setIntake(400, std::nullopt);
 
+ currentColor = blue;
+
  drive.move(backward, 14.5, 1, 100);
 
  drive.turn(left, imuTarget(270), 1, 70);
@@ -157,8 +161,7 @@ void ringSideRed(){
  pros::Task runOnError(onError_fn);
  pros::Task runIntakeControl(IntakeControlSystem_fn);
  Triangle tri;
-
- stopIntake(); // weird issue starting before start intake is called
+ currentColor = red;
  
  //get mogo
  drive.addErrorFunc(2, LAMBDA(clampPis.set_value(true)));
@@ -206,9 +209,10 @@ void ringSideBlue(){
  pros::Task runOnError(onError_fn);
  pros::Task runIntakeControl(IntakeControlSystem_fn);
  Triangle tri;
+
+ currentColor = blue;
  
  //get mogo
- 
  drive.addErrorFunc(2, LAMBDA(clampPis.set_value(true)));
  drive.move(backward, 26, 2, 100);
 
@@ -254,8 +258,7 @@ void goalSideRed(){
  pros::Task runOnError(onError_fn);
  pros::Task runIntakeControl(IntakeControlSystem_fn);
  Triangle tri;
-
- stopIntake(); // weird issue starting before start intake is called
+ currentColor = red;
  
  //get mogo
  drive.addErrorFunc(2, LAMBDA(clampPis.set_value(true)));
@@ -285,10 +288,9 @@ void goalSideRed(){
 void goalSideBlue(){
  pros::Task runOnError(onError_fn);
  pros::Task runIntakeControl(IntakeControlSystem_fn);
-
  Triangle tri;
 
- stopIntake(); // weird issue starting before start intake is called
+ currentColor = blue;
  
  //get mogo
  drive.addErrorFunc(2, LAMBDA(clampPis.set_value(true)));
@@ -320,6 +322,7 @@ void goalSideBlue(){
 void ringElimRed(){
  pros::Task runOnError(onError_fn);
  pros::Task runIntakeControl(IntakeControlSystem_fn);
+ currentColor = red;
 
  runOnError.remove();
  runIntakeControl.remove();
@@ -329,6 +332,7 @@ void ringElimRed(){
 void ringElimBlue(){
  pros::Task runOnError(onError_fn);
  pros::Task runIntakeControl(IntakeControlSystem_fn);
+ currentColor = blue;
 
  runOnError.remove();
  runIntakeControl.remove();
@@ -338,6 +342,7 @@ void ringElimBlue(){
 void goalElimRed(){
  pros::Task runOnError(onError_fn);
  pros::Task runIntakeControl(IntakeControlSystem_fn);
+ currentColor = red;
 
  runOnError.remove();
  runIntakeControl.remove();
@@ -347,6 +352,7 @@ void goalElimRed(){
 void goalElimBlue(){
  pros::Task runOnError(onError_fn);
  pros::Task runIntakeControl(IntakeControlSystem_fn);
+ currentColor = red;
 
  runOnError.remove();
  runIntakeControl.remove();
