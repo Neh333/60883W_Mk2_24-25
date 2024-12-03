@@ -40,7 +40,7 @@ void winPointRed(){
  Triangle tri;
  setIntake(400, std::nullopt);
 
- currentColor = red;
+ currentColor = blue;
 
  drive.move(backward, 14.5, 1, 100);
 
@@ -102,7 +102,7 @@ void winPointBlue(){
  Triangle tri;
  setIntake(400, std::nullopt);
 
- currentColor = blue;
+ currentColor = red;
 
  drive.move(backward, 14.5, 1, 100);
 
@@ -161,7 +161,7 @@ void ringSideRed(){
  pros::Task runOnError(onError_fn);
  pros::Task runIntakeControl(IntakeControlSystem_fn);
  Triangle tri;
- currentColor = red;
+ currentColor = blue;
  
  //get mogo
  drive.addErrorFunc(2, LAMBDA(clampPis.set_value(true)));
@@ -210,7 +210,7 @@ void ringSideBlue(){
  pros::Task runIntakeControl(IntakeControlSystem_fn);
  Triangle tri;
 
- currentColor = blue;
+ currentColor = red;
  
  //get mogo
  drive.addErrorFunc(2, LAMBDA(clampPis.set_value(true)));
@@ -258,7 +258,7 @@ void goalSideRed(){
  pros::Task runOnError(onError_fn);
  pros::Task runIntakeControl(IntakeControlSystem_fn);
  Triangle tri;
- currentColor = red;
+ currentColor = blue;
  
  //get mogo
  drive.addErrorFunc(2, LAMBDA(clampPis.set_value(true)));
@@ -290,7 +290,7 @@ void goalSideBlue(){
  pros::Task runIntakeControl(IntakeControlSystem_fn);
  Triangle tri;
 
- currentColor = blue;
+ currentColor = red;
  
  //get mogo
  drive.addErrorFunc(2, LAMBDA(clampPis.set_value(true)));
@@ -322,7 +322,7 @@ void goalSideBlue(){
 void ringElimRed(){
  pros::Task runOnError(onError_fn);
  pros::Task runIntakeControl(IntakeControlSystem_fn);
- currentColor = red;
+ currentColor = blue;
 
  runOnError.remove();
  runIntakeControl.remove();
@@ -332,7 +332,7 @@ void ringElimRed(){
 void ringElimBlue(){
  pros::Task runOnError(onError_fn);
  pros::Task runIntakeControl(IntakeControlSystem_fn);
- currentColor = blue;
+ currentColor = red;
 
  runOnError.remove();
  runIntakeControl.remove();
@@ -342,7 +342,7 @@ void ringElimBlue(){
 void goalElimRed(){
  pros::Task runOnError(onError_fn);
  pros::Task runIntakeControl(IntakeControlSystem_fn);
- currentColor = red;
+ currentColor = blue;
 
  runOnError.remove();
  runIntakeControl.remove();

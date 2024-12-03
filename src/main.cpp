@@ -73,13 +73,15 @@ void arcade_standard(double curve) {
 void opcontrol() {
  bool backClampTog = false;
  bool sortTog = false;
+ bool mogoArmTog = false;
  int armTog = 0;
+
  optical.set_led_pwm(100);
  arm.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
  pros::Task runIntakeControl(IntakeControlSystem_fn);
  pros::Task armControlTask(armControl_fn);
  runIntakeControl.suspend();
- setIntake(400, red);
+ setIntake(400, currentColor);
 
  while (true) {
    //pros::lcd::print(0, "Hue Val (w/ brightness mult): %.2f", optical.get_hue()*optical.get_brightness());
@@ -90,6 +92,7 @@ void opcontrol() {
    pros::lcd::print(2, "Arm Pot (deg): %i", armPot.get_angle()/100);
 
    pros::lcd::print(7, "Opt Brightness: %.2f", optical.get_brightness());
+
    /*Display current autonomous on the controller*/
    controllerPrintAuto();
 
@@ -109,8 +112,11 @@ void opcontrol() {
    arcade_standard(5);
 
    if(controller.get_digital_new_press(DIGITAL_A)){
-    
+    mogoArmTog = !mogoArmTog;
    }
+   if(mogoArmTog){
+    mogoArm.set_value(true);
+   } else{mogoArm.set_value(false);}
    
    if(controller.get_digital_new_press(DIGITAL_B)){
      sortTog = !sortTog;

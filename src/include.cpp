@@ -21,3 +21,5 @@ pros::adi::DigitalOut mogoArm('G');
 pros::adi::DigitalOut mogoArmClamp('F');
 
 pros::adi::DigitalOut intakePis('B');
+
+autoColor currentColor = red; //default color set to red
