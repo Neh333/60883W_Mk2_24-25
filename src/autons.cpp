@@ -40,126 +40,117 @@ void winPointRed(){
  Triangle tri;
  setIntake(400, std::nullopt);
 
- //drive.move(backward, 14.5, 1, 100);
  drive.move(backward, 14.5, 1, 100);
 
  drive.turn(right, imuTarget(90), 1, 70);
 
- drive.move(backward, 3, 1, 100);
+ drive.move(backward, 4, 1, 100);
 
  startIntake();
  
- pros::delay(270);
+ pros::delay(400);
  
- drive.move(forward, 3, 1, 100);
+ drive.move(forward, 4, 1, 100);
  
  drive.turn(right, imuTarget(180), 1, 70);
 
- drive.move(backward, 24, 1, 100);
+ drive.move(backward, 10, 1, 100);
 
- drive.turn(right, imuTarget(270), 1, 70);
+ drive.turn(right, imuTarget(243), 1, 70); //turn to mogo
 
- drive.addErrorFunc(10, LAMBDA(drive.setMaxVoltage(20)));
- drive.addErrorFunc(1, LAMBDA(clampPis.set_value(true)));
- drive.move(backward, 25, 2, 30);
- pros::delay(100); //let clamp lock 
-
- drive.setPID(2);
+ drive.addErrorFunc(18, LAMBDA(drive.setMaxVoltage(20)));
+ drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true)));
+ drive.move(backward, 30, 2, 100);
+ pros::delay(200); //let clamp lock 
+ 
  drive.setSlew(mogoSlewProfile);
 
+ drive.setPID(2);
+ drive.move(backward, 6, 1, 100);
+ 
+ drive.setPID(4);
  drive.turn(right, imuTarget(0), 1, 90);
 
+ drive.setPID(2);
  drive.move(forward, 22, 2, 80);
  pros::delay(100); //get 1st ring on mogo 
  
- drive.setPID(4);
- drive.turn(right, imuTarget(76.5), 1, 90);
+ drive.setPID(2);
+ drive.turn(right, imuTarget(95), 1, 90);
 
  setIntake(400, blue);
 
- drive.move(forward, 16, 1, 100);
- pros::delay(350);
+ drive.move(forward, 13, 1, 100); //get 2nd ring
+ pros::delay(150);
 
- drive.turn(right, imuTarget(190), 2, 90);
+ //drive.move(backward, 5, 1, 100);
+ 
+ drive.turn(right, imuTarget(170), 2, 90);
 
- drive.move(forward, 41, 2, 100); // touch elevation tower 
+ drive.move(forward, 10, 2, 100); // touch elevation tower 
  
  runOnError.remove();
  runIntakeControl.remove();
  drive.onErrorVector.clear();
-
 }
 
 void winPointBlue(){
  pros::Task runOnError(onError_fn); 
  pros::Task runIntakeControl(IntakeControlSystem_fn);
  Triangle tri;
+ setIntake(400, std::nullopt);
 
- clampPis.set_value(true); //pull the clamp up 
-
- drive.move(backward, 14, 1, 100);
+ drive.move(backward, 14.5, 1, 100);
 
  drive.turn(left, imuTarget(270), 1, 70);
 
- drive.moveDriveVoltage(-12000);
- 
- pros::delay(200);
- 
- setIntake(400, std::nullopt);
- startIntake();
- 
- pros::delay(950);
-
- drive.moveDriveVoltage(0);
-
- stopIntake();
-
- drive.move(forward, 6, 1, 100);
- 
- //go to mogo 
- drive.turn(left, imuTarget(180), 1, 70);
+ drive.move(backward, 4, 1, 100);
 
  startIntake();
  
- findTri(&tri, 24, 180);
- drive.move(backward, tri.hyp, 2, 100);
+ pros::delay(400);
  
- drive.turn(left, imuTarget(90), 1, 70);
-
- //get mogo
- drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(70)));
- drive.move(backward, 30-tri.b, 4, 100);
-
- clampPis.set_value(false);
- pros::delay(250);
- clampPis.set_value(false);
-
- //go get 1st ring
- drive.turn(left, imuTarget(360), 2, 90);
+ drive.move(forward, 4, 1, 100);
  
- findTri(&tri, 18, 180);
- drive.move(forward, tri.hyp, 2, 70);
+ drive.turn(left, imuTarget(0), 1, 70);
+
+ drive.move(backward, 10, 1, 100);
+
+ drive.turn(left, imuTarget(243), 1, 70); //turn to mogo
+
+ drive.addErrorFunc(18, LAMBDA(drive.setMaxVoltage(20)));
+ drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true)));
+ drive.move(backward, 30, 2, 100);
+ pros::delay(200); //let clamp lock 
  
- //go get 2nd ring
- drive.turn(left, imuTarget(275), 2, 90);
+ drive.setSlew(mogoSlewProfile);
 
- drive.move(forward, 14-tri.b, 1, 100);
- pros::delay(200);
-
- //go get 3rd ring
- findTri(&tri, 10, 95);
- drive.move(backward, tri.hyp, 1, 100);
+ drive.setPID(2);
+ drive.move(backward, 6, 1, 100);
  
- drive.turn(left, imuTarget(180), 2, 90);
+ drive.setPID(4);
+ drive.turn(left, imuTarget(0), 1, 90);
 
- drive.move(forward, 30, 3, 70);
+ drive.setPID(2);
+ drive.move(forward, 22, 2, 80);
+ pros::delay(100); //get 1st ring on mogo 
  
- clampPis.set_value(true);
- pros::delay(200);
+ drive.setPID(2);
+ drive.turn(left, imuTarget(95), 1, 90);
 
+ setIntake(400, red);
+
+ drive.move(forward, 13, 1, 100); //get 2nd ring
+ pros::delay(150);
+ 
+ drive.turn(left, imuTarget(190), 2, 90);
+
+ drive.move(forward, 10, 1, 100); // touch elevation tower 
+ 
  runOnError.remove();
  runIntakeControl.remove();
  drive.onErrorVector.clear();
+
 }
 
 void ringSideRed(){
