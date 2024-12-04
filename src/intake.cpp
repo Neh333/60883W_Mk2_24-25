@@ -81,7 +81,7 @@ void IntakeControl::run(){
             case 0:
             intake.move_voltage(intakeSpeed);
             pros::lcd::print(4, "Intake flag: %i", intakeFlag);
-            if(optical.get_hue()>140)
+            if(optical.get_hue()>120)
             {
                 detectCycles++;
             }

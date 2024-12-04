@@ -260,6 +260,7 @@ void goalSideRed(){
  pros::Task runIntakeControl(IntakeControlSystem_fn);
  Triangle tri;
  currentColor = blue;
+ setIntake(400, currentColor);
  
  //get mogo
  drive.addErrorFunc(18, LAMBDA(drive.setMaxVoltage(20)));
@@ -272,7 +273,6 @@ void goalSideRed(){
  drive.setSlew(mogoSlewProfile);
  drive.move(backward, 5, 1, 100);
 
- setIntake(400, blue);
  startIntake();
 
  //go get 1st ring
@@ -283,13 +283,20 @@ void goalSideRed(){
  
  drive.turn(right, imuTarget(0), 2, 90);
 
- drive.move(forward, 32-tri.b, 3, 50);
+ drive.move(forward, 28-tri.b, 3, 50);
 
  drive.turn(right, imuTarget(90), 2, 90);
 
  drive.addErrorFunc(24, LAMBDA(drive.setMaxVoltage(80)));
- drive.move(forward, 54, 3, 100);
+ drive.move(forward, 50, 3, 100);
  
+ drive.move(forward, 5, 1, 40);
+ pros::delay(1000);
+ 
+ drive.turn(right, imuTarget(180), 2, 90); 
+
+ drive.move(forward, 18, 1, 100);
+
  runOnError.remove();
  runIntakeControl.remove();
  drive.onErrorVector.clear();
