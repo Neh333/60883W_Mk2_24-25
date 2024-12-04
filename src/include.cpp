@@ -22,4 +22,4 @@ pros::adi::DigitalOut mogoArmClamp('F');
 
 pros::adi::DigitalOut intakePis('B');
 
-autoColor currentColor = red; //default color set to red
+autoColor currentColor = blue; //default color set to blue for red allince 

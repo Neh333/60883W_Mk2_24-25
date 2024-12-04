@@ -7,13 +7,14 @@ extern bool JAM_PROTECTION_INACTIVE;
 extern pros::Mutex ringControlMutex;
 
 class IntakeControl{
-private:
+    private:
     const uint16_t jamCycleThreshold = 8;
     const uint16_t dejamThreshold = 20;
 
     const uint16_t detectThreshold = 3;
-    const uint16_t redDetectThreshold = 3;
+    const uint16_t redDetectThreshold = 1;
     const uint16_t blueDetectThreshold = 1;
+
     const uint16_t NoDetectThreshold = 5;
 
     int16_t intakeVel;
@@ -36,7 +37,7 @@ private:
     bool lookingAny;
     
 
-public:
+    public:
     IntakeControl(){
         setJamThresh(365);
         setJamSpeed(-400);
@@ -59,7 +60,7 @@ public:
     int32_t intakeSpeed;
 
 }; 
-extern IntakeControl conveyor;
+extern IntakeControl conveyor; //declration for intakecontrol obj 
 
 //Set the Intakes speed to run at when operating
 void setIntake(int16_t velocity, std::optional<autoColor> color);

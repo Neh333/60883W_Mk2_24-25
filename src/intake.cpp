@@ -81,7 +81,7 @@ void IntakeControl::run(){
             case 0:
             intake.move_voltage(intakeSpeed);
             pros::lcd::print(4, "Intake flag: %i", intakeFlag);
-            if(optical.get_hue()>200)
+            if(optical.get_hue()>140)
             {
                 detectCycles++;
             }
@@ -117,7 +117,8 @@ void IntakeControl::run(){
             noDetectCycles = 0; detectCycles = 0; intakeFlag = 0;
 
         }
-     } //only for redirect robots 
+     } 
+     //only for redirect robots 
      else if (lookingAny) {
         auto lookingBlueVal = lookingBlue ? "True" : "False";
         pros::lcd::print(3, "Looking Blue: %s", lookingBlueVal);

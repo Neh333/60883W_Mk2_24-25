@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <cmath>
 
-Arm armControl;
+Arm armControl; //arm object for main.cpp and autons.cpp for changing the arm target
 
 void Arm::setTarget(armState state){
     if(state == standby){

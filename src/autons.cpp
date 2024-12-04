@@ -1,5 +1,6 @@
 #include "drive.hpp"
 #include "include.hpp"
+#include "pros/device.hpp"
 #include "pros/rtos.hpp"
 #include "autons.hpp"
 #include "intake.hpp"
@@ -261,25 +262,34 @@ void goalSideRed(){
  currentColor = blue;
  
  //get mogo
- drive.addErrorFunc(2, LAMBDA(clampPis.set_value(true)));
- drive.move(backward, 28, 2, 100);
+ drive.addErrorFunc(18, LAMBDA(drive.setMaxVoltage(20)));
+ drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true)));
+ drive.move(backward, 31, 2, 100);
 
+ pros::delay(100); //let goal clamp
 
- setIntake(400, std::nullopt);
+ drive.setPID(2);
+ drive.setSlew(mogoSlewProfile);
+ drive.move(backward, 5, 1, 100);
+
+ setIntake(400, blue);
  startIntake();
 
  //go get 1st ring
- drive.setPID(2);
  drive.turn(left, imuTarget(270), 2, 90);
  
  findTri(&tri, 27, 270);
  drive.move(forward, tri.hyp, 2, 70);
  
- drive.setPID(7);
- drive.turn(left, imuTarget(90), 2, 90);
+ drive.turn(right, imuTarget(0), 2, 90);
 
- drive.move(forward, 39, 3, 50);
+ drive.move(forward, 32-tri.b, 3, 50);
 
+ drive.turn(right, imuTarget(90), 2, 90);
+
+ drive.addErrorFunc(24, LAMBDA(drive.setMaxVoltage(80)));
+ drive.move(forward, 54, 3, 100);
+ 
  runOnError.remove();
  runIntakeControl.remove();
  drive.onErrorVector.clear();

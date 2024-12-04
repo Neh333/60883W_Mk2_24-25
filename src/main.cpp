@@ -81,7 +81,6 @@ void opcontrol() {
  pros::Task runIntakeControl(IntakeControlSystem_fn);
  pros::Task armControlTask(armControl_fn);
  runIntakeControl.suspend();
- setIntake(400, currentColor);
 
  while (true) {
    //pros::lcd::print(0, "Hue Val (w/ brightness mult): %.2f", optical.get_hue()*optical.get_brightness());
@@ -107,6 +106,8 @@ void opcontrol() {
    if(controller.get_digital_new_press(DIGITAL_UP)){
     pauseAndCalibrateIMU();
    } 
+ 
+   setIntake(400, currentColor); //color sort whatever color we arenn't bases on auto by default sorts out blue
 
    /*DRIVER CONTROL */
    arcade_standard(5);
@@ -140,7 +141,7 @@ void opcontrol() {
      }
    }
 
-    if (controller.get_digital_new_press(DIGITAL_R2)){
+    if(controller.get_digital_new_press(DIGITAL_R2)){
       ++armTog;
       armTog = armTog>2 ? 0 : armTog;
     }
