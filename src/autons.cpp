@@ -13,17 +13,17 @@ autonTextTuple autos[AUTO_COUNT] = {
   {"WinP Red", winPointRed},
   {"WinP Blu", winPointBlue},
 
-  {"RingS Red",ringSideRed},
-  {"RingS Blu",ringSideBlue},
+  {"RinS Red",ringSideRed},
+  {"RinS Blu",ringSideBlue},
 
-  {"GoalsS Red",goalSideRed},
-  {"GoalS Blu",goalSideBlue},
+  {"GoaS Red",goalSideRed},
+  {"GoaS Blu",goalSideBlue},
 
-  {"RignE Red",ringElimRed},
-  {"RingE Blu",ringElimBlue},
+  {"RinE Red",ringElimRed},
+  {"RinE Blu",ringElimBlue},
 
-  {"GoalE Red",goalElimRed},
-  {"GoalE Blu",goalElimBlue},
+  {"GoaE Red",goalElimRed},
+  {"GoaE Blu",goalElimBlue},
 
   {"Skills",skills},
   {"Tune",tune}
@@ -263,8 +263,8 @@ void goalSideRed(){
  setIntake(400, currentColor);
  
  //get mogo
- drive.addErrorFunc(18, LAMBDA(drive.setMaxVoltage(20)));
- drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true)));
+ drive.addErrorFunc(18, LAMBDA(drive.setMaxVoltage(25)));
+ drive.addErrorFunc(2, LAMBDA(clampPis.set_value(true)));
  drive.move(backward, 31, 2, 100);
 
  pros::delay(100); //let goal clamp
@@ -283,20 +283,24 @@ void goalSideRed(){
  
  drive.turn(right, imuTarget(0), 2, 90);
 
+ setIntake(-400, std::nullopt);
+ 
  drive.move(forward, 28-tri.b, 3, 50);
 
  drive.turn(right, imuTarget(90), 2, 90);
-
+ 
+ setIntake(400, currentColor);
+ 
  drive.addErrorFunc(24, LAMBDA(drive.setMaxVoltage(80)));
  drive.move(forward, 50, 3, 100);
  
- drive.move(forward, 5, 1, 40);
- pros::delay(1000);
+ drive.move(forward, 24, 1, 40);
+ pros::delay(300);
  
- drive.turn(right, imuTarget(180), 2, 90); 
+ drive.turn(right, imuTarget(225), 2, 90); 
 
- drive.move(forward, 18, 1, 100);
-
+ drive.move(forward, 25, 2, 100);
+ 
  runOnError.remove();
  runIntakeControl.remove();
  drive.onErrorVector.clear();
