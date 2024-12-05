@@ -299,7 +299,7 @@ void goalSideRed(){
  
  drive.turn(right, imuTarget(225), 2, 90); 
 
- drive.move(forward, 25, 2, 100);
+ drive.move(forward, 29, 2, 100);
  
  runOnError.remove();
  runIntakeControl.remove();
@@ -310,31 +310,48 @@ void goalSideBlue(){
  pros::Task runOnError(onError_fn);
  pros::Task runIntakeControl(IntakeControlSystem_fn);
  Triangle tri;
-
  currentColor = red;
+ setIntake(400, currentColor);
  
  //get mogo
+ drive.addErrorFunc(18, LAMBDA(drive.setMaxVoltage(25)));
  drive.addErrorFunc(2, LAMBDA(clampPis.set_value(true)));
- drive.move(backward, 28, 2, 100);
+ drive.move(backward, 31, 2, 100);
 
- setIntake(400, std::nullopt);
+ pros::delay(100); //let goal clamp
+
+ drive.setPID(2);
+ drive.setSlew(mogoSlewProfile);
+ drive.move(backward, 5, 1, 100);
+
  startIntake();
 
  //go get 1st ring
- drive.setPID(2);
  drive.turn(right, imuTarget(90), 2, 90);
  
  findTri(&tri, 27, 270);
  drive.move(forward, tri.hyp, 2, 70);
  
- drive.setPID(7);
- drive.turn(right, imuTarget(270), 2, 90);
+ drive.turn(left, imuTarget(0), 2, 90);
 
- drive.move(forward, 39, 3, 50);
+ setIntake(-400, std::nullopt);
+ 
+ drive.move(forward, 28-tri.b, 3, 50);
 
- clampPis.set_value(true);
- pros::delay(200);
+ drive.turn(left, imuTarget(270), 2, 90);
+ 
+ setIntake(400, currentColor);
+ 
+ drive.addErrorFunc(24, LAMBDA(drive.setMaxVoltage(80)));
+ drive.move(forward, 50, 3, 100);
+ 
+ drive.move(forward, 24, 1, 40);
+ pros::delay(300);
+ 
+ drive.turn(left, imuTarget(45), 2, 90); 
 
+ drive.move(forward, 29, 2, 100);
+ 
  runOnError.remove();
  runIntakeControl.remove();
  drive.onErrorVector.clear();
