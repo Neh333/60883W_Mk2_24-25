@@ -34,12 +34,6 @@ void IntakeControl::setIntake(int16_t velocity, std::optional<autoColor> color){
         lookingBlue = true;
         lookingAny = false;
     }
-    if(color == any) {
-        lookingRed = false;
-        lookingBlue = false;
-        lookingAny = true;
-        optical.set_led_pwm(0);
-    }
     else if(color == std::nullopt) { //explicit for eliminating error while testing 
         lookingRed = false; 
         lookingRed = false;
@@ -117,61 +111,7 @@ void IntakeControl::run(){
             noDetectCycles = 0; detectCycles = 0; intakeFlag = 0;
 
         }
-     } 
-     //only for redirect robots 
-     else if (lookingAny) {
-        auto lookingBlueVal = lookingBlue ? "True" : "False";
-        pros::lcd::print(3, "Looking Blue: %s", lookingBlueVal);
-        switch (intakeFlag) {
-            //All rings are below ramp or in the arm 
-            case 0:
-            intake.move_voltage(intakeSpeed);
-            pros::lcd::print(4, "Intake flag: %i", intakeFlag);
-            pros::lcd::print(5, "Proximity Value: %i", optical.get_proximity());
-            if((optical.get_proximity() >= 100)){detectCycles++;}
-            if(detectCycles >= detectThreshold){++intakeFlag;}
-            break;
-
-            //ring is past platform stage and can be loaded into arm 
-            case 1:
-            intake.move_voltage(-12000); 
-            pros::lcd::print(4, "Intake flag: %i", intakeFlag);
-            pros::lcd::print(5, "Proximity Value: %i", optical.get_proximity());
-            if(optical.get_proximity() < 100){noDetectCycles++;}
-            if(noDetectCycles >= NoDetectThreshold){noDetectCycles = 0; detectCycles = 0; intakeFlag = 0;}
-        }
-     
-     }
-     else {
-        switch(intakeFlag){
-            //Intake is not jammed or in the process of unjamming
-            case 0:
-            deadCycles = 0;
-            reverseCycles = 0;
-            intake.move_voltage(intakeSpeed);
-            if((intakeVel - intake.get_actual_velocity()) > jamThresh){jamCycles++;}
-            else{lastJamDead = 0; jamCycles = 0;}
-
-            if(jamCycles >= jamCycleThreshold){intakeFlag = 1 + lastJamDead;}
-            break;
-
-            //Stop running the Intake to see if rings fall naturally and unjam
-            case 1:
-            jamCycles = 0;
-            intake.move_voltage(0);
-            deadCycles++;
-            if(deadCycles >= dejamThreshold){deadCycles = 0; intakeFlag = 0; lastJamDead = 1;}
-            break;
-
-            //Stopping the Intake didn't fix the jam and rings will be run backward
-            case 2:
-            jamCycles = 0;
-            intake.move_voltage(jamSpeed);
-            reverseCycles++;
-            if(reverseCycles >= dejamThreshold){reverseCycles = 0; intakeFlag = 0; lastJamDead = 0;}
-            break;
-        }
-     }
+     } else {intake.move_voltage(intakeSpeed);}
     }
    ringControlMutex.give();
 }

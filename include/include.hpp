@@ -9,8 +9,7 @@
 
 enum autoColor{
     red,
-    blue,
-    any
+    blue
 };
 
 struct autonTextTuple

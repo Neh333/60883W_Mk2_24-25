@@ -403,9 +403,9 @@ void skills(){
  pros::Task armControlTask(armControl_fn);
  Triangle tri;
  
- pros::delay(20); //dealy before intake can start for some reason (prob task related)
+ pros::delay(1); //dealy before intake can start for some reason (prob task related)
 
- setIntake(400, std::nullopt); //filter out all blue rings 
+ setIntake(400, std::nullopt);
  startIntake();
 
  pros::delay(450); //score on allince stake with preload 
@@ -450,7 +450,7 @@ void skills(){
  drive.turn(left, imuTarget(360), 1, 90);
 
  drive.setPID(2);
- findTri(&tri, 40, 360);
+ findTri(&tri, 41, 360);
  drive.move(forward, tri.hyp, 3, 100);
  
  drive.setPID(2);
