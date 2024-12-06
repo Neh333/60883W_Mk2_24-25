@@ -71,12 +71,14 @@ void arcade_standard(double curve) {
 
 
 void opcontrol() {
+ /*Toggles*/
  bool backClampTog = false;
  bool sortTog = false;
  bool mogoArmTog = false;
  int armTog = 0;
 
  optical.set_led_pwm(100);
+
  arm.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
  pros::Task runIntakeControl(IntakeControlSystem_fn);
  pros::Task armControlTask(armControl_fn);
@@ -106,7 +108,7 @@ void opcontrol() {
    if(controller.get_digital_new_press(DIGITAL_UP)){
     pauseAndCalibrateIMU();
    } 
- 
+   
    setIntake(400, currentColor); //color sort whatever color we arenn't bases on auto by default sorts out blue
 
    /*DRIVER CONTROL */
@@ -157,13 +159,13 @@ void opcontrol() {
    
    if(controller.get_digital_new_press(DIGITAL_R1)){ backClampTog = !backClampTog;}
    if (!backClampTog){
-      //intakePis.set_value(true);
       clampPis.set_value(false);
     } else {
-      //intakePis.set_value(true);
       clampPis.set_value(true);
     }
+
    pros::delay(20);
  }
  runIntakeControl.remove();
+ armControlTask.remove();
 }

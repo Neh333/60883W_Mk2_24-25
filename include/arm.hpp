@@ -1,5 +1,4 @@
 #include <algorithm>
-#include "main.h"
 #include "include.hpp"
 
 enum armState{
@@ -8,7 +7,7 @@ enum armState{
     score
 };
 
-const int scoringTarget = 238, loadingTarget = 127, standByTarget = 98;
+const int scoringTarget = 130, loadingTarget = 29, standByTarget = 0; //98
 
 class Arm{
     private:
