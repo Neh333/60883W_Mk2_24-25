@@ -7,7 +7,7 @@ enum armState{
     score
 };
 
-const int scoringTarget = 130, loadingTarget = 29, standByTarget = 0; //98
+const int scoringTarget = 228, loadingTarget = 127, standByTarget = 98; //130, 29, 0 
 
 class Arm{
     private:
@@ -16,7 +16,7 @@ class Arm{
     double kI = 0;
     double kD = 0;
     const double intergralActive = 10;
-    const double intergralLimit = 10000;
+    const double intergralLimit = 1000;
 
     //Variables that need to be read after each PID scope is destroyed
     double error = 0;

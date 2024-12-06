@@ -92,8 +92,8 @@ void opcontrol() {
 
    pros::lcd::print(2, "Arm Pot (deg): %i", armPot.get_angle()/100);
 
-   pros::lcd::print(7, "Opt Brightness: %.2f", optical.get_brightness());
-
+   pros::lcd::print(4, "Arm Tog Val: %i", armTog);
+   
    /*Display current autonomous on the controller*/
    controllerPrintAuto();
 
