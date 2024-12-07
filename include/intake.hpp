@@ -13,7 +13,7 @@ class IntakeControl{
 
     const uint16_t detectThreshold = 3;
     const uint16_t redDetectThreshold = 1;
-    const uint16_t blueDetectThreshold = 1;
+    const uint16_t blueDetectThreshold = 2;
 
     const uint16_t NoDetectThreshold = 5;
 
