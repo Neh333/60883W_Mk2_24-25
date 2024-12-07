@@ -34,9 +34,7 @@ class IntakeControl{
     bool lastJamDead = true;
     bool lookingRed = false;
     bool lookingBlue = false; 
-    bool lookingAny;
-    
-
+   
     public:
     IntakeControl(){
         setJamThresh(365);

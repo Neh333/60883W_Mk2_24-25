@@ -47,7 +47,7 @@ void winPointRed(){
 
  drive.turn(right, imuTarget(90), 1, 70);
 
- drive.move(backward, 4, 1, 100);
+ drive.move(backward, 4.2, 1, 100);
 
  startIntake();
  
@@ -109,7 +109,7 @@ void winPointBlue(){
 
  drive.turn(left, imuTarget(270), 1, 70);
 
- drive.move(backward, 4, 1, 100);
+ drive.move(backward, 4.2, 1, 100);
 
  startIntake();
  

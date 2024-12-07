@@ -27,17 +27,14 @@ void IntakeControl::setIntake(int16_t velocity, std::optional<autoColor> color){
     if (color == red) {
         lookingRed = true;
         lookingBlue = false;    
-        lookingAny = false;
     }
     else if (color ==  blue) {
         lookingRed = false;
         lookingBlue = true;
-        lookingAny = false;
     }
     else if(color == std::nullopt) { //explicit for eliminating error while testing 
         lookingRed = false; 
-        lookingRed = false;
-        lookingAny = false;
+        lookingBlue = false;
         optical.set_led_pwm(0);
     }
 }
