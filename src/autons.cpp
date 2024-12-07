@@ -85,8 +85,6 @@ void winPointRed(){
 
  drive.move(forward, 13, 1, 100); //get 2nd ring
  pros::delay(150);
-
- //drive.move(backward, 5, 1, 100);
  
  drive.turn(right, imuTarget(170), 2, 90);
 
@@ -117,11 +115,11 @@ void winPointBlue(){
  
  drive.move(forward, 4, 1, 100);
  
- drive.turn(left, imuTarget(0), 1, 70);
+ drive.turn(left, imuTarget(180), 1, 70);
 
  drive.move(backward, 10, 1, 100);
 
- drive.turn(left, imuTarget(243), 1, 70); //turn to mogo
+ drive.turn(left, imuTarget(117), 1, 70); //turn to mogo
 
  drive.addErrorFunc(18, LAMBDA(drive.setMaxVoltage(20)));
  drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true)));
@@ -141,7 +139,7 @@ void winPointBlue(){
  pros::delay(100); //get 1st ring on mogo 
  
  drive.setPID(2);
- drive.turn(left, imuTarget(95), 1, 90);
+ drive.turn(left, imuTarget(265), 1, 90);
 
  setIntake(400, red);
 
