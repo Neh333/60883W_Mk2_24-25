@@ -285,7 +285,7 @@ double Drive::swerve(PID_dir dir, double target, double target_a, double timeOut
     }
 
     /* Update error, do PID calculations, adjust for slew, and clamp the resulting value */
-    error_a = target - fabs(imu->get_rotation() + 360 - initialAngle);
+    error_a = target_a - fabs(imu->get_rotation() + 360 - initialAngle); 
     workingVolt = update(myKP_a, myKI_a, myKD_a, error_a, lastError_a, &integral_a, integralActive_a);
     adjustForSlew(&workingVolt, actualVelocityLeft() - actualVelocityRight(), &slewProf_a);
     workingVolt = std::clamp(workingVolt, -maxVolt_a, maxVolt_a);
