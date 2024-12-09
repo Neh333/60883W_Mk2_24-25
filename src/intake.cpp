@@ -108,7 +108,36 @@ void IntakeControl::run(){
             noDetectCycles = 0; detectCycles = 0; intakeFlag = 0;
 
         }
-     } else {intake.move_voltage(intakeSpeed);}
+     }  else {
+            switch(intakeFlag){
+                //Intake is not jammed or in the process of unjamming
+                case 0:
+                deadCycles = 0;
+                reverseCycles = 0;
+                intake.move_voltage(intakeSpeed);
+                if((intakeVel - intake.get_actual_velocity()) > jamThresh){jamCycles++;}
+                else{lastJamDead = 0; jamCycles = 0;}
+
+                if(jamCycles >= jamCycleThreshold){intakeFlag = 1 + lastJamDead;}
+                break;
+
+                //Stop running the Intake to see if rings fall naturally and unjam
+                case 1:
+                jamCycles = 0;
+                intake.move_voltage(0);
+                deadCycles++;
+                if(deadCycles >= dejamThreshold){deadCycles = 0; intakeFlag = 0; lastJamDead = 1;}
+                break;
+
+                //Stopping the Intake didn't fix the jam and rings will be run backward
+                case 2:
+                jamCycles = 0;
+                intake.move_voltage(jamSpeed);
+                reverseCycles++;
+                if(reverseCycles >= dejamThreshold){reverseCycles = 0; intakeFlag = 0; lastJamDead = 0;}
+                break;
+           }
+       }
     }
    ringControlMutex.give();
 }

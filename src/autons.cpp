@@ -47,7 +47,7 @@ void winPointRed(){
 
  drive.turn(right, imuTarget(90), 1, 70);
 
- drive.move(backward, 4.2, 1, 100);
+ drive.move(backward, 4.8, 1, 100);
 
  startIntake();
  
@@ -88,7 +88,7 @@ void winPointRed(){
  
  drive.turn(right, imuTarget(170), 2, 90);
 
- drive.move(forward, 10, 2, 100); // touch elevation tower 
+ drive.move(forward, 16, 2, 100); // touch elevation tower 
  
  runOnError.remove();
  runIntakeControl.remove();
@@ -107,7 +107,7 @@ void winPointBlue(){
 
  drive.turn(left, imuTarget(270), 1, 70);
 
- drive.move(backward, 4.2, 1, 100);
+ drive.move(backward, 4.8, 1, 100);
 
  startIntake();
  
@@ -148,7 +148,7 @@ void winPointBlue(){
  
  drive.turn(left, imuTarget(190), 2, 90);
 
- drive.move(forward, 10, 1, 100); // touch elevation tower 
+ drive.move(forward, 16, 1, 100); // touch elevation tower 
  
  runOnError.remove();
  runIntakeControl.remove();
@@ -193,7 +193,7 @@ void ringSideRed(){
 
  drive.turn(right, imuTarget(240), 1, 100);
 
- drive.move(forward, 26, 1, 100); //touch ele tow
+ drive.move(forward, 27, 2, 100); //touch ele tow
 //  drive.turn(left, imuTarget(293), 2, 90); //turn to 2nd 2 ring stack 
  
 //  drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(70)));
@@ -251,7 +251,7 @@ void ringSideBlue(){
 
  drive.turn(left, imuTarget(126), 1, 100); //turn to 1st stack 
 
- drive.move(forward, 26, 1, 100); //touch ele tow 
+ drive.move(forward, 27, 2, 100); //touch ele tow 
 
 //  drive.turn(right, imuTarget(73), 2, 90); //turn to 2nd 2 ring stack 
  
@@ -317,7 +317,7 @@ void goalSideRed(){
  
  drive.turn(right, imuTarget(225), 2, 90); 
 
- drive.move(forward, 29, 2, 100);
+ //drive.move(forward, 32, 2, 100); took out for elims 
  
  runOnError.remove();
  runIntakeControl.remove();
@@ -368,7 +368,7 @@ void goalSideBlue(){
  
  drive.turn(left, imuTarget(45), 2, 90); 
 
- drive.move(forward, 29, 2, 100);
+ //drive.move(forward, 32, 2, 100); took out for elims
  
  runOnError.remove();
  runIntakeControl.remove();
@@ -417,20 +417,18 @@ void goalElimBlue(){
            
 void skills(){
  pros::Task runOnError(onError_fn); 
- //pros::Task intakeControlTask(IntakeControlSystem_fn);
+ pros::Task intakeControlTask(IntakeControlSystem_fn);
  pros::Task armControlTask(armControl_fn);
  Triangle tri;
  
- //pros::delay(1); //dealy before intake can start for some reason (prob task related)
+ pros::delay(1); //dealy before intake can start for some reason (prob task related)
 
- //setIntake(400, std::nullopt);
- //startIntake();
-
- intake.move_voltage(12000);
+ setIntake(400, std::nullopt);
+ startIntake();
 
  pros::delay(450); //score on allince stake with preload 
  
- drive.moveDriveVoltage(0);
+ //drive.moveDriveVoltage(0);
  
  drive.setSlew(genSlewProfile);
  drive.move(forward, 14, 1, 100);
@@ -466,8 +464,8 @@ void skills(){
  drive.turn(left, imuTarget(360), 1, 90);
 
  drive.setPID(2);
- findTri(&tri, 42, 360);
- drive.move(forward, tri.hyp, 3, 100); //get 2nd ring on goal 
+ findTri(&tri, 40, 360);
+ drive.move(forward, tri.hyp, 3, 100); //get 3rd ring on goal 
 
  pros::delay(200);
  
@@ -476,36 +474,49 @@ void skills(){
 
  armControl.setTarget(load); //prime the wall stake mech
  
- drive.move(forward, 26-tri.b, 1, 100); 
+ drive.move(forward, 22.5-tri.b, 1, 100); 
 
- pros::delay(700);
+ pros::delay(800); //make sure ring loads
 
  drive.setPID(4);
  drive.turn(left, imuTarget(88), 1, 100);
+
+ intake.move_voltage( -5000);
+ pros::delay(100); //make sure the hooks won't stop the arm
+ intake.move_voltage(0);
  
  drive.setPID(2);
- drive.addErrorFunc(4, LAMBDA(stopIntake()));
- drive.move(forward, 6, 1, 100);
+ drive.addErrorFunc(3, LAMBDA(stopIntake()));
+ drive.move(forward, 8, 1, 100);
  
- intake.move_voltage(0);
-
- //drive.moveDriveTrain(12000, 0.5);
  armControl.setTarget(score);  //score wall stake
  pros::delay(1000);
 
- drive.moveDriveTrain(5000, 0.5);
+ drive.moveDriveTrain(8000, 1);
 
- //setIntake(-400, std::nullopt);
- //startIntake();
+ armControl.setTarget(standby);
+ pros::delay(1000);
+
+//  drive.moveDriveTrain(-8000, 0.2);
+
+//  drive.moveDriveTrain(8000, 0.3);
+
+//  pros::delay(300);
 
  drive.moveDriveTrain(-8000, 0.2);
-
+  
+ setIntake(-400, std::nullopt); 
+ startIntake();
+ 
+ //turn to fill up rest of mogo 
  drive.setPID(4);
  drive.turn(right, imuTarget(180), 1, 100);
 
- //setIntake(400, std::nullopt);
+ setIntake(400, std::nullopt);
 
  armControl.setTarget(standby);
+
+ pros::delay(500);
 
  intake.move_voltage(-12000);
  pros::delay(200);
@@ -523,15 +534,17 @@ void skills(){
  drive.setPID(2);
  drive.turn(left, imuTarget(67), 2, 90); //get out of line ring 
 
- drive.move(forward, 15-tri.b, 1, 100);
+ drive.move(forward, 14.5, 1, 100);
 
  drive.turn(left, imuTarget(330), 2, 90); //turn to cornner 
 
- findTri(&tri, 10, 330);
+ pros::delay(500);
+ 
+ findTri(&tri, 9, 330);
  drive.addErrorFunc(3, LAMBDA(clampPis.set_value(false)));
  drive.move(backward, tri.hyp, 1, 100); //drop off 1st mogo
 
- pros::delay(400);
+ pros::delay(600); //make sure lock isn't stuck 
 
  drive.setPID(1);
  drive.setSlew(genSlewProfile);
@@ -540,7 +553,7 @@ void skills(){
 
  drive.turn(right, imuTarget(90), 1, 70);  //turn to mogo 
 
- findTri(&tri, 69, 90);
+ findTri(&tri, 68, 90);
  drive.setPID(4);
  drive.setSlew({0,0,0});
  drive.addErrorFunc(tri.hyp-44, LAMBDA(drive.setMaxVoltage(20)));
@@ -558,62 +571,55 @@ void skills(){
  findTri(&tri, 25, 360);
  drive.move(forward, tri.hyp, 1, 100);
  
- drive.setPID(4);
- drive.turn(right, imuTarget(50), 1, 100);
+ drive.setPID(2);
+ drive.turn(left, imuTarget(285), 1, 90);
 
- drive.move(forward, 30-tri.b, 2, 100); //get ring under elevation tower 
- pros::delay(100); //wait to not hit elvation tower 
- 
- findTri(&tri, 32, 40);
- drive.move(backward, tri.hyp, 2, 100); 
+ drive.move(forward, 24-tri.b, 2, 100); //get 2nd ring  
+
+ drive.turn(right, imuTarget(0), 1, 90);
  
  drive.setPID(2);
- drive.turn(left, imuTarget(270), 1, 90);
+ drive.move(forward, 24-tri.b, 2, 100);
 
- drive.move(forward, 32-tri.b, 2, 100); //get 3rd ring  
+//  drive.setPID(3);
+//  drive.turn(left, imuTarget(360), 1, 90);
 
- drive.turn(right, imuTarget(335), 1, 90);
- 
- drive.addErrorFunc(24, LAMBDA(armControl.setTarget(load)));
- drive.move(forward, 32, 1, 100);
+//  drive.setPID(2);
+//  findTri(&tri, 40, 360);
+//  drive.move(forward, tri.hyp, 3, 100); //get 3rd ring on goal 
 
- drive.turn(left, imuTarget(270), 1, 90);
+//  drive.move(backward, 14-tri.b, 1, 100);
 
- armControl.setTarget(score);
- pros::delay(1050);
+//  drive.setPID(4);
+//  drive.turn(left, imuTarget(0), 1, 100);
+//  armControl.setTarget(standby);
 
- drive.move(backward, 14-tri.b, 1, 100);
+//  drive.setPID(4);
+//  findTri(&tri, 49, 0);
+//  drive.addErrorFunc(tri.hyp-35, LAMBDA(drive.setMaxVoltage(25)));
+//  drive.move(forward, tri.hyp, 3, 100);
 
- drive.setPID(4);
- drive.turn(left, imuTarget(0), 1, 100);
- armControl.setTarget(standby);
+//  pros::delay(500); //let first rings get themselves together 
 
- drive.setPID(4);
- findTri(&tri, 49, 0);
- drive.addErrorFunc(tri.hyp-35, LAMBDA(drive.setMaxVoltage(25)));
- drive.move(forward, tri.hyp, 3, 100);
+//  drive.move(forward, 12-tri.b, 1, 100);
 
- pros::delay(500); //let first rings get themselves together 
+//  drive.setPID(2);
+//  drive.turn(right, imuTarget(113), 2, 90); //get out of line ring 
 
- drive.move(forward, 18-tri.b, 1, 100);
+//  drive.move(forward, 12-tri.b, 1, 100);
 
- drive.setPID(2);
- drive.turn(right, imuTarget(247), 2, 90); //get out of line ring 
+//  drive.turn(right, imuTarget(210), 2, 90);
+//  findTri(&tri, 11, 145);
+//  drive.addErrorFunc(3, LAMBDA(clampPis.set_value(false)));
+//  drive.move(backward, tri.hyp, 1, 100); //drop off 1st mogo
 
- drive.move(forward, 12-tri.b, 1, 100);
+//  pros::delay(400);
 
- drive.turn(right, imuTarget(145), 2, 90);
- findTri(&tri, 11, 145);
- drive.addErrorFunc(3, LAMBDA(clampPis.set_value(false)));
- drive.move(backward, tri.hyp, 1, 100); //drop off 1st mogo
-
- pros::delay(400);
-
- drive.setPID(1);
- drive.setSlew(genSlewProfile);
+//  drive.setPID(1);
+//  drive.setSlew(genSlewProfile);
 
  runOnError.remove();
- //intakeControlTask.remove();
+ intakeControlTask.remove();
  armControlTask.remove();
  drive.onErrorVector.clear();
 }
