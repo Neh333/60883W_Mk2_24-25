@@ -398,32 +398,41 @@ void ringElimBlue(){
 void goalElimRed(){
  pros::Task runOnError(onError_fn);
  pros::Task runIntakeControl(IntakeControlSystem_fn);
+ Triangle tri;
  currentColor = blue;
 
  mogoArm.set_value(true);
  pros::delay(100);
  
  drive.setPID(5);
- drive.swerve(forwardLeft, 40, imuTarget(335), 3 , 70, 20);
+ findTri(&tri, 39, 360);
+ drive.swerve(forwardLeft, tri.hyp, imuTarget(340), 3 , 80, 40);
 
  mogoArmClamp.set_value(true);
  pros::delay(200);
 
  pros::delay(2000);
 
-//  drive.setPID(5);
-//  drive.swerve(backwardRight, 40, imuTarget(360), 3 , 70, 20);
+ drive.setPID(6);
+ drive.swerve(backwardRight, 52-tri.b, imuTarget(50), 5 , 50, 70);
 
-//  mogoArmClamp.set_value(false);
-//  pros::delay(200);
+ mogoArmClamp.set_value(false);
+ pros::delay(200);
 
-//  pros::delay(2000);
+ pros::delay(2000);
+
+ drive.setPID(1);
+
+ findTri(&tri, 6, 25);
+ drive.addErrorFunc(5, LAMBDA(mogoArm.set_value(false)));
+ drive.move(backward, tri.hyp, 1, 100);
  
-
-//  drive.setPID(1);
-//  drive.move(backward, 5, 1, 100);
+ drive.turn(right, imuTarget(215), 2, 70);
  
-//  drive.move(shortest, 180, 2, 70);
+ drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true)));
+ drive.move(backward, 14, 1, 20);
+ 
+ drive.turn(right, imuTarget(10), 1, 70);
  
  runOnError.remove();
  runIntakeControl.remove();
@@ -449,11 +458,12 @@ void skills(){
  pros::delay(1); //dealy before intake can start for some reason (prob task related)
 
  setIntake(400, std::nullopt);
+ pros::delay(100);
+
  startIntake();
 
  pros::delay(450); //score on allince stake with preload 
  
- //drive.moveDriveVoltage(0);
  
  drive.setSlew(genSlewProfile);
  drive.move(forward, 14, 1, 100);
@@ -466,7 +476,7 @@ void skills(){
  drive.setSlew({0,35,70});
 
  drive.addErrorFunc(2, LAMBDA(clampPis.set_value(true)));
- drive.move(backward, 15, 3, 20);
+ drive.move(backward, 16, 3, 20);
  pros::delay(200);
 
  drive.setPID(1);
@@ -498,7 +508,7 @@ void skills(){
 
  armControl.setTarget(load); //prime the wall stake mech
  
- drive.move(forward, 22.5-tri.b, 1, 100); 
+ drive.move(forward, 23-tri.b, 1, 100); 
 
  pros::delay(900); //make sure ring loads
 
@@ -529,12 +539,13 @@ void skills(){
  //turn to fill up rest of mogo 
  drive.setPID(4);
  drive.turn(right, imuTarget(180), 1, 100);
-
+ 
+ stopIntake();
  setIntake(400, std::nullopt);
 
- intake.move_voltage(-12000);
- pros::delay(200);
- intake.move_voltage(12000);
+ pros::delay(100); //task are weird 
+
+ startIntake();
  
  drive.setPID(4);
  findTri(&tri, 49, 180);
@@ -546,14 +557,13 @@ void skills(){
  drive.move(forward, 14-tri.b, 1, 100);
 
  drive.setPID(2);
- drive.turn(left, imuTarget(67), 2, 90); //get out of line ring 
+ drive.turn(left, imuTarget(67), 2, 90); //turn to out of line ring
 
- drive.move(forward, 14.5, 1, 100);
-
- drive.turn(left, imuTarget(330), 2, 90); //turn to cornner 
-
- pros::delay(500);
+ drive.move(forward, 11, 1, 100); //get out of line ring 
  
+ drive.setPID(4);
+ drive.turn(left, imuTarget(330), 2, 90); //turn to cornner  // deg turn 
+
  findTri(&tri, 9, 330);
  drive.addErrorFunc(3, LAMBDA(clampPis.set_value(false)));
  drive.move(backward, tri.hyp, 1, 100); //drop off 1st mogo
@@ -562,18 +572,20 @@ void skills(){
 
  drive.setPID(1);
  drive.setSlew(genSlewProfile);
-
- drive.move(forward, 11-tri.b, 1, 100);  //go get 2nd mogo
+ 
+ findTri(&tri, 9, 330);
+ drive.move(forward, tri.hyp, 1, 100);  //go get 2nd mogo
 
  drive.turn(right, imuTarget(90), 1, 70);  //turn to mogo 
 
- findTri(&tri, 68, 90);
+ findTri(&tri, 70, 90);
  drive.setPID(4);
  drive.setSlew({0,0,0});
  drive.addErrorFunc(tri.hyp-48, LAMBDA(drive.setMaxVoltage(20)));
- drive.move(backward, tri.hyp, 6, 100); //go to 2nd mogo 
  
- clampPis.set_value(true); //2nd mogo secured 
+ drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true))); //2nd mogo secured 
+ drive.move(backward, tri.hyp, 15, 100); //go to 2nd mogo 
+ 
  pros::delay(300);
 
  drive.setPID(2);
@@ -582,18 +594,18 @@ void skills(){
 
  drive.turn(left, imuTarget(360), 1, 90);
 
- findTri(&tri, 22, 360);
+ findTri(&tri, 20, 360);
  drive.move(forward, tri.hyp, 1, 100);
  
  drive.setPID(2);
  drive.turn(left, imuTarget(275), 1, 90);
 
- drive.move(forward, 28-tri.b, 2, 100); //get 2nd ring 
+ drive.move(forward, 20-tri.b, 2, 100); //get 2nd ring 
 
- drive.turn(right, imuTarget(0), 1, 90);
+ drive.turn(right, imuTarget(360), 2, 90);
  
  drive.setPID(2);
- drive.move(forward, 30-tri.b, 2, 100); //get 3rd ring
+ drive.move(forward, 40-tri.b, 3, 100); //get 3rd ring
 
  drive.turn(left, imuTarget(211), 1, 90); //turn to wall stake 
 
@@ -602,14 +614,16 @@ void skills(){
  findTri(&tri, 22.5, 211);
  drive.move(forward, tri.hyp, 1, 100);
 
+ pros::delay(800); //let ring load 
+
  drive.turn(right, imuTarget(275), 1, 90);
 
+ stopIntake();
  intake.move_voltage(-5000);
  pros::delay(100); //make sure the hooks won't stop the arm
  intake.move_voltage(0);
  
  drive.setPID(2);
- drive.addErrorFunc(3, LAMBDA(stopIntake()));
  drive.move(forward, 8, 1, 100);
  
  armControl.setTarget(score);  //score wall stake
@@ -622,9 +636,10 @@ void skills(){
 
  drive.moveDriveTrain(-8000, 0.2);
 
+ startIntake();
+
  drive.setPID(4);
- drive.turn(left, imuTarget(0), 1, 100);
- armControl.setTarget(standby);
+ drive.turn(left, imuTarget(0), 1, 100); //turn to in line rings 
 
  drive.setPID(4);
  findTri(&tri, 49, 0);
@@ -636,19 +651,20 @@ void skills(){
  drive.move(forward, 12-tri.b, 1, 100);
 
  drive.setPID(2);
- drive.turn(right, imuTarget(113), 2, 90); //get out of line ring 
+ drive.turn(right, imuTarget(160), 2, 90); //turn to out of line ring 
 
- drive.move(forward, 12-tri.b, 1, 100);
+ drive.move(forward, 12-tri.b, 1, 100); //get out of line ring 
 
- drive.turn(right, imuTarget(210), 2, 90);
+ drive.turn(right, imuTarget(250), 2, 90);
  findTri(&tri, 11, 145);
  drive.addErrorFunc(3, LAMBDA(clampPis.set_value(false)));
  drive.move(backward, tri.hyp, 1, 100); //drop off 1st mogo
 
- pros::delay(400);
+ pros::delay(600); //make sure clamp unlocks 
 
  drive.setPID(1);
  drive.setSlew(genSlewProfile);
+ drive.move(forward, 25-tri.b, 1, 100);
 
  runOnError.remove();
  intakeControlTask.remove();
