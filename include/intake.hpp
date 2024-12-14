@@ -37,7 +37,7 @@ class IntakeControl{
    
     public:
     IntakeControl(){
-        setJamThresh(200);
+        setJamThresh(330);
         setJamSpeed(-400);
         setJamProtection(JAM_PROTECTION_ACTIVE);
     }

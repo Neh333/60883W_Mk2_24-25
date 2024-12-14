@@ -47,7 +47,7 @@ void winPointRed(){
 
  drive.turn(right, imuTarget(90), 1, 70);
 
- drive.move(backward, 4.8, 1, 100);
+ drive.move(backward, 3.5, 1, 100);
 
  startIntake();
  
@@ -107,7 +107,7 @@ void winPointBlue(){
 
  drive.turn(left, imuTarget(270), 1, 70);
 
- drive.move(backward, 4.8, 1, 100);
+ drive.move(backward, 3.5, 1, 100);
 
  startIntake();
  
@@ -405,8 +405,7 @@ void goalElimRed(){
  pros::delay(100);
  
  drive.setPID(5);
- findTri(&tri, 39, 360);
- drive.swerve(forwardLeft, tri.hyp, imuTarget(340), 3 , 80, 40);
+ drive.swerve(forwardLeft, 37, imuTarget(340), 3 , 80, 40);
 
  mogoArmClamp.set_value(true);
  pros::delay(200);
@@ -414,7 +413,7 @@ void goalElimRed(){
  pros::delay(2000);
 
  drive.setPID(6);
- drive.swerve(backwardRight, 52-tri.b, imuTarget(50), 5 , 50, 70);
+ drive.swerve(backwardRight, 52, imuTarget(50), 5 , 50, 70);
 
  mogoArmClamp.set_value(false);
  pros::delay(200);
@@ -423,16 +422,15 @@ void goalElimRed(){
 
  drive.setPID(1);
 
- findTri(&tri, 6, 25);
  drive.addErrorFunc(5, LAMBDA(mogoArm.set_value(false)));
- drive.move(backward, tri.hyp, 1, 100);
+ drive.move(backward, 6, 1, 100);
  
  drive.turn(right, imuTarget(215), 2, 70);
  
  drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true)));
- drive.move(backward, 14, 1, 20);
+ drive.move(backward, 22, 1, 20);
  
- drive.turn(right, imuTarget(10), 1, 70);
+ drive.turn(right, imuTarget(30), 1, 70);
  
  runOnError.remove();
  runIntakeControl.remove();
@@ -454,20 +452,20 @@ void skills(){
  pros::Task intakeControlTask(IntakeControlSystem_fn);
  pros::Task armControlTask(armControl_fn);
  Triangle tri;
- 
- pros::delay(1); //dealy before intake can start for some reason (prob task related)
 
+ pros::delay(1);
+ 
  setIntake(400, std::nullopt);
- pros::delay(100);
 
- startIntake();
-
+ intake.move_voltage(12000);
  pros::delay(450); //score on allince stake with preload 
- 
+ intake.move_voltage(0);
  
  drive.setSlew(genSlewProfile);
  drive.move(forward, 14, 1, 100);
-
+  
+ startIntake();
+ 
  drive.turn(left, imuTarget(270), 1, 70);
   
                  
@@ -476,8 +474,8 @@ void skills(){
  drive.setSlew({0,35,70});
 
  drive.addErrorFunc(2, LAMBDA(clampPis.set_value(true)));
- drive.move(backward, 16, 3, 20);
- pros::delay(200);
+ drive.move(backward, 17, 3, 20);
+ pros::delay(100);
 
  drive.setPID(1);
  drive.move(backward, 7, 1, 100);
@@ -498,82 +496,79 @@ void skills(){
  drive.turn(left, imuTarget(360), 1, 90);
 
  drive.setPID(2);
- findTri(&tri, 40, 360);
+ findTri(&tri, 33, 360);
  drive.move(forward, tri.hyp, 3, 100); //get 3rd ring on goal 
 
- pros::delay(200);
+ pros::delay(100);
  
  drive.setPID(2);
  drive.turn(right, imuTarget(153), 2, 90); //turn to ring in front of wall stake 
 
  armControl.setTarget(load); //prime the wall stake mech
+ stopIntake(); //no anti jam 
  
- drive.move(forward, 23-tri.b, 1, 100); 
+ drive.addErrorFunc(20, LAMBDA(intake.move_voltage(12000)));
+ drive.addErrorFunc(8, LAMBDA(drive.setMaxVoltage(80)));
+ drive.move(forward, 19.4, 1, 100); 
 
- pros::delay(900); //make sure ring loads
+ pros::delay(100); //make sure ring loads
 
  drive.setPID(4);
- drive.turn(left, imuTarget(88), 1, 100);
-
- intake.move_voltage(-5000);
- pros::delay(100); //make sure the hooks won't stop the arm
- intake.move_voltage(0);
+ drive.turn(left, imuTarget(90), 1, 100);
+ 
+ //intake.move_voltage(-5000);
+ //pros::delay(100); //make sure the hooks won't stop the arm
+ //intake.move_voltage(0);
  
  drive.setPID(2);
- drive.addErrorFunc(3, LAMBDA(stopIntake()));
- drive.move(forward, 8, 1, 100);
+ //drive.addErrorFunc(3, LAMBDA(stopIntake()));
+ drive.move(forward, 2.4, 1, 100); //get closer to stake 
  
+ intake.move_voltage(0);
+ setIntake(-400, std::nullopt); 
  armControl.setTarget(score);  //score wall stake
- pros::delay(1000);
+ pros::delay(600); //1000
 
- drive.moveDriveTrain(9000, 1);
-
+ drive.moveDriveTrain(9000, .35);
  armControl.setTarget(standby);
- pros::delay(1000);
+ startIntake();
 
- drive.moveDriveTrain(-8000, 0.2);
+ drive.move(backward, 12, 1, 100);
   
  setIntake(-400, std::nullopt); 
- startIntake();
- 
+
  //turn to fill up rest of mogo 
  drive.setPID(4);
  drive.turn(right, imuTarget(180), 1, 100);
- 
- stopIntake();
- setIntake(400, std::nullopt);
 
- pros::delay(100); //task are weird 
-
- startIntake();
- 
  drive.setPID(4);
- findTri(&tri, 49, 180);
- drive.addErrorFunc(tri.hyp-30, LAMBDA(drive.setMaxVoltage(20)));
- drive.move(forward, tri.hyp, 3, 100);
+ drive.addErrorFunc(10, LAMBDA(drive.setMaxVoltage(20))); 
+ drive.addErrorFunc(39, LAMBDA(setIntake(400, std::nullopt)));
+ drive.move(forward, 49, 3, 100);
 
- pros::delay(200); //let first ring get itself together 
+ pros::delay(100); //let first ring get itself together 
 
- drive.move(forward, 14-tri.b, 1, 100);
+ findTri(&tri, 11, 180);
+ drive.move(forward, tri.hyp, 1, 100);
 
  drive.setPID(2);
  drive.turn(left, imuTarget(67), 2, 90); //turn to out of line ring
 
- drive.move(forward, 11, 1, 100); //get out of line ring 
+ drive.move(forward, 11-tri.b, 1, 100); //get out of line ring 
  
  drive.setPID(4);
  drive.turn(left, imuTarget(330), 2, 90); //turn to cornner  // deg turn 
 
- findTri(&tri, 9, 330);
+ findTri(&tri, 7, 330);
  drive.addErrorFunc(3, LAMBDA(clampPis.set_value(false)));
  drive.move(backward, tri.hyp, 1, 100); //drop off 1st mogo
 
- pros::delay(600); //make sure lock isn't stuck 
+ pros::delay(250); //make sure lock isn't stuck 
 
  drive.setPID(1);
  drive.setSlew(genSlewProfile);
  
- findTri(&tri, 9, 330);
+ findTri(&tri, 7, 330);
  drive.move(forward, tri.hyp, 1, 100);  //go get 2nd mogo
 
  drive.turn(right, imuTarget(90), 1, 70);  //turn to mogo 
@@ -582,15 +577,14 @@ void skills(){
  drive.setPID(4);
  drive.setSlew({0,0,0});
  drive.addErrorFunc(tri.hyp-48, LAMBDA(drive.setMaxVoltage(20)));
- 
  drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true))); //2nd mogo secured 
  drive.move(backward, tri.hyp, 15, 100); //go to 2nd mogo 
  
- pros::delay(300);
+ //pros::delay(100);
 
  drive.setPID(2);
  drive.setSlew(mogoSlewProfile);
- drive.move(backward, 8-tri.b, 3, 100);
+ drive.move(backward, 6-tri.b, 3, 100);
 
  drive.turn(left, imuTarget(360), 1, 90);
 
@@ -598,74 +592,104 @@ void skills(){
  drive.move(forward, tri.hyp, 1, 100);
  
  drive.setPID(2);
- drive.turn(left, imuTarget(275), 1, 90);
+ drive.turn(left, imuTarget(285), 1, 90);
 
- drive.move(forward, 20-tri.b, 2, 100); //get 2nd ring 
+ drive.move(forward, 23-tri.b, 2, 100); //get 2nd ring 
 
  drive.turn(right, imuTarget(360), 2, 90);
  
  drive.setPID(2);
- drive.move(forward, 40-tri.b, 3, 100); //get 3rd ring
+ drive.move(forward, 46-tri.b, 5, 100); //get 3rd ring
 
- drive.turn(left, imuTarget(211), 1, 90); //turn to wall stake 
+ drive.turn(left, imuTarget(211), 1, 90); //turn to wall stake ring 
 
  armControl.setTarget(load);
+ stopIntake();
 
- findTri(&tri, 22.5, 211);
+ findTri(&tri, 26.6, 211);
+ drive.addErrorFunc(20, LAMBDA(intake.move_voltage(12000)));
  drive.move(forward, tri.hyp, 1, 100);
 
- pros::delay(800); //let ring load 
+ pros::delay(100); //let ring load 
 
- drive.turn(right, imuTarget(275), 1, 90);
+ drive.turn(right, imuTarget(270), 1, 90);
 
- stopIntake();
- intake.move_voltage(-5000);
- pros::delay(100); //make sure the hooks won't stop the arm
+ //intake.move_voltage(-5000);
+ //pros::delay(100); //make sure the hooks won't stop the arm
+ //intake.move_voltage(0);
+ 
+ //drive.setPID(2);
+ 
+ drive.move(forward, 2.4, 1, 100); //get closer to stake 
  intake.move_voltage(0);
- 
- drive.setPID(2);
- drive.move(forward, 8, 1, 100);
- 
  armControl.setTarget(score);  //score wall stake
- pros::delay(1000);
+ pros::delay(700);
 
- drive.moveDriveTrain(8000, 1);
+ drive.moveDriveTrain(9000, .35);
 
  armControl.setTarget(standby);
- pros::delay(1000);
+ //pros::delay(1000);
 
- drive.moveDriveTrain(-8000, 0.2);
+ drive.move(backward, 11, 1, 100);
 
  startIntake();
 
  drive.setPID(4);
- drive.turn(left, imuTarget(0), 1, 100); //turn to in line rings 
+ drive.turn(left, imuTarget(180), 1, 100); //turn to in line rings 
 
  drive.setPID(4);
- findTri(&tri, 49, 0);
- drive.addErrorFunc(tri.hyp-35, LAMBDA(drive.setMaxVoltage(25)));
- drive.move(forward, tri.hyp, 3, 100);
+ drive.addErrorFunc(14, LAMBDA(drive.setMaxVoltage(25)));
+ drive.move(forward, 49, 3, 100);
 
- pros::delay(500); //let first rings get themselves together 
-
- drive.move(forward, 12-tri.b, 1, 100);
+ pros::delay(100); //let first rings get themselves together 
+ 
+ findTri(&tri, 10, 180);
+ drive.move(forward, tri.hyp, 1, 100);
 
  drive.setPID(2);
- drive.turn(right, imuTarget(160), 2, 90); //turn to out of line ring 
+ drive.turn(right, imuTarget(300), 2, 90); //turn to out of line ring 
 
  drive.move(forward, 12-tri.b, 1, 100); //get out of line ring 
 
- drive.turn(right, imuTarget(250), 2, 90);
- findTri(&tri, 11, 145);
+ drive.turn(right, imuTarget(240), 2, 90);
+ findTri(&tri, 10, 235);
  drive.addErrorFunc(3, LAMBDA(clampPis.set_value(false)));
- drive.move(backward, tri.hyp, 1, 100); //drop off 1st mogo
+ drive.move(backward, tri.hyp, 1, 100); //drop off 2nd mogo
 
- pros::delay(600); //make sure clamp unlocks 
+ pros::delay(200); //make sure clamp unlocks 
 
  drive.setPID(1);
  drive.setSlew(genSlewProfile);
  drive.move(forward, 25-tri.b, 1, 100);
 
+ drive.setPID(2);
+ drive.turn(left, imuTarget(0), 1, 70);
+ 
+ drive.setPID(1);
+ drive.move(forward, 46, 3, 100);
+
+ drive.turn(right, imuTarget(90), 1, 70);
+ 
+ drive.addErrorFunc(5, LAMBDA(stopIntake()));
+ drive.move(forward, 35, 2, 100);
+
+ drive.turn(right, imuTarget(180), 1, 70);
+ 
+ drive.move(backward, 35, 2, 100);
+ 
+ drive.turn(right, imuTarget(270), 1, 70);
+ 
+ drive.move(forward, 40, 2, 100);
+
+ drive.move(backward, 50, 3, 100);
+
+ drive.turn(left, imuTarget(180), 1, 70);
+
+ drive.move(backward, 3, 1, 100);
+
+ startIntake();
+ pros::delay(500);
+ 
  runOnError.remove();
  intakeControlTask.remove();
  armControlTask.remove();

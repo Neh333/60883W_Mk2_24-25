@@ -75,6 +75,7 @@ void opcontrol() {
  bool backClampTog = false;
  bool sortTog = false;
  bool mogoArmTog = false;
+ bool intakePisTog = false;
  int armTog = 0;
 
  optical.set_led_pwm(100);
@@ -113,6 +114,14 @@ void opcontrol() {
 
    /*DRIVER CONTROL */
    arcade_standard(5);
+
+    if(controller.get_digital_new_press(DIGITAL_X)){
+      intakePisTog = !intakePisTog;
+   }
+   if(intakePisTog){
+    intakePis.set_value(true);
+   } else{intakePis.set_value(false);}
+   
 
    if(controller.get_digital_new_press(DIGITAL_A)){
     mogoArmTog = !mogoArmTog;

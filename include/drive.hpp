@@ -70,7 +70,7 @@ class Drive{
     
     {20, 143, 0,  8,   50,  350,  500}, /*20-70 degree mogo turns (100%) / 50-72 mogo lat*/    
     
-    {18,  50, 0,  0,   38,  160,  0}, /*goal rush swerve 1*/    
+    {18,  50, 0,  0,   38,  190,  0}, /*goal rush swerve 1*/    
 
     {18,  70, 0,  2,   38,  380,  0} /*goal rush swerve 2*/    
   };
