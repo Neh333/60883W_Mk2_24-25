@@ -1,6 +1,4 @@
 #include "include.hpp"
-#include <functional>
-#include <tuple>
 
 void winPointRed();
 void winPointBlue();

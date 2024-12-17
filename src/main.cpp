@@ -9,7 +9,7 @@
 #include "util.hpp"
 #include "intake.hpp"
 #include "arm.hpp"
-uint8_t auton = AUTO_COUNT; 
+uint auton = AUTO_COUNT; 
 
 void initialize(){
 	//initBarGraph();
@@ -18,8 +18,9 @@ void initialize(){
   drive.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
   arm.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
   intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-  imu.reset();
   optical.set_led_pwm(100);
+  imu.reset();
+  
 } 
 
 void disabled(){
@@ -113,15 +114,7 @@ void opcontrol() {
    setIntake(400, currentColor); //color sort whatever color we arenn't bases on auto by default sorts out blue
 
    /*DRIVER CONTROL */
-   arcade_standard(5);
-
-    if(controller.get_digital_new_press(DIGITAL_X)){
-      intakePisTog = !intakePisTog;
-   }
-   if(intakePisTog){
-    intakePis.set_value(true);
-   } else{intakePis.set_value(false);}
-   
+   arcade_standard(5); 
 
    if(controller.get_digital_new_press(DIGITAL_A)){
     mogoArmTog = !mogoArmTog;

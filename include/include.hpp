@@ -20,7 +20,7 @@ struct autonTextTuple
 
 
 /* Global Variable Declaration */
-extern uint8_t auton;
+extern uint auton;
 extern autonTextTuple autos[];
 
 extern pros::Controller controller;

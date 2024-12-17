@@ -19,7 +19,4 @@ pros::Optical optical(9);
 pros::adi::DigitalOut clampPis('H');
 pros::adi::DigitalOut mogoArm('G');
 pros::adi::DigitalOut mogoArmClamp('F');
-
-pros::adi::DigitalOut intakePis('E');
-
 autoColor currentColor = blue; //default color set to blue for red allince 
