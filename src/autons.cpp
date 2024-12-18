@@ -746,7 +746,7 @@ void skills(){
 
  drive.turn(right, imuTarget(270), 1, 70);
  drive.setSlew({0,0,0});
- drive.move(backward, 68, 3, 100); //oush mogo in corner 
+ drive.move(backward, 68, 3, 100); //push 4th mogo in corner 
  
  runOnError.remove();
  intakeControlTask.remove();
