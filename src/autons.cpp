@@ -266,30 +266,29 @@ void ringSideBlue(){
  drive.turn(left, imuTarget(126), 1, 100); //turn to 1st stack 
  
  
-//  stopIntake();
-//  runIntakeControl.remove();
-//  pros::delay(5);
-//  intake.move_voltage(12000);
+ stopIntake();
+ runIntakeControl.remove();
+ pros::delay(5);
+ intake.move_voltage(12000);
  
  drive.move(forward, 27, 2, 100); //touch ele tow 
 
- drive.turn(right, imuTarget(73), 2, 90); //turn to 2nd 2 ring stack 
+//  drive.turn(right, imuTarget(73), 2, 90); //turn to 2nd 2 ring stack 
  
- drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(70)));
- drive.move(forward, 45, 2, 100); //knock down stack  
+//  drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(70)));
+//  drive.move(forward, 45, 2, 100); //knock down stack  
  
- pros::delay(700);
+//  pros::delay(700);
  
- drive.move(forward, 26, 2, 100); //get 5th red 
+//  drive.move(forward, 26, 2, 100); //get 5th red 
 
- pros::delay(150);
+//  pros::delay(150);
 
- drive.turn(right, imuTarget(200), 1, 90);
+//  drive.turn(right, imuTarget(200), 1, 90);
  
  drive.move(forward, 25, 1, 100); //touch bar  
  
  runOnError.remove();
- runIntakeControl.remove();
  drive.onErrorVector.clear();  
 }
 
@@ -718,7 +717,7 @@ void skills(){
  drive.turn(left, imuTarget(0), 1, 70);
  
  drive.setPID(3);
- drive.move(forward, 58, 3, 100);
+ drive.move(forward, 60, 3, 100);
 
  drive.setPID(1);
  drive.turn(right, imuTarget(90), 1, 70); //turn to pick up ring 
@@ -732,9 +731,9 @@ void skills(){
  
  drive.turn(right, imuTarget(270), 1, 70); //turn front to to mogo 
  
- drive.move(forward, 40, 2, 100); //push mogo in corner 
+ drive.move(forward, 44, 2, 100); //push mogo in corner 
 
- drive.move(backward, 50, 3, 100); // go to allince stake 
+ drive.move(backward, 56, 3, 100); // go to allince stake 
 
  drive.turn(left, imuTarget(180), 1, 70); //turn to allince stake 
 
@@ -747,7 +746,7 @@ void skills(){
 
  drive.turn(right, imuTarget(270), 1, 70);
  drive.setSlew({0,0,0});
- drive.move(backward, 64, 3, 100); //oush mogo in corner 
+ drive.move(backward, 68, 3, 100); //oush mogo in corner 
  
  runOnError.remove();
  intakeControlTask.remove();
