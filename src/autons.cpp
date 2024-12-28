@@ -89,13 +89,13 @@ void winPointRed(){
  drive.turn(right, imuTarget(170), 2, 90);
 
  stopIntake();
- //runIntakeControl.remove();
- pros::delay(5);
+ runIntakeControl.remove();
+ pros::delay(1);
  intake.move_voltage(12000);
- drive.move(forward, 14, 3, 70); // touch elevation tower 
+
+ drive.move(forward, 16, 2, 100); // touch elevation tower 
  
  runOnError.remove();
- runIntakeControl.remove();
  drive.onErrorVector.clear();
 }
 
@@ -153,16 +153,14 @@ void winPointBlue(){
  drive.turn(left, imuTarget(190), 2, 90);
 
  stopIntake();
- 
- pros::delay(5);
+ runIntakeControl.remove();
+ pros::delay(1);
  intake.move_voltage(12000);
 
- drive.move(forward, 14, 3, 70); // touch elevation tower 
+ drive.move(forward, 16, 1, 100); // touch elevation tower 
  
- runIntakeControl.remove();
  runOnError.remove();
  drive.onErrorVector.clear();
-
 }
 
 void ringSideRed(){
@@ -198,16 +196,16 @@ void ringSideRed(){
  drive.turn(left, imuTarget(60), 1, 100); //turn to 1st stack 
 
  drive.setPID(2);
- drive.move(forward, 22, 1, 100); 
+ drive.move(forward, 22, 1, 100); //get 1st 2 stack 
 
  drive.turn(right, imuTarget(240), 1, 100);
 
+ drive.move(forward, 27, 2, 100); //touch ele tow
+
  stopIntake();
  runIntakeControl.remove();
- pros::delay(5);
+ pros::delay(1);
  intake.move_voltage(12000);
-
- drive.move(forward, 27, 2, 100); //touch ele tow
 //  drive.turn(left, imuTarget(293), 2, 90); //turn to 2nd 2 ring stack 
  
 //  drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(70)));
@@ -224,7 +222,6 @@ void ringSideRed(){
 //  drive.move(forward, 25, 1, 100); //touch bar  
  
  runOnError.remove();
- runIntakeControl.remove();
  drive.onErrorVector.clear();
 }
 
@@ -264,13 +261,12 @@ void ringSideBlue(){
  drive.move(forward, 22, 1, 100); //get 1st 2 stack 
 
  drive.turn(left, imuTarget(126), 1, 100); //turn to 1st stack 
- 
- 
+
  stopIntake();
  runIntakeControl.remove();
- pros::delay(5);
+ pros::delay(1);
  intake.move_voltage(12000);
- 
+
  drive.move(forward, 27, 2, 100); //touch ele tow 
 
 //  drive.turn(right, imuTarget(73), 2, 90); //turn to 2nd 2 ring stack 
@@ -286,7 +282,7 @@ void ringSideBlue(){
 
 //  drive.turn(right, imuTarget(200), 1, 90);
  
- drive.move(forward, 25, 1, 100); //touch bar  
+//  drive.move(forward, 25, 1, 100); //touch bar  
  
  runOnError.remove();
  drive.onErrorVector.clear();  
@@ -325,7 +321,6 @@ void goalSideRed(){
  drive.move(forward, 28-tri.b, 3, 50);
 
  drive.turn(right, imuTarget(90), 2, 90);
- pros::delay(1000); //added for tourney 
  
  setIntake(400, currentColor);
  
@@ -336,17 +331,15 @@ void goalSideRed(){
  pros::delay(300);
  
  drive.turn(right, imuTarget(225), 2, 90); 
- 
- 
- //stopIntake();
- //runIntakeControl.remove();
- //pros::delay(5);
- //intake.move_voltage(12000);
- 
- drive.move(forward, 32, 2, 100); //took out for elims 
+
+ stopIntake();
+ runIntakeControl.remove();
+ pros::delay(1);
+ intake.move_voltage(12000);
+
+ drive.move(forward, 32, 2, 100);
  
  runOnError.remove();
- runIntakeControl.remove();
  drive.onErrorVector.clear();
 }
 
@@ -393,17 +386,14 @@ void goalSideBlue(){
  pros::delay(300);
  
  drive.turn(left, imuTarget(45), 2, 90); 
-
- 
-//  stopIntake();
-//  runIntakeControl.remove();
-//  pros::delay(5);
-//  intake.move_voltage(12000);
- 
- drive.move(forward, 32, 2, 100); //took out for elims
-
- runOnError.remove();
+ stopIntake();
  runIntakeControl.remove();
+ pros::delay(1);
+ intake.move_voltage(12000);
+
+ drive.move(forward, 32, 2, 100); //took out for elims
+ 
+ runOnError.remove();
  drive.onErrorVector.clear();
 }
 
