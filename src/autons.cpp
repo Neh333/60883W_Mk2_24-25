@@ -432,37 +432,57 @@ void goalElimRed(){
  pros::Task runIntakeControl(IntakeControlSystem_fn);
  Triangle tri;
  currentColor = blue;
+ setIntake(400, currentColor);
 
  mogoArm.set_value(true);
  pros::delay(100);
  
  drive.setPID(5);
- drive.swerve(forwardLeft, 37, imuTarget(340), 3 , 80, 40);
+ drive.addErrorFunc(10, LAMBDA(drive.setMaxVoltage(50)));
+ drive.swerve(forwardLeft, 39, imuTarget(344), 3 , 80, 40);
 
  mogoArmClamp.set_value(true);
  pros::delay(200);
-
- pros::delay(2000);
 
  drive.setPID(6);
  drive.swerve(backwardRight, 52, imuTarget(50), 5 , 50, 70);
 
  mogoArmClamp.set_value(false);
- pros::delay(200);
-
- pros::delay(2000);
+ pros::delay(100);
 
  drive.setPID(1);
 
- drive.addErrorFunc(5, LAMBDA(mogoArm.set_value(false)));
- drive.move(backward, 6, 1, 100);
+ drive.addErrorFunc(3, LAMBDA(mogoArm.set_value(false)));
+ drive.move(backward, 4, 1, 100);
  
  drive.turn(right, imuTarget(215), 2, 70);
  
  drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true)));
- drive.move(backward, 22, 1, 20);
+ drive.addErrorFunc(12, LAMBDA(drive.setMaxVoltage(20)));
+ drive.move(backward, 18, 1, 100);
  
- drive.turn(right, imuTarget(30), 1, 70);
+ drive.turn(right, imuTarget(355), 1, 70);
+
+ startIntake();
+
+ drive.setPID(2);
+ drive.move(forward, 12, 1, 100);
+
+ pros::delay(500);
+
+ drive.turn(right, imuTarget(150), 2, 90);
+ 
+ drive.setPID(4);
+ drive.move(forward, 24, 2, 100);
+
+ mogoArm.set_value(true); 
+ pros::delay(200);
+
+ drive.turn(right, imuTarget(170), 1, 100);
+ 
+ drive.turn(left, imuTarget(145), 1, 100);
+
+ drive.move(forward, 24, 1, 100);
  
  runOnError.remove();
  runIntakeControl.remove();

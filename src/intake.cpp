@@ -22,7 +22,7 @@ void IntakeControl::setIntake(int16_t velocity, std::optional<autoColor> color){
     //12000 / 400 = 30
     intakeSpeed = velocity*30;
     intakeVel = velocity/2;
-    
+     
     optical.set_led_pwm(100);
     if (color == red) {
         lookingRed = true;
@@ -72,7 +72,7 @@ void IntakeControl::run(){
             case 0:
             intake.move_voltage(intakeSpeed);
             pros::lcd::print(4, "Intake flag: %i", intakeFlag);
-            if(optical.get_hue()>120)
+            if(optical.get_hue()>120 && optical.get_proximity()>120)
             {
                 detectCycles++;
             }
@@ -81,7 +81,7 @@ void IntakeControl::run(){
             //ring is blue
             case 1:
             intake.move_voltage(-12000); 
-            pros::delay(300);
+            pros::delay(50);
             pros::lcd::print(4, "Intake flag: %i", intakeFlag);
             noDetectCycles = 0; detectCycles = 0; intakeFlag = 0;
         }
@@ -94,7 +94,7 @@ void IntakeControl::run(){
             case 0:
             intake.move_voltage(intakeSpeed);
             pros::lcd::print(4, "Intake flag: %i", intakeFlag);
-            if(optical.get_hue()<34)
+            if(optical.get_hue()<34 && optical.get_proximity()>120)
             {
                 detectCycles++;
             }
@@ -103,7 +103,7 @@ void IntakeControl::run(){
             //ring is red
             case 1:
             intake.move_voltage(-12000); 
-            pros::delay(300);
+            pros::delay(50);
             pros::lcd::print(4, "Intake flag: %i", intakeFlag);
             noDetectCycles = 0; detectCycles = 0; intakeFlag = 0;
 
