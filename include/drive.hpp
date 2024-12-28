@@ -68,11 +68,11 @@ class Drive{
     
     {16, 140,  0, 12,  30,  400,  250}, /*10-55 deg turn (100%) / 49-72in lat(verify at some point lol)*/ 
     
-    {20, 143, 0,  8,   50,  350,  500}, /*20-70 degree mogo turns (100%) / 50-72 mogo lat*/    
+    {20, 145, 0,  8,   50,  350,  500}, /*20-70 degree mogo turns (100%) / 50-72 mogo lat*/    
     
-    {18,  45, 0,  0,   38,  180,  0}, /*goal rush swerve 1*/    
+    {18,  75, 0,  0,   60,  130,  0}, /*goal rush swerve 1*/    
 
-    {18,  45, 0,  2,   38,  380,  0} /*goal rush swerve 2*/    
+    {18,  45, 0,  2,   38,  350,  0} /*goal rush swerve 2*/    
   };
 
   double kP, kP_a, kI, kI_a, kD, kD_a, kP_d;

@@ -166,6 +166,13 @@ void opcontrol() {
       clampPis.set_value(true);
     }
 
+   if(controller.get_digital_new_press(DIGITAL_X)){
+    intakePisTog = !intakePisTog;
+   }
+   if(intakePisTog){
+    intakePis.set_value(true);
+   } else{intakePis.set_value(false);}
+
    pros::delay(20);
  }
  runIntakeControl.remove();

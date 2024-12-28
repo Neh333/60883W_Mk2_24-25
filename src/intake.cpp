@@ -72,7 +72,7 @@ void IntakeControl::run(){
             case 0:
             intake.move_voltage(intakeSpeed);
             pros::lcd::print(4, "Intake flag: %i", intakeFlag);
-            if(optical.get_hue()>120 && optical.get_proximity()>120)
+            if(optical.get_hue()>90 && optical.get_proximity()>120)
             {
                 detectCycles++;
             }
@@ -80,8 +80,9 @@ void IntakeControl::run(){
             break;
             //ring is blue
             case 1:
-            intake.move_voltage(-12000); 
-            pros::delay(50);
+            pros::delay(5);
+            intake.move_voltage(0); 
+            pros::delay(500);
             pros::lcd::print(4, "Intake flag: %i", intakeFlag);
             noDetectCycles = 0; detectCycles = 0; intakeFlag = 0;
         }
@@ -94,7 +95,7 @@ void IntakeControl::run(){
             case 0:
             intake.move_voltage(intakeSpeed);
             pros::lcd::print(4, "Intake flag: %i", intakeFlag);
-            if(optical.get_hue()<34 && optical.get_proximity()>120)
+            if(optical.get_hue()<80 && optical.get_proximity()>120)
             {
                 detectCycles++;
             }
@@ -102,8 +103,10 @@ void IntakeControl::run(){
             break;
             //ring is red
             case 1:
-            intake.move_voltage(-12000); 
-            pros::delay(50);
+            pros::delay(5);
+            intake.move_voltage(0); 
+            pros::delay(500);
+
             pros::lcd::print(4, "Intake flag: %i", intakeFlag);
             noDetectCycles = 0; detectCycles = 0; intakeFlag = 0;
 

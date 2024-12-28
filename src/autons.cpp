@@ -437,55 +437,83 @@ void goalElimRed(){
  mogoArm.set_value(true);
  pros::delay(100);
  
+ findTri(&tri, 39, 360);
  drive.setPID(5);
- drive.addErrorFunc(10, LAMBDA(drive.setMaxVoltage(50)));
- drive.swerve(forwardLeft, 39, imuTarget(344), 3 , 80, 40);
+ drive.addErrorFunc(15, LAMBDA(drive.setMaxVoltage(60))); 
+ drive.swerve(forwardLeft, tri.hyp, imuTarget(344), 3 , 90, 55);
 
  mogoArmClamp.set_value(true);
  pros::delay(200);
 
  drive.setPID(6);
- drive.swerve(backwardRight, 52, imuTarget(50), 5 , 50, 70);
+ drive.swerve(backwardRight, 48-tri.b, imuTarget(50), 4 , 65, 100); // 50 70
 
  mogoArmClamp.set_value(false);
  pros::delay(100);
 
  drive.setPID(1);
-
- drive.addErrorFunc(3, LAMBDA(mogoArm.set_value(false)));
- drive.move(backward, 4, 1, 100);
  
+ findTri(&tri, 4, 50);
+ drive.addErrorFunc(3, LAMBDA(mogoArm.set_value(false)));
+ drive.move(backward, tri.hyp, 1, 100);
+  
  drive.turn(right, imuTarget(215), 2, 70);
  
  drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true)));
  drive.addErrorFunc(12, LAMBDA(drive.setMaxVoltage(20)));
- drive.move(backward, 18, 1, 100);
+ drive.move(backward, 16-tri.b, 1, 100);
+
+ findTri(&tri, 4, 215);
  
- drive.turn(right, imuTarget(355), 1, 70);
+ drive.setPID(2);
+ drive.addErrorFunc(3, LAMBDA(startIntake()));
+ drive.move(backward, tri.hyp, 1, 100);
+ 
+ drive.turn(right, imuTarget(360), 1, 70);
+
+ drive.setPID(2);
+ drive.move(forward, 12-tri.b, 1, 100);
+
+ pros::delay(250);
+ 
+ 
+ findTri(&tri, 6, 360);
+ drive.move(backward, tri.hyp, 1, 100);
+
+ clampPis.set_value(false);
+ pros::delay(200);
+ stopIntake();
+
+ drive.setPID(1);
+
+ drive.move(forward, 12, 1, 100);
+ drive.turn(right, imuTarget(90), 1, 70);
+
+ drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true)));
+ drive.addErrorFunc(12, LAMBDA(drive.setMaxVoltage(20)));
+ drive.move(backward, 18-tri.b, 1, 100);
+
+ drive.setPID(2);
+ drive.turn(right, imuTarget(233), 1.5, 90);
 
  startIntake();
 
- drive.setPID(2);
- drive.move(forward, 12, 1, 100);
+ findTri(&tri, 28, 210);
+ intakePis.set_value(true);
+ drive.move(forward, tri.hyp, 2, 100);
+ pros::delay(100);
 
- pros::delay(500);
+ drive.move(backward, 4, 1, 100);
 
- drive.turn(right, imuTarget(150), 2, 90);
- 
- drive.setPID(4);
- drive.move(forward, 24, 2, 100);
+ intakePis.set_value(false);
 
- mogoArm.set_value(true); 
- pros::delay(200);
+ stopIntake();
+ runIntakeControl.remove();
+ intake.move_voltage(12000);
 
- drive.turn(right, imuTarget(170), 1, 100);
- 
- drive.turn(left, imuTarget(145), 1, 100);
-
- drive.move(forward, 24, 1, 100);
+ pros::delay(700); // test last ring working
  
  runOnError.remove();
- runIntakeControl.remove();
  drive.onErrorVector.clear();
 }
 
