@@ -168,34 +168,31 @@ void ringSideRed(){
  pros::Task runIntakeControl(IntakeControlSystem_fn);
  Triangle tri;
  currentColor = blue;
- 
- drive.setSlew(genSlewProfile);
- findTri(&tri, 36.5, 32);
- drive.addErrorFunc(20, LAMBDA(drive.setCustomPID({31, 82,  0, 14.5, 100,  227,  0})));
- drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(30)));
- drive.addErrorFunc(4, LAMBDA(clampPis.set_value(true)));
- drive.move(backward, tri.hyp, 2, 100);
- 
  setIntake(400, currentColor);
+ 
+ findTri(&tri, 34, 32);
+ drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(25)));
+ drive.addErrorFunc(2, LAMBDA(clampPis.set_value(true)));
+ drive.move(backward, tri.hyp, 2, 100);
  startIntake();
  
  drive.setPID(2);
  drive.setSlew(mogoSlewProfile);
- drive.turn(right, imuTarget(145), 1, 90);
+ drive.turn(right, imuTarget(140), 1, 90);
 
- drive.move(forward, 20.5-tri.b, 1, 100);
+ drive.move(forward, 22-tri.b, 1, 100);
 
  pros::delay(100);
 
  drive.setPID(4);
- drive.turn(left, imuTarget(92), 1, 100);
+ drive.turn(left, imuTarget(100), 1, 100);
  
- findTri(&tri, 6.5, 92);
+ findTri(&tri, 7, 92);
  drive.setPID(2);
  drive.move(forward, tri.hyp, 1, 100); //get 2nd ring from ring stack 
  pros::delay(200);
  
- drive.move(backward, 5-tri.b, 2, 100); //go get 1st 2 stack
+ drive.move(backward, 7-tri.b, 2, 100); //go get 1st 2 stack
  
  drive.setPID(4);
  drive.turn(left, imuTarget(40), 1, 100); //turn to 1st stack 
@@ -204,22 +201,20 @@ void ringSideRed(){
  drive.setPID(2);
  drive.move(forward, tri.hyp, 1, 100); //get 1st 2 stack 
 
- pros::delay(500);
+ pros::delay(400);
  
- drive.turn(left, imuTarget(294), 2, 90); //turn to 2nd 2 ring stack 
+ drive.turn(left, imuTarget(290), 2, 90); //turn to 2nd 2 ring stack 
  
  drive.addErrorFunc(30, LAMBDA(intakePis.set_value(true)));
  drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(70)));
- drive.move(forward, 51-tri.b, 3, 100); //get 5th ring   
+ drive.move(forward, 46-tri.b, 3, 100); //get 5th ring   
 
  intakePis.set_value(false);
  pros::delay(100);
 
- drive.move(backward, 4, 1, 100); //vCK UP TO take ring and touch ele 
+ drive.move(backward, 5, 1, 100); //vCK UP TO take ring and touch ele 
  pros::delay(500);
- drive.move(backward, 8, 1, 100); //vCK UP TO take ring and touch ele 
-
- pros::delay(150);
+ drive.move(backward, 5, 1, 100); //vCK UP TO take ring and touch ele 
 
  drive.turn(left, imuTarget(180), 2, 90);
 
@@ -406,7 +401,8 @@ void goalSideBlue(){
  stopIntake();
  runIntakeControl.remove();
  runOnError.remove();
- drive.onErrorVector.clear();}
+ drive.onErrorVector.clear();
+}
 
 void ringElimRed(){
  pros::Task runOnError(onError_fn);
