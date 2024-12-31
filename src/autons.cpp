@@ -170,44 +170,45 @@ void ringSideRed(){
  currentColor = blue;
  setIntake(400, currentColor);
  
- findTri(&tri, 34, 32);
- drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(25)));
- drive.addErrorFunc(2, LAMBDA(clampPis.set_value(true)));
- drive.move(backward, tri.hyp, 2, 100);
+ findTri(&tri, 34, 30);
+ drive.addErrorFunc(10, LAMBDA(drive.setMaxVoltage(20)));
+ drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true)));
+ drive.move(backward, tri.hyp, 3, 100);
+
+ pros::delay(200);
+
  startIntake();
  
  drive.setPID(2);
  drive.setSlew(mogoSlewProfile);
- drive.turn(right, imuTarget(140), 1, 90);
+ drive.turn(right, imuTarget(140), 1, 90); //turn to ring stack
 
- drive.move(forward, 22-tri.b, 1, 100);
+ drive.move(forward, 23-tri.b, 1, 100); 
 
  pros::delay(100);
 
  drive.setPID(4);
  drive.turn(left, imuTarget(100), 1, 100);
  
- findTri(&tri, 7, 92);
+ findTri(&tri, 8, 92);
  drive.setPID(2);
  drive.move(forward, tri.hyp, 1, 100); //get 2nd ring from ring stack 
  pros::delay(200);
  
- drive.move(backward, 7-tri.b, 2, 100); //go get 1st 2 stack
+ drive.move(backward, 8-tri.b, 2, 100); //go get 1st 2 stack
  
  drive.setPID(4);
  drive.turn(left, imuTarget(40), 1, 100); //turn to 1st stack 
  
- findTri(&tri, 22, 60);
+ findTri(&tri, 10, 40);
  drive.setPID(2);
  drive.move(forward, tri.hyp, 1, 100); //get 1st 2 stack 
-
- pros::delay(400);
  
- drive.turn(left, imuTarget(290), 2, 90); //turn to 2nd 2 ring stack 
+ drive.turn(left, imuTarget(305), 2, 90); //turn to 2nd 2 ring stack 
  
  drive.addErrorFunc(30, LAMBDA(intakePis.set_value(true)));
  drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(70)));
- drive.move(forward, 46-tri.b, 3, 100); //get 5th ring   
+ drive.move(forward, 44-tri.b, 3, 100); //get 5th ring   
 
  intakePis.set_value(false);
  pros::delay(100);
