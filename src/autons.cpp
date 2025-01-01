@@ -169,19 +169,21 @@ void ringSideRed(){
  Triangle tri;
  currentColor = blue;
  setIntake(400, currentColor);
+
+ pros::delay(1); //fix weird on error issue hoepfully?
  
  findTri(&tri, 34, 30);
- drive.addErrorFunc(10, LAMBDA(drive.setMaxVoltage(20)));
+ drive.addErrorFunc(16, LAMBDA(drive.setMaxVoltage(20)));
  drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true)));
  drive.move(backward, tri.hyp, 3, 100);
 
- pros::delay(200);
+ pros::delay(100); //let clamp lock 
 
- startIntake();
- 
  drive.setPID(2);
  drive.setSlew(mogoSlewProfile);
  drive.turn(right, imuTarget(140), 1, 90); //turn to ring stack
+ 
+ startIntake();
 
  drive.move(forward, 23-tri.b, 1, 100); 
 
@@ -204,11 +206,11 @@ void ringSideRed(){
  drive.setPID(2);
  drive.move(forward, tri.hyp, 1, 100); //get 1st 2 stack 
  
- drive.turn(left, imuTarget(305), 2, 90); //turn to 2nd 2 ring stack 
+ drive.turn(left, imuTarget(308), 2, 90); //turn to 2nd 2 ring stack 
  
  drive.addErrorFunc(30, LAMBDA(intakePis.set_value(true)));
  drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(70)));
- drive.move(forward, 44-tri.b, 3, 100); //get 5th ring   
+ drive.move(forward, 46-tri.b, 3, 100); //get 5th ring   
 
  intakePis.set_value(false);
  pros::delay(100);
@@ -219,12 +221,10 @@ void ringSideRed(){
 
  drive.turn(left, imuTarget(180), 2, 90);
 
+ drive.move(forward, 19.5, 1, 100); //touch bar  
+
  stopIntake();
  runIntakeControl.remove();
- pros::delay(1);
- intake.move_voltage(12000);
- 
- drive.move(forward, 21, 1, 100); //touch bar  
  
  runOnError.remove();
  drive.onErrorVector.clear();
@@ -235,62 +235,66 @@ void ringSideBlue(){
  pros::Task runIntakeControl(IntakeControlSystem_fn);
  Triangle tri;
  currentColor = red;
+ setIntake(400, currentColor);
+
+ pros::delay(1); //fix weird on error issue hoepfully?
  
- drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(20)));
+ findTri(&tri, 34, 330);
+ drive.addErrorFunc(16, LAMBDA(drive.setMaxVoltage(20)));
  drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true)));
- drive.move(backward, 34, 2, 100);
+ drive.move(backward, tri.hyp, 3, 100);
+
  pros::delay(100); //let clamp lock 
 
- setIntake(400, currentColor);
- startIntake();
- 
  drive.setPID(2);
  drive.setSlew(mogoSlewProfile);
- drive.turn(left, imuTarget(220), 1, 90);
+ drive.turn(left, imuTarget(220), 1, 90); //turn to ring stack
+ 
+ startIntake();
 
- drive.move(forward, 22, 1, 100);
+ drive.move(forward, 23-tri.b, 1, 100); 
+
+ pros::delay(100);
 
  drive.setPID(4);
- drive.turn(right, imuTarget(252), 1, 100);
+ drive.turn(right, imuTarget(260), 1, 100);
  
+ findTri(&tri, 8, 260);
  drive.setPID(2);
- drive.move(forward, 4.7, 1, 100); //get 2nd ring from ring stack 
- pros::delay(700);
+ drive.move(forward, tri.hyp, 1, 100); //get 2nd ring from ring stack 
+ pros::delay(200);
  
- drive.move(backward, 16, 2, 100); //go get 1st 2 stack
+ drive.move(backward, 8-tri.b, 2, 100); //go get 1st 2 stack
  
  drive.setPID(4);
- drive.turn(right, imuTarget(306), 1, 100); //turn to 1st stack 
-
+ drive.turn(right, imuTarget(320), 1, 100); //turn to 1st stack 
+ 
+ findTri(&tri, 10, 320);
  drive.setPID(2);
- drive.move(forward, 22, 1, 100); //get 1st 2 stack 
+ drive.move(forward, tri.hyp, 1, 100); //get 1st 2 stack 
+ 
+ drive.turn(right, imuTarget(52), 2, 90); //turn to 2nd 2 ring stack 
+ 
+ drive.addErrorFunc(30, LAMBDA(intakePis.set_value(true)));
+ drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(70)));
+ drive.move(forward, 46-tri.b, 3, 100); //get 5th ring   
 
- drive.turn(left, imuTarget(126), 1, 100); //turn to 1st stack 
+ intakePis.set_value(false);
+ pros::delay(100);
+
+ drive.move(backward, 5, 1, 100); //vCK UP TO take ring and touch ele 
+ pros::delay(500);
+ drive.move(backward, 5, 1, 100); //vCK UP TO take ring and touch ele 
+
+ drive.turn(right, imuTarget(180), 2, 90);
+
+ drive.move(forward, 19.5, 1, 100); //touch bar  
 
  stopIntake();
  runIntakeControl.remove();
- pros::delay(1);
- intake.move_voltage(12000);
-
- drive.move(forward, 27, 2, 100); //touch ele tow 
-
-//  drive.turn(right, imuTarget(73), 2, 90); //turn to 2nd 2 ring stack 
- 
-//  drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(70)));
-//  drive.move(forward, 45, 2, 100); //knock down stack  
- 
-//  pros::delay(700);
- 
-//  drive.move(forward, 26, 2, 100); //get 5th red 
-
-//  pros::delay(150);
-
-//  drive.turn(right, imuTarget(200), 1, 90);
- 
-//  drive.move(forward, 25, 1, 100); //touch bar  
  
  runOnError.remove();
- drive.onErrorVector.clear();  
+ drive.onErrorVector.clear();
 }
 
 void goalSideRed(){
