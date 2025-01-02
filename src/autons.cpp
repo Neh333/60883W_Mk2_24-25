@@ -445,8 +445,6 @@ void goalElimRed(){
  drive.addErrorFunc(1, LAMBDA(mogoArmClamp.set_value(true))); 
  drive.swerve(forwardLeft, tri.hyp, imuTarget(344), 3 , 90, 55);
 
- pros::delay(50);
-
  drive.setPID(6);
  drive.swerve(backwardRight, 52-tri.b, imuTarget(70), 4 , 65, 100); //imutarget(50) 50V 70VA
 
@@ -461,8 +459,8 @@ void goalElimRed(){
  drive.turn(right, imuTarget(220), 2, 70);
  
  drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true)));
- drive.addErrorFunc(12, LAMBDA(drive.setMaxVoltage(20)));
- drive.move(backward, 16-tri.b, 1, 100);
+ drive.addErrorFunc(12, LAMBDA(drive.setMaxVoltage(25))); 
+ drive.move(backward, 16-tri.b, 1, 100); //clamo on to middle goal reg
 
  findTri(&tri, 4, 215);
  
@@ -473,47 +471,44 @@ void goalElimRed(){
  drive.turn(right, imuTarget(360), 1, 70);
 
  drive.setPID(2);
- drive.move(forward, 12-tri.b, 1, 100);
+ drive.move(forward, 12-tri.b, 1, 100); //score ring from 2 stack 
 
- pros::delay(250);
- 
+ pros::delay(200); 
  
  findTri(&tri, 6, 360);
  drive.move(backward, tri.hyp, 1, 100);
 
- clampPis.set_value(false);
- pros::delay(200);
+ clampPis.set_value(false); //drop off mid goal 
+ pros::delay(150);
+
  stopIntake();
 
  drive.setPID(1);
 
- drive.move(forward, 12, 1, 100);
- drive.turn(right, imuTarget(90), 1, 70);
+ drive.move(forward, 9.5-tri.b, 1, 100); //go to allince side goal 
+ drive.turn(right, imuTarget(90), 1, 70); //turn to allince side goal 
 
+ findTri(&tri, 16, 90);
+ drive.setCustomPID({50, 87,  0,  13,  160, 100,  150});
  drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true)));
- drive.addErrorFunc(12, LAMBDA(drive.setMaxVoltage(20)));
- drive.move(backward, 18-tri.b, 1, 100);
+ drive.addErrorFunc(12, LAMBDA(drive.setMaxVoltage(25))); 
+ drive.move(backward, tri.hyp, 1, 100); //get allince side goal 
 
  drive.setPID(2);
- drive.turn(right, imuTarget(228), 1.5, 90);
+ drive.turn(right, imuTarget(230), 1.5, 90);
 
  startIntake();
-
- findTri(&tri, 28, 210);
  intakePis.set_value(true);
- drive.move(forward, tri.hyp, 2, 100);
+ 
+ findTri(&tri, 30, 230);
+ drive.move(forward, tri.hyp, 1.5, 100);
+ intakePis.set_value(false);
  pros::delay(100);
 
- drive.move(backward, 4, 1, 100);
-
- intakePis.set_value(false);
-
- pros::delay(700); // test last ring working
+ drive.move(backward, 5, 0.5, 100);
  
  stopIntake();
  runIntakeControl.remove();
-
- 
  runOnError.remove();
  drive.onErrorVector.clear();
 }
@@ -521,8 +516,76 @@ void goalElimRed(){
 void goalElimBlue(){
  pros::Task runOnError(onError_fn);
  pros::Task runIntakeControl(IntakeControlSystem_fn);
+ Triangle tri;
  currentColor = red;
 
+ setIntake(400, currentColor);
+
+ mogoArm.set_value(true);
+ pros::delay(100);
+ 
+ findTri(&tri, 38, 360);
+ drive.setPID(5);
+ drive.addErrorFunc(15, LAMBDA(drive.setMaxVoltage(60))); 
+ drive.swerve(forwardLeft, tri.hyp, imuTarget(340), 2, 100, 50);
+
+ mogoArmClamp.set_value(true);
+ 
+ drive.swerve(backwardRight, 38-tri.b, imuTarget(10), 2, 100, 30);
+
+ mogoArmClamp.set_value(false);
+ pros::delay(100);
+
+ drive.move(backward, 4, 1, 100);
+
+//  drive.setPID(2);
+//  drive.turn(shortest, 165, 2, 90); 
+
+//  drive.setPID(1);
+//  findTri(&tri, 4, 70);
+//  drive.addErrorFunc(3, LAMBDA(mogoArm.set_value(false)));
+//  drive.move(backward, tri.hyp, 1, 100);
+  
+//  drive.turn(right, imuTarget(220), 2, 70);
+ 
+//  drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true)));
+//  drive.addErrorFunc(12, LAMBDA(drive.setMaxVoltage(25))); 
+//  drive.move(backward, 16-tri.b, 1, 100); //clamo on to middle goal reg
+
+//  findTri(&tri, 4, 215);
+ 
+//  drive.setPID(2);
+//  drive.addErrorFunc(3, LAMBDA(startIntake()));
+//  drive.move(backward, tri.hyp, 1, 100);
+ 
+//  drive.turn(right, imuTarget(360), 1, 70);
+
+//  drive.setPID(2);
+//  drive.move(forward, 12-tri.b, 1, 100); //score ring from 2 stack 
+
+//  pros::delay(200); 
+ 
+//  findTri(&tri, 6, 360);
+//  drive.move(backward, tri.hyp, 1, 100);
+
+//  clampPis.set_value(false); //drop off mid goal 
+//  pros::delay(150);
+
+//  stopIntake();
+
+//  drive.setPID(1);
+
+//  drive.move(forward, 9.5-tri.b, 1, 100); //go to allince side goal 
+//  drive.turn(right, imuTarget(270), 1, 70); //turn to allince side goal 
+
+//  findTri(&tri, 16, 90);
+//  drive.setCustomPID({50, 87,  0,  13,  160, 100,  150});
+//  drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true)));
+//  drive.addErrorFunc(12, LAMBDA(drive.setMaxVoltage(25))); 
+//  drive.move(backward, tri.hyp, 1, 100); //get allince side goal 
+
+
+ 
  runOnError.remove();
  runIntakeControl.remove();
  drive.onErrorVector.clear();
