@@ -442,10 +442,10 @@ void goalElimRed(){
  findTri(&tri, 39, 360);
  drive.setPID(5);
  drive.addErrorFunc(15, LAMBDA(drive.setMaxVoltage(60))); 
+ drive.addErrorFunc(1, LAMBDA(mogoArmClamp.set_value(true))); 
  drive.swerve(forwardLeft, tri.hyp, imuTarget(344), 3 , 90, 55);
 
- mogoArmClamp.set_value(true);
- pros::delay(200);
+ pros::delay(50);
 
  drive.setPID(6);
  drive.swerve(backwardRight, 52-tri.b, imuTarget(70), 4 , 65, 100); //imutarget(50) 50V 70VA
@@ -454,7 +454,7 @@ void goalElimRed(){
  pros::delay(100);
 
  drive.setPID(1);
- findTri(&tri, 4, 60);
+ findTri(&tri, 4, 70);
  drive.addErrorFunc(3, LAMBDA(mogoArm.set_value(false)));
  drive.move(backward, tri.hyp, 1, 100);
   
@@ -495,7 +495,7 @@ void goalElimRed(){
  drive.move(backward, 18-tri.b, 1, 100);
 
  drive.setPID(2);
- drive.turn(right, imuTarget(233), 1.5, 90);
+ drive.turn(right, imuTarget(228), 1.5, 90);
 
  startIntake();
 
@@ -508,11 +508,11 @@ void goalElimRed(){
 
  intakePis.set_value(false);
 
+ pros::delay(700); // test last ring working
+ 
  stopIntake();
  runIntakeControl.remove();
- intake.move_voltage(12000);
 
- pros::delay(700); // test last ring working
  
  runOnError.remove();
  drive.onErrorVector.clear();
@@ -548,14 +548,13 @@ void skills(){
  startIntake();
  
  drive.turn(left, imuTarget(270), 1, 70);
-  
                  
                   /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
  drive.setCustomPID({50, 87,  0,  13,  160, 100,  150});
- drive.setSlew({0,35,70});
-
+ drive.setSlew({0,0,0});
+ drive.addErrorFunc(12, LAMBDA(drive.setMaxVoltage(25)));
  drive.addErrorFunc(2, LAMBDA(clampPis.set_value(true)));
- drive.move(backward, 17, 3, 20);
+ drive.move(backward, 17, 3, 100);
  pros::delay(100);
 
  drive.setPID(1);
@@ -583,7 +582,7 @@ void skills(){
  pros::delay(100); //intake before big turn 
  
  drive.setPID(2);
- drive.turn(right, imuTarget(178), 2, 90); //turn to inline rings 
+ drive.turn(shortest, 178, 2, 90); //turn to inline rings 
 
 //  armControl.setTarget(load); //prime the wall stake mech
 //  stopIntake(); //no anti jam 
@@ -646,9 +645,9 @@ void skills(){
  drive.move(forward, 9-tri.b, 1, 100); //get out of line ring 
  
  drive.setPID(4);
- drive.turn(left, imuTarget(320), 2, 90); //turn to cornner  // deg turn 
+ drive.turn(left, imuTarget(317), 2, 90); //turn to cornner  // deg turn 
 
- findTri(&tri, 9, 320);
+ findTri(&tri, 9, 317);
  drive.addErrorFunc(3, LAMBDA(clampPis.set_value(false)));
  drive.move(backward, tri.hyp, 1, 100); //drop off 1st mogo
 
@@ -657,7 +656,7 @@ void skills(){
  drive.setPID(1);
  drive.setSlew(genSlewProfile);
  
- findTri(&tri, 9, 320);
+ findTri(&tri, 12.5, 317);
  drive.move(forward, tri.hyp, 1, 100);  //go get 2nd mogo
 
  drive.turn(right, imuTarget(90), 1, 70);  //turn to mogo 
@@ -673,7 +672,7 @@ void skills(){
 
  drive.setPID(2);
  drive.setSlew(mogoSlewProfile);
- drive.move(backward, 7-tri.b, 3, 100);
+ drive.move(backward, 6-tri.b, 3, 100);
 
  drive.turn(left, imuTarget(360), 1, 90);
 
@@ -690,7 +689,7 @@ void skills(){
  drive.setPID(2);
  drive.move(forward, 44-tri.b, 5, 100); //get 3rd ring
 
- pros::delay(1000);
+ pros::delay(800);
 
 //  drive.turn(left, imuTarget(211), 1, 90); //turn to wall stake ring 
 
@@ -728,10 +727,7 @@ void skills(){
 //  startIntake();
 
  drive.setPID(2); //4
- drive.turn(right, imuTarget(178), 2, 100); //turn to in line rings 
- 
- //pros::delay(500); //make up for missing ring @ stem comp 
- 
+ drive.turn(shortest, imuTarget(178), 2, 100); //turn to in line rings  
  
                   /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
  drive.setCustomPID({20, 143, 0,  8,   50,  350,  600});   
@@ -741,7 +737,7 @@ void skills(){
  
  pros::delay(100); //let first rings get themselves together 
  
- findTri(&tri, 12, 178);
+ findTri(&tri, 10, 178);
  drive.move(forward, tri.hyp, 1, 100);
 
  drive.setPID(2);
@@ -749,9 +745,9 @@ void skills(){
 
  drive.move(forward, 9-tri.b, 1, 100); //get out of line ring 
  
- drive.setPID(4);
- drive.turn(right, imuTarget(40), 2, 90);
- findTri(&tri, 10, 235);
+ drive.turn(right, imuTarget(43), 2, 90);
+
+ findTri(&tri, 10, 43);
  drive.addErrorFunc(3, LAMBDA(clampPis.set_value(false)));
  drive.move(backward, tri.hyp, 1, 100); //drop off 2nd mogo
 
@@ -766,25 +762,27 @@ void skills(){
  drive.turn(left, imuTarget(0), 1, 70);
  
  drive.setPID(3);
- drive.move(forward, 60, 3, 100);
+ drive.move(forward, 63, 3, 100);
 
  drive.setPID(1);
  drive.turn(right, imuTarget(90), 1, 70); //turn to pick up ring 
  
- drive.addErrorFunc(5, LAMBDA(stopIntake()));
- drive.move(forward, 30, 2, 100); //pick up ring 
+ drive.addErrorFunc(3, LAMBDA(stopIntake()));
+ drive.move(forward, 32.5, 2, 100); //pick up ring 
 
- drive.turn(right, imuTarget(180), 1, 70);
+ drive.setPID(1);
+ drive.turn(right, imuTarget(180), 2, 70); //turn to go push 1st blue mogo 
  
- drive.move(backward, 40, 5, 100);
+ drive.setSlew({0,0,0});
+ drive.move(backward, 37, 2, 100); //slow for some reason 
  
  drive.turn(right, imuTarget(270), 1, 70); //turn front to to mogo 
  
- drive.move(forward, 44, 2, 100); //push mogo in corner 
+ drive.move(forward, 44, 3, 100); //push mogo in corner 
 
- drive.move(backward, 56, 3, 100); // go to allince stake 
+ drive.move(backward, 50, 3, 100); // go to allince stake 
 
- drive.turn(left, imuTarget(180), 1, 70); //turn to allince stake 
+ drive.turn(left, imuTarget(180), 2, 70); //turn to allince stake 
 
  drive.move(backward, 3, 1, 100); //back up and score 
 
@@ -795,7 +793,7 @@ void skills(){
 
  drive.turn(right, imuTarget(270), 1, 70);
  drive.setSlew({0,0,0});
- drive.move(backward, 68, 3, 100); //push 4th mogo in corner 
+ drive.move(backward, 62, 3, 100); //push 4th mogo in corner 
  
  runOnError.remove();
  intakeControlTask.remove();
