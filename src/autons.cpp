@@ -62,7 +62,7 @@ void winPointRed(){
  drive.turn(right, imuTarget(243), 1, 70); //turn to mogo
 
  drive.addErrorFunc(18, LAMBDA(drive.setMaxVoltage(20)));
- drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true)));
+ drive.addErrorFunc(3, LAMBDA(clampPis.set_value(true)));
  drive.move(backward, 30, 2, 100);
  pros::delay(200); //let clamp lock 
  
@@ -126,7 +126,7 @@ void winPointBlue(){
  drive.turn(left, imuTarget(117), 1, 70); //turn to mogo
 
  drive.addErrorFunc(18, LAMBDA(drive.setMaxVoltage(20)));
- drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true)));
+ drive.addErrorFunc(3, LAMBDA(clampPis.set_value(true)));
  drive.move(backward, 30, 2, 100);
  pros::delay(200); //let clamp lock 
  
@@ -174,7 +174,7 @@ void ringSideRed(){
  
  findTri(&tri, 34, 30);
  drive.addErrorFunc(16, LAMBDA(drive.setMaxVoltage(20)));
- drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true)));
+ drive.addErrorFunc(3, LAMBDA(clampPis.set_value(true)));
  drive.move(backward, tri.hyp, 3, 100);
 
  pros::delay(100); //let clamp lock 
@@ -221,7 +221,7 @@ void ringSideRed(){
 
  drive.turn(left, imuTarget(180), 2, 90);
 
- drive.move(forward, 19.5, 1, 100); //touch bar  
+ drive.move(forward, 21, 1, 100); //touch bar  
 
  stopIntake();
  runIntakeControl.remove();
@@ -241,7 +241,7 @@ void ringSideBlue(){
  
  findTri(&tri, 34, 330);
  drive.addErrorFunc(16, LAMBDA(drive.setMaxVoltage(20)));
- drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true)));
+ drive.addErrorFunc(3, LAMBDA(clampPis.set_value(true)));
  drive.move(backward, tri.hyp, 3, 100);
 
  pros::delay(100); //let clamp lock 
@@ -288,7 +288,7 @@ void ringSideBlue(){
 
  drive.turn(right, imuTarget(180), 2, 90);
 
- drive.move(forward, 19.5, 1, 100); //touch bar  
+ drive.move(forward, 21, 1, 100); //touch bar  
 
  stopIntake();
  runIntakeControl.remove();
@@ -735,7 +735,7 @@ void skills(){
 
  drive.setPID(2);
  drive.setSlew(mogoSlewProfile);
- drive.move(backward, 6-tri.b, 3, 100);
+ //drive.move(backward, 6-tri.b, 3, 100);
 
  drive.turn(left, imuTarget(360), 1, 90);
 
