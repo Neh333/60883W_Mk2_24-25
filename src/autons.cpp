@@ -62,7 +62,7 @@ void winPointRed(){
  drive.turn(right, imuTarget(243), 1, 70); //turn to mogo
 
  drive.addErrorFunc(18, LAMBDA(drive.setMaxVoltage(20)));
- drive.addErrorFunc(3, LAMBDA(clampPis.set_value(true)));
+ drive.addErrorFunc(4, LAMBDA(clampPis.set_value(true)));
  drive.move(backward, 30, 2, 100);
  pros::delay(200); //let clamp lock 
  
@@ -126,7 +126,7 @@ void winPointBlue(){
  drive.turn(left, imuTarget(117), 1, 70); //turn to mogo
 
  drive.addErrorFunc(18, LAMBDA(drive.setMaxVoltage(20)));
- drive.addErrorFunc(3, LAMBDA(clampPis.set_value(true)));
+ drive.addErrorFunc(4, LAMBDA(clampPis.set_value(true)));
  drive.move(backward, 30, 2, 100);
  pros::delay(200); //let clamp lock 
  
@@ -174,7 +174,7 @@ void ringSideRed(){
  
  findTri(&tri, 34, 30);
  drive.addErrorFunc(16, LAMBDA(drive.setMaxVoltage(20)));
- drive.addErrorFunc(3, LAMBDA(clampPis.set_value(true)));
+ drive.addErrorFunc(4, LAMBDA(clampPis.set_value(true)));
  drive.move(backward, tri.hyp, 3, 100);
 
  pros::delay(100); //let clamp lock 
@@ -241,7 +241,7 @@ void ringSideBlue(){
  
  findTri(&tri, 34, 330);
  drive.addErrorFunc(16, LAMBDA(drive.setMaxVoltage(20)));
- drive.addErrorFunc(3, LAMBDA(clampPis.set_value(true)));
+ drive.addErrorFunc(4, LAMBDA(clampPis.set_value(true)));
  drive.move(backward, tri.hyp, 3, 100);
 
  pros::delay(100); //let clamp lock 
@@ -306,7 +306,7 @@ void goalSideRed(){
  
  //get mogo
  drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(25)));
- drive.addErrorFunc(2, LAMBDA(clampPis.set_value(true)));
+ drive.addErrorFunc(4, LAMBDA(clampPis.set_value(true)));
  drive.move(backward, 32, 2, 100);
 
  pros::delay(300); //let goal clamp
@@ -362,7 +362,7 @@ void goalSideBlue(){
  
  //get mogo
  drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(25)));
- drive.addErrorFunc(2, LAMBDA(clampPis.set_value(true)));
+ drive.addErrorFunc(4, LAMBDA(clampPis.set_value(true)));
  drive.move(backward, 32, 2, 100);
 
  pros::delay(300); //let goal clamp
@@ -458,7 +458,7 @@ void goalElimRed(){
   
  drive.turn(right, imuTarget(220), 2, 70);
  
- drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true)));
+ drive.addErrorFunc(4, LAMBDA(clampPis.set_value(true)));
  drive.addErrorFunc(12, LAMBDA(drive.setMaxVoltage(25))); 
  drive.move(backward, 16-tri.b, 1, 100); //clamo on to middle goal reg
 
