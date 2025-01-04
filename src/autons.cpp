@@ -173,7 +173,7 @@ void ringSideRed(){
  pros::delay(1); //fix weird on error issue hoepfully?
  
  findTri(&tri, 34, 30);
- drive.addErrorFunc(16, LAMBDA(drive.setMaxVoltage(20)));
+ drive.addErrorFunc(18, LAMBDA(drive.setMaxVoltage(20)));
  drive.addErrorFunc(4, LAMBDA(clampPis.set_value(true)));
  drive.move(backward, tri.hyp, 3, 100);
 
@@ -240,7 +240,7 @@ void ringSideBlue(){
  pros::delay(1); //fix weird on error issue hoepfully?
  
  findTri(&tri, 34, 330);
- drive.addErrorFunc(16, LAMBDA(drive.setMaxVoltage(20)));
+ drive.addErrorFunc(18, LAMBDA(drive.setMaxVoltage(20)));
  drive.addErrorFunc(4, LAMBDA(clampPis.set_value(true)));
  drive.move(backward, tri.hyp, 3, 100);
 
