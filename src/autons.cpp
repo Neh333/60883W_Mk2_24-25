@@ -103,39 +103,66 @@ void winPointBlue(){
  pros::Task runOnError(onError_fn); 
  pros::Task runIntakeControl(IntakeControlSystem_fn);
  Triangle tri;
- setIntake(400, std::nullopt);
+ setIntake(400, currentColor);
 
  currentColor = red;
 
- drive.move(backward, 14.5, 1, 100);
+ drive.move(backward, 15, 1, 100);
 
  drive.turn(left, imuTarget(270), 1, 70);
 
- drive.move(backward, 5, 1, 100);
+ drive.move(backward, 6, 1, 100);
 
  startIntake();
  
  pros::delay(400);
  
- drive.move(forward, 4, 1, 100);
+ drive.move(forward, 5, 1, 100);
  
  drive.turn(left, imuTarget(180), 1, 70);
 
- drive.move(backward, 10, 1, 100);
+ drive.move(backward, 9.5, 1, 100);
 
  drive.turn(left, imuTarget(117), 1, 70); //turn to mogo
 
- drive.addErrorFunc(18, LAMBDA(drive.setMaxVoltage(20)));
+ drive.addErrorFunc(17, LAMBDA(drive.setMaxVoltage(25)));
  drive.addErrorFunc(4, LAMBDA(clampPis.set_value(true)));
- drive.move(backward, 30, 2, 100);
+ drive.move(backward, 31, 2, 100);
  pros::delay(200); //let clamp lock 
  
  drive.setSlew(mogoSlewProfile);
 
  drive.setPID(2);
- drive.move(backward, 6, 1, 100);
+ drive.setSlew(mogoSlewProfile);
+ drive.turn(left, imuTarget(220), 1, 90); //turn to ring stack
+
+ startIntake();
+
+ drive.move(forward, 23-tri.b, 1, 100); 
+
+ pros::delay(100);
+
+ drive.setPID(4);
+ drive.turn(right, imuTarget(260), 1, 100);
+ 
+ findTri(&tri, 8, 260);
+ drive.setPID(2);
+ drive.move(forward, tri.hyp, 1, 100); //get 2nd ring from ring stack 
+ pros::delay(200);
+ 
+ drive.move(backward, 8-tri.b, 2, 100); //go get 1st 2 stack
  
  drive.setPID(4);
+ drive.turn(right, imuTarget(320), 1, 100); //turn to 1st stack 
+ 
+ findTri(&tri, 10, 320);
+ drive.setPID(2);
+ drive.move(forward, tri.hyp, 1, 100); //get 1st 2 stack 
+
+ //drive.setPID(2);
+ //drive.move(backward, 6, 1, 100);
+ 
+ /* drive.setPID(4);
  drive.turn(left, imuTarget(0), 1, 90);
 
  drive.setPID(2);
@@ -150,6 +177,8 @@ void winPointBlue(){
  drive.move(forward, 13, 1, 100); //get 2nd ring
  pros::delay(150);
  
+ 
+ drive.move(backward, 6, 1, 100);
  drive.turn(left, imuTarget(180), 2, 90);
 
  stopIntake();
@@ -157,7 +186,7 @@ void winPointBlue(){
  pros::delay(1);
  intake.move_voltage(12000);
 
- drive.move(forward, 20, 1, 100); // touch elevation tower 
+ drive.move(forward, 28, 2, 100); // touch elevation tower  */
  
  runOnError.remove();
  drive.onErrorVector.clear();
@@ -362,7 +391,7 @@ void goalSideBlue(){
  pros::Task runIntakeControl(IntakeControlSystem_fn);
  Triangle tri;
  currentColor = red;
- setIntake(400, currentColor);
+ setIntake(400, std::nullopt); //currentColor
  
  //get mogo
  drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(25)));
@@ -443,17 +472,17 @@ void goalElimRed(){
  mogoArm.set_value(true);
  pros::delay(100);
  
- findTri(&tri, 39, 360);
+ findTri(&tri, 41, 360);
  drive.setPID(5);
  drive.addErrorFunc(15, LAMBDA(drive.setMaxVoltage(60))); 
  drive.addErrorFunc(1, LAMBDA(mogoArmClamp.set_value(true))); 
- drive.swerve(forwardLeft, tri.hyp, imuTarget(344), 3 , 90, 55);
+ drive.swerve(forwardLeft, tri.hyp, imuTarget(341), 3 , 90, 55);
 
  drive.setPID(6);
- drive.swerve(backwardRight, 52-tri.b, imuTarget(70), 4 , 65, 100); //imutarget(50) 50V 70VA
+ drive.swerve(backwardRight, 52-tri.b, imuTarget(70), 4 , 70, 100); //imutarget(50) 50V 70VA
 
  mogoArmClamp.set_value(false);
- pros::delay(100);
+ pros::delay(150);
 
  drive.setPID(1);
  findTri(&tri, 4, 70);
@@ -462,9 +491,9 @@ void goalElimRed(){
   
  drive.turn(right, imuTarget(220), 2, 70);
  
- drive.addErrorFunc(4, LAMBDA(clampPis.set_value(true)));
+ drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true)));
  drive.addErrorFunc(12, LAMBDA(drive.setMaxVoltage(25))); 
- drive.move(backward, 16-tri.b, 1, 100); //clamo on to middle goal reg
+ drive.move(backward, 18-tri.b, 1, 100); //clamo on to middle goal reg
 
  findTri(&tri, 4, 215);
  
@@ -472,44 +501,52 @@ void goalElimRed(){
  drive.addErrorFunc(3, LAMBDA(startIntake()));
  drive.move(backward, tri.hyp, 1, 100);
  
- drive.turn(right, imuTarget(360), 1, 70);
+ drive.turn(right, imuTarget(360), 1, 90);
 
  drive.setPID(2);
  drive.move(forward, 12-tri.b, 1, 100); //score ring from 2 stack 
 
  pros::delay(200); 
+
+ drive.turn(right, imuTarget(148), 2, 90);
+
+ mogoArm.set_value(true);
+ drive.move(forward, 42, 2, 100);
  
- findTri(&tri, 6, 360);
- drive.move(backward, tri.hyp, 1, 100);
-
- clampPis.set_value(false); //drop off mid goal 
- pros::delay(150);
-
- stopIntake();
-
- drive.setPID(1);
-
- drive.move(forward, 9.5-tri.b, 1, 100); //go to allince side goal 
- drive.turn(right, imuTarget(90), 1, 70); //turn to allince side goal 
-
- findTri(&tri, 16, 90);
- drive.setCustomPID({50, 87,  0,  13,  160, 100,  150});
- drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true)));
- drive.addErrorFunc(12, LAMBDA(drive.setMaxVoltage(25))); 
- drive.move(backward, tri.hyp, 1, 100); //get allince side goal 
-
- drive.setPID(2);
- drive.turn(right, imuTarget(230), 1.5, 90);
-
- startIntake();
- intakePis.set_value(true);
+ drive.turn(right, imuTarget(328), 2, 90);
  
- findTri(&tri, 30, 230);
- drive.move(forward, tri.hyp, 1.5, 100);
- intakePis.set_value(false);
- pros::delay(100);
+ 
+//  findTri(&tri, 8, 360);
+//  drive.move(backward, tri.hyp, 1, 100);
 
- drive.move(backward, 5, 0.5, 100);
+//  clampPis.set_value(false); //drop off mid goal 
+//  pros::delay(150);
+
+//  stopIntake();
+
+//  drive.setPID(1);
+
+//  drive.move(forward, 8-tri.b, 1, 100); //go to allince side goal 
+//  drive.turn(right, imuTarget(90), 1, 70); //turn to allince side goal 
+
+//  findTri(&tri, 20, 90);
+//  drive.setCustomPID({50, 87,  0,  13,  160, 100,  150});
+//  drive.addErrorFunc(2, LAMBDA(clampPis.set_value(true)));
+//  drive.addErrorFunc(12, LAMBDA(drive.setMaxVoltage(25))); 
+//  drive.move(backward, tri.hyp, 1, 100); //get allince side goal 
+
+//  drive.setPID(2);
+//  drive.turn(right, imuTarget(230), 1.5, 90);
+
+//  startIntake();
+//  intakePis.set_value(true);
+ 
+//  findTri(&tri, 31, 230);
+//  drive.addErrorFunc(12, LAMBDA(intakePis.set_value(false))); 
+//  drive.move(forward, tri.hyp, 1.5, 100);
+//  pros::delay(100);
+
+//  drive.move(backward, 5, 0.5, 100);
  
  stopIntake();
  runIntakeControl.remove();
