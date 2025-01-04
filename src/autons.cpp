@@ -235,7 +235,7 @@ void ringSideBlue(){
  pros::Task runIntakeControl(IntakeControlSystem_fn);
  Triangle tri;
  currentColor = red;
- setIntake(400, currentColor);
+ setIntake(400, std::nullopt); //currentColor
 
  pros::delay(1); //fix weird on error issue hoepfully?
  
@@ -288,10 +288,14 @@ void ringSideBlue(){
 
  drive.turn(right, imuTarget(180), 2, 90);
 
- drive.move(forward, 21, 1, 100); //touch bar  
-
  stopIntake();
  runIntakeControl.remove();
+
+ pros::delay(20);
+
+ intake.move_voltage(12000);
+ 
+ drive.move(forward, 21, 1, 100); //touch bar  
  
  runOnError.remove();
  drive.onErrorVector.clear();
@@ -642,7 +646,7 @@ void skills(){
  findTri(&tri, 37, 360);
  drive.move(forward, tri.hyp, 3, 100); //get 3rd ring on goal 
 
- pros::delay(100); //intake before big turn 
+ pros::delay(200); //intake before big turn 
  
  drive.setPID(2);
  drive.turn(shortest, 178, 2, 90); //turn to inline rings 
@@ -735,7 +739,7 @@ void skills(){
 
  drive.setPID(2);
  drive.setSlew(mogoSlewProfile);
- //drive.move(backward, 6-tri.b, 3, 100);
+ drive.move(backward, 5-tri.b, 3, 100);
 
  drive.turn(left, imuTarget(360), 1, 90);
 
@@ -752,7 +756,7 @@ void skills(){
  drive.setPID(2);
  drive.move(forward, 44-tri.b, 5, 100); //get 3rd ring
 
- pros::delay(800);
+ pros::delay(900);
 
 //  drive.turn(left, imuTarget(211), 1, 90); //turn to wall stake ring 
 
