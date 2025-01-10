@@ -72,7 +72,9 @@ class Drive{
     
     {20,  100, 0,  0,   60,  130,  0}, /*goal rush swerve 1 (red)*/    
 
-    {18,  58, 0,  2,   38,  190,  0} /*goal rush swerve 2(red)*/    
+    {18,  58, 0,  2,   38,  190,  0}, /*goal rush swerve 2(red)*/    
+    
+    {50, 87,  0,  13,  160, 100,  150} /*mogo grab linear profile*/
   };
 
   double kP, kP_a, kI, kI_a, kD, kD_a, kP_d;

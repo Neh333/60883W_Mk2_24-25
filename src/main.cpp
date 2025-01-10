@@ -76,7 +76,7 @@ void opcontrol() {
  bool backClampTog = false;
  bool sortTog = false;
  bool mogoArmTog = false;
- bool intakePisTog = false;
+ bool armClampPisTog = false;
  int armTog = 0;
 
  optical.set_led_pwm(100);
@@ -167,11 +167,11 @@ void opcontrol() {
     }
 
    if(controller.get_digital_new_press(DIGITAL_X)){
-    intakePisTog = !intakePisTog;
+    armClampPisTog = !armClampPisTog;
    }
-   if(intakePisTog){
-    intakePis.set_value(true);
-   } else{intakePis.set_value(false);}
+   if(armClampPisTog){
+    mogoArmClamp.set_value(true);
+   } else{mogoArmClamp.set_value(false);}
 
    pros::delay(20);
  }

@@ -33,6 +33,7 @@ autonTextTuple autos[AUTO_COUNT] = {
 Drive drive(leftMotors, rightMotors, imu);
 slewProfile genSlewProfile{85, 30, 80};
 slewProfile mogoSlewProfile{70, 30, 70};
+slewProfile mogoGrabSLewProfile{60, 0, 70};
 IntakeControl conveyor;
 
 void winPointRed(){
@@ -111,7 +112,7 @@ void winPointBlue(){
 
  drive.turn(left, imuTarget(270), 1, 70);
 
- drive.move(backward, 6, 1, 100);
+ drive.move(backward, 5.5, 1, 100);
 
  startIntake();
  
@@ -121,20 +122,18 @@ void winPointBlue(){
  
  drive.turn(left, imuTarget(180), 1, 70);
 
- drive.move(backward, 9.5, 1, 100);
+ drive.move(backward, 8, 1, 100);
 
  drive.turn(left, imuTarget(117), 1, 70); //turn to mogo
 
  drive.addErrorFunc(17, LAMBDA(drive.setMaxVoltage(25)));
- drive.addErrorFunc(4, LAMBDA(clampPis.set_value(true)));
- drive.move(backward, 31, 2, 100);
+ drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true)));
+ drive.move(backward, 33, 2, 100);
  pros::delay(200); //let clamp lock 
  
- drive.setSlew(mogoSlewProfile);
-
  drive.setPID(2);
  drive.setSlew(mogoSlewProfile);
- drive.turn(left, imuTarget(220), 1, 90); //turn to ring stack
+ drive.turn(left, 310, 2, 90); //turn to ring stack
 
  startIntake();
 
@@ -143,7 +142,7 @@ void winPointBlue(){
  pros::delay(100);
 
  drive.setPID(4);
- drive.turn(right, imuTarget(260), 1, 100);
+ drive.turn(right, 330, 1, 100);
  
  findTri(&tri, 8, 260);
  drive.setPID(2);
@@ -153,7 +152,7 @@ void winPointBlue(){
  drive.move(backward, 8-tri.b, 2, 100); //go get 1st 2 stack
  
  drive.setPID(4);
- drive.turn(right, imuTarget(320), 1, 100); //turn to 1st stack 
+ drive.turn(right, imuTarget(30), 1, 100); //turn to 1st stack 
  
  findTri(&tri, 10, 320);
  drive.setPID(2);
@@ -201,12 +200,14 @@ void ringSideRed(){
 
  pros::delay(1); //fix weird on error issue hoepfully?
  
- findTri(&tri, 34, 30);
- drive.addErrorFunc(18, LAMBDA(drive.setMaxVoltage(20)));
+ drive.setPID(7);
+ drive.setSlew(mogoGrabSLewProfile);
+ findTri(&tri, 25, 29);
+ drive.addErrorFunc(20, LAMBDA(drive.setSlew({0,0,0})));
+ drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(30)));
  drive.addErrorFunc(4, LAMBDA(clampPis.set_value(true)));
  drive.move(backward, tri.hyp, 3, 100);
 
- pros::delay(100); //let clamp lock 
 
  drive.setPID(2);
  drive.setSlew(mogoSlewProfile);
@@ -238,19 +239,19 @@ void ringSideRed(){
  drive.turn(left, imuTarget(308), 2, 90); //turn to 2nd 2 ring stack 
  
  drive.addErrorFunc(30, LAMBDA(intakePis.set_value(true)));
- drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(70)));
- drive.move(forward, 46-tri.b, 3, 100); //get 5th ring   
+ drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(50)));
+ drive.move(forward, 47-tri.b, 4, 100); //get 5th ring   
 
  intakePis.set_value(false);
- pros::delay(100);
+ pros::delay(300);
 
- drive.move(backward, 5, 1, 100); //vCK UP TO take ring and touch ele 
+ drive.move(backward, 5, 1, 100); //back UP TO take ring and touch ele 
  pros::delay(500);
- drive.move(backward, 5, 1, 100); //vCK UP TO take ring and touch ele 
+ drive.move(backward, 5, 1, 100); //back UP TO take ring and touch ele 
 
  drive.turn(left, imuTarget(180), 2, 90);
 
- drive.move(forward, 21, 1, 100); //touch bar  
+ drive.move(forward, 18, 1, 100); //touch bar  
 
  stopIntake();
  runIntakeControl.remove();
@@ -268,12 +269,13 @@ void ringSideBlue(){
 
  pros::delay(1); //fix weird on error issue hoepfully?
  
- findTri(&tri, 34, 330);
- drive.addErrorFunc(18, LAMBDA(drive.setMaxVoltage(20)));
+ drive.setPID(7);
+ drive.setSlew(mogoGrabSLewProfile);
+ findTri(&tri, 25, 331);
+ drive.addErrorFunc(20, LAMBDA(drive.setSlew({0,0,0})));
+ drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(30)));
  drive.addErrorFunc(4, LAMBDA(clampPis.set_value(true)));
  drive.move(backward, tri.hyp, 3, 100);
-
- pros::delay(100); //let clamp lock 
 
  drive.setPID(2);
  drive.setSlew(mogoSlewProfile);
@@ -305,8 +307,8 @@ void ringSideBlue(){
  drive.turn(right, imuTarget(52), 2, 90); //turn to 2nd 2 ring stack 
  
  drive.addErrorFunc(30, LAMBDA(intakePis.set_value(true)));
- drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(70)));
- drive.move(forward, 46-tri.b, 3, 100); //get 5th ring   
+ drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(50)));
+ drive.move(forward, 47-tri.b, 3, 100); //get 5th ring   
 
  intakePis.set_value(false);
  pros::delay(100);
@@ -324,7 +326,7 @@ void ringSideBlue(){
 
  intake.move_voltage(12000);
  
- drive.move(forward, 21, 1, 100); //touch bar  
+ drive.move(forward, 18, 1, 100); //touch bar  
  
  runOnError.remove();
  drive.onErrorVector.clear();
@@ -447,8 +449,70 @@ void ringElimRed(){
  pros::Task runIntakeControl(IntakeControlSystem_fn);
  currentColor = blue;
 
- runOnError.remove();
+ Triangle tri;
+ setIntake(400, currentColor);
+ 
+ findTri(&tri, 15, 0);
+ drive.move(backward, tri.hyp, 1, 100);
+
+ drive.turn(right, imuTarget(90), 1, 70);
+
+ drive.move(backward, 4-tri.b, 1, 100);
+
+ startIntake();
+ 
+ pros::delay(400);
+
+ findTri(&tri, 5, 90);
+ drive.move(forward, tri.hyp, 1, 100);
+ 
+ drive.turn(right, imuTarget(180), 1, 70);
+
+ drive.move(backward, 8-tri.b, 1, 100);
+
+ drive.turn(right, imuTarget(243), 1, 70); //turn to mogo
+
+ drive.setPID(1);
+ drive.setSlew(genSlewProfile);
+ findTri(&tri, 33, 243);
+ drive.addErrorFunc(15, LAMBDA(drive.setSlew({0,0,0})));
+ drive.addErrorFunc(15, LAMBDA(drive.setMaxVoltage(30)));
+ drive.addErrorFunc(4, LAMBDA(clampPis.set_value(true)));
+ drive.move(backward, tri.hyp, 3, 100);
+
+ drive.setPID(2);
+ drive.setSlew(mogoSlewProfile);
+ drive.turn(right, imuTarget(45), 2, 90); //turn to ring stack
+
+ startIntake();
+ 
+ findTri(&tri, 25, 45);
+ drive.move(forward, tri.hyp, 2, 100); 
+
+ pros::delay(100);
+
+ drive.setPID(4);
+ drive.turn(right, imuTarget(5), 1, 100);
+ 
+ drive.setPID(2);
+ drive.move(forward,8-tri.b, 1, 100); //get 2nd ring from ring stack 
+ pros::delay(200);
+ 
+ drive.move(backward, 8-tri.b, 2, 100); //go get 1st 2 stack
+ 
+ drive.setPID(2); //4
+ drive.turn(left, imuTarget(297), 1, 100); //turn to 1st stack 
+
+ stopIntake();
  runIntakeControl.remove();
+ pros::delay(1);
+ intake.move_voltage(12000);
+ 
+ findTri(&tri, 10, 30);
+ drive.setPID(2);
+ drive.move(forward, tri.hyp, 1, 100); //get 1st 2 stack 
+
+ runOnError.remove();
  drive.onErrorVector.clear();
 }
 
@@ -457,8 +521,70 @@ void ringElimBlue(){
  pros::Task runIntakeControl(IntakeControlSystem_fn);
  currentColor = red;
 
- runOnError.remove();
+ Triangle tri;
+ setIntake(400, currentColor);
+ 
+ findTri(&tri, 15, 0);
+ drive.move(backward, tri.hyp, 1, 100);
+
+ drive.turn(left, imuTarget(270), 1, 70);
+
+ drive.move(backward, 4-tri.b, 1, 100);
+
+ startIntake();
+ 
+ pros::delay(400);
+
+ findTri(&tri, 5, 270);
+ drive.move(forward, tri.hyp, 1, 100);
+ 
+ drive.turn(left, imuTarget(180), 1, 70);
+
+ drive.move(backward, 8-tri.b, 1, 100);
+
+ drive.turn(left, imuTarget(117), 1, 70); //turn to mogo
+
+ drive.setPID(1);
+ drive.setSlew(genSlewProfile);
+ findTri(&tri, 33, 117);
+ drive.addErrorFunc(15, LAMBDA(drive.setSlew({0,0,0})));
+ drive.addErrorFunc(15, LAMBDA(drive.setMaxVoltage(30)));
+ drive.addErrorFunc(4, LAMBDA(clampPis.set_value(true)));
+ drive.move(backward, tri.hyp, 3, 100);
+
+ drive.setPID(2);
+ drive.setSlew(mogoSlewProfile);
+ drive.turn(left, imuTarget(315), 2, 90); //turn to ring stack
+
+ startIntake();
+ 
+ findTri(&tri, 25, 315);
+ drive.move(forward, tri.hyp, 2, 100); 
+
+ pros::delay(100);
+
+ drive.setPID(4);
+ drive.turn(right, imuTarget(355), 1, 100);
+ 
+ drive.setPID(2);
+ drive.move(forward,8-tri.b, 1, 100); //get 2nd ring from ring stack 
+ pros::delay(200);
+ 
+ drive.move(backward, 8-tri.b, 2, 100); //go get 1st 2 stack
+ 
+ drive.setPID(2); //4
+ drive.turn(right, imuTarget(63), 1, 100); //turn to 1st stack 
+
+ stopIntake();
  runIntakeControl.remove();
+ pros::delay(1);
+ intake.move_voltage(12000);
+ 
+ findTri(&tri, 10, 30);
+ drive.setPID(2);
+ drive.move(forward, tri.hyp, 1, 100); //get 1st 2 stack 
+
+ runOnError.remove();
  drive.onErrorVector.clear();
 }
 
@@ -493,7 +619,7 @@ void goalElimRed(){
  
  drive.addErrorFunc(2.5, LAMBDA(clampPis.set_value(true)));
  drive.addErrorFunc(12, LAMBDA(drive.setMaxVoltage(25))); 
- drive.move(backward, 18-tri.b, 1, 100); //clamo on to middle goal reg
+ drive.move(backward, 19-tri.b, 1, 100); //clamo on to middle goal reg
 
  findTri(&tri, 4, 215);
  
@@ -909,12 +1035,22 @@ void tune(){
  pros::Task runOnError(onError_fn);
 
                    /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
+ //drive.setCustomPID({50, 87,  0,  13,  160, 100,  150});
+ //drive.setSlew({0,0,0});
+ drive.setSlew({60, 0, 70});
+ drive.addErrorFunc(20, LAMBDA(drive.setSlew({0,0,0})));
+ drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(30)));
+ drive.move(backward, 25, 3, 100);
+
+
+
+                   /*{kP, kPa, kI, kIa, kD,  kDa,  kPd}*/
 //  drive.setCustomPID({29, 87,  0,  13,  120, 100,  150});
  //drive.setSlew({90,30,80});
 //  drive.addErrorFunc(20, LAMBDA(drive.setSlew({0,0,0})));
- drive.addErrorFunc(20, LAMBDA(drive.setCustomPID({31, 82,  0, 14.5, 100,  227,  0})));
- drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(30)));
- drive.move(backward, 36.5, 3, 70);
+ //drive.addErrorFunc(20, LAMBDA(drive.setCustomPID({31, 82,  0, 14.5, 100,  227,  0})));
+ //drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(30)));
+ //drive.move(backward, 25, 3, 100);
  
 //  drive.setPID(5);
 //  drive.setSlew(mogoSlewProfile);
