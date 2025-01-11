@@ -331,27 +331,27 @@ void goalSideRed(){
  startIntake();
 
  //go get 1st ring
- drive.turn(left, imuTarget(270), 2, 90);
+ drive.turn(left, imuTarget(270), 1, 90);
  
  findTri(&tri, 20, 270);
  drive.move(forward, tri.hyp, 2, 70);
  
- drive.turn(right, imuTarget(0), 2, 90);
+ drive.turn(right, imuTarget(0), 1, 90);
 
  setIntake(-400, std::nullopt);
  
- drive.move(forward, 24-tri.b, 3, 100);
+ drive.move(forward, 26-tri.b, 3, 100);
 
- drive.turn(right, imuTarget(90), 2, 90);
+ drive.turn(right, imuTarget(90), 1 , 90);
  
  setIntake(400, currentColor);
  
- findTri(&tri, 42, 90);
+ findTri(&tri, 34, 90);
  drive.addErrorFunc(24, LAMBDA(drive.setMaxVoltage(80)));
  drive.addErrorFunc(28, LAMBDA(intakePis.set_value(true)));
  drive.move(forward, tri.hyp, 3, 100);
  intakePis.set_value(false);
- pros::delay(150);
+ pros::delay(300);
 
  drive.move(backward, 7, 1, 100);
  
@@ -359,7 +359,7 @@ void goalSideRed(){
   
  drive.turn(right, imuTarget(180), 2, 90); 
 
- drive.move(forward, 26, 2, 100);
+ drive.move(forward, 31, 2, 100);
  
  stopIntake();
  runIntakeControl.remove();
@@ -374,12 +374,15 @@ void goalSideBlue(){
  currentColor = red;
  setIntake(400, std::nullopt); //currentColor
  
- //get mogo
- drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(25)));
+ pros::delay(1); //possible weird task spawn issue 
+ 
+ drive.setPID(7);
+ drive.setSlew(RingSideMogoGrabSLewProfile);
+ findTri(&tri, 28, 22);
+ drive.addErrorFunc(20, LAMBDA(drive.setSlew({0,0,0})));
+ drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(30)));
  drive.addErrorFunc(4, LAMBDA(clampPis.set_value(true)));
- drive.move(backward, 32, 2, 100);
-
- pros::delay(300); //let goal clamp
+ drive.move(backward, tri.hyp, 3, 50);
 
  drive.setPID(2);
  drive.setSlew(mogoSlewProfile);
@@ -390,24 +393,25 @@ void goalSideBlue(){
  //go get 1st ring
  drive.turn(right, imuTarget(90), 2, 90);
  
- findTri(&tri, 27, 270);
+ findTri(&tri, 20, 270);
  drive.move(forward, tri.hyp, 2, 70);
  
  drive.turn(left, imuTarget(0), 2, 90);
 
  setIntake(-400, std::nullopt);
  
- drive.move(forward, 28-tri.b, 3, 50);
+ drive.move(forward, 26-tri.b, 3, 50);
 
  drive.turn(left, imuTarget(270), 2, 90);
  
  setIntake(400, currentColor);
  
+ findTri(&tri, 34, 270);
  drive.addErrorFunc(24, LAMBDA(drive.setMaxVoltage(80)));
  drive.addErrorFunc(28, LAMBDA(intakePis.set_value(true)));
  drive.move(forward, 45, 3, 100);
  intakePis.set_value(false);
- pros::delay(150);
+ pros::delay(200);
 
  drive.move(backward, 7, 1, 100);
  
@@ -415,7 +419,7 @@ void goalSideBlue(){
   
  drive.turn(left, imuTarget(180), 2, 90); 
  
- drive.move(forward, 26, 2, 100);
+ drive.move(forward, 32, 2, 100);
  
  stopIntake();
  runIntakeControl.remove();
