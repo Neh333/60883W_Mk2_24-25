@@ -226,10 +226,10 @@ void ringSideRed(){
  drive.move(forward, 47-tri.b, 4, 100); //get 5th ring   
 
  intakePis.set_value(false);
- pros::delay(300);
+ pros::delay(150);
 
  drive.move(backward, 5, 1, 100); //back UP TO take ring and touch ele 
- pros::delay(500);
+ pros::delay(200);
  drive.move(backward, 5, 1, 100); //back UP TO take ring and touch ele 
 
  drive.turn(left, imuTarget(180), 2, 90);
@@ -294,10 +294,10 @@ void ringSideBlue(){
  drive.move(forward, 47-tri.b, 3, 100); //get 5th ring   
 
  intakePis.set_value(false);
- pros::delay(100);
+ pros::delay(150);
 
  drive.move(backward, 5, 1, 100); //vCK UP TO take ring and touch ele 
- pros::delay(500);
+ pros::delay(250);
  drive.move(backward, 5, 1, 100); //vCK UP TO take ring and touch ele 
 
  drive.turn(right, imuTarget(180), 2, 90);
