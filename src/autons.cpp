@@ -50,7 +50,7 @@ void winPointRed(){
  drive.turn(right, imuTarget(90), 1, 70);
  
  drive.setSlew(RingSideMogoGrabSLewProfile);
- drive.move(backward, 4.5-tri.b, 1, 100);
+ drive.move(backward, 5-tri.b, 1, 100);
  drive.setSlew({0,0,0});
 
  startIntake();
@@ -121,7 +121,7 @@ void winPointBlue(){
  drive.turn(left, imuTarget(270), 1, 70);
 
  drive.setSlew(RingSideMogoGrabSLewProfile);
- drive.move(backward, 4.5-tri.b, 1, 100);
+ drive.move(backward, 5-tri.b, 1, 100);
  drive.setSlew({0,0,0});
 
  startIntake();
