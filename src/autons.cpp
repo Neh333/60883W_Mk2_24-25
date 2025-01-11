@@ -50,7 +50,7 @@ void winPointRed(){
  drive.turn(right, imuTarget(90), 1, 70);
  
  drive.setSlew(RingSideMogoGrabSLewProfile);
- drive.move(backward, 4.3-tri.b, 1, 100);
+ drive.move(backward, 4.5-tri.b, 1, 100);
  drive.setSlew({0,0,0});
 
  startIntake();
@@ -92,7 +92,7 @@ void winPointRed(){
  setIntake(400, currentColor);
 
  drive.move(forward, 10, 1, 100); //get 2nd ring
- pros::delay(150);
+ pros::delay(100);
  
  drive.turn(left, imuTarget(180), 2, 90);
 
@@ -121,7 +121,7 @@ void winPointBlue(){
  drive.turn(left, imuTarget(270), 1, 70);
 
  drive.setSlew(RingSideMogoGrabSLewProfile);
- drive.move(backward, 4.3-tri.b, 1, 100);
+ drive.move(backward, 4.5-tri.b, 1, 100);
  drive.setSlew({0,0,0});
 
  startIntake();
@@ -162,14 +162,18 @@ void winPointBlue(){
  setIntake(400, red);
 
  drive.move(forward, 10, 1, 100); //get 2nd ring
- pros::delay(150);
+ pros::delay(100);
  
  drive.turn(right, imuTarget(180), 2, 90);
+ 
+ stopIntake();
+ runIntakeControl.remove();
+ pros::delay(1);
+ intake.move_voltage(12000);
 
  drive.move(forward, 24, 1, 100); // touch elevation tower 
  
  runOnError.remove();
- runIntakeControl.remove();
  drive.onErrorVector.clear();
 }
 
@@ -233,11 +237,13 @@ void ringSideRed(){
  drive.move(backward, 5, 1, 100); //back UP TO take ring and touch ele 
 
  drive.turn(left, imuTarget(180), 2, 90);
-
- drive.move(forward, 18, 1, 100); //touch bar  
-
+ 
  stopIntake();
  runIntakeControl.remove();
+ pros::delay(1);
+ intake.move_voltage(12000);
+
+ drive.move(forward, 18, 1, 100); //touch bar  
  
  runOnError.remove();
  drive.onErrorVector.clear();
@@ -304,9 +310,7 @@ void ringSideBlue(){
 
  stopIntake();
  runIntakeControl.remove();
-
- pros::delay(20);
-
+ pros::delay(1);
  intake.move_voltage(12000);
  
  drive.move(forward, 18, 1, 100); //touch bar  
@@ -368,10 +372,13 @@ void goalSideRed(){
   
  drive.turn(right, imuTarget(180), 2, 90); 
 
- drive.move(forward, 31, 2, 100);
- 
  stopIntake();
  runIntakeControl.remove();
+ pros::delay(1);
+ intake.move_voltage(12000);
+
+ drive.move(forward, 31, 2, 100);
+ 
  runOnError.remove();
  drive.onErrorVector.clear();
 }
@@ -427,11 +434,14 @@ void goalSideBlue(){
  pros::delay(350);
   
  drive.turn(left, imuTarget(180), 2, 90); 
+
+ stopIntake();
+ runIntakeControl.remove();
+ pros::delay(1);
+ intake.move_voltage(12000);
  
  drive.move(forward, 32, 2, 100);
  
- stopIntake();
- runIntakeControl.remove();
  runOnError.remove();
  drive.onErrorVector.clear();
 }
@@ -788,7 +798,7 @@ void skills(){
  drive.move(backward, 5, 1, 100);
  
  drive.setPID(2);
- drive.turn(right, imuTarget(0), 1, 90);
+ drive.turn(right, imuTarget(0), 2, 90);
 
  drive.setSlew(mogoSlewProfile);
  findTri(&tri, 22, 360);
@@ -806,7 +816,7 @@ void skills(){
  findTri(&tri, 37, 360);
  drive.move(forward, tri.hyp, 3, 100); //get 3rd ring on goal 
 
- pros::delay(200); //intake before big turn 
+ pros::delay(250); //intake before big turn 
  
  drive.setPID(2);
  drive.turn(shortest, 178, 2, 90); //turn to inline rings 
@@ -861,7 +871,7 @@ void skills(){
  drive.addErrorFunc(39, LAMBDA(setIntake(400, std::nullopt)));
  drive.move(forward, 66, 3, 100);
 
- pros::delay(100); //let first ring get itself together 
+ pros::delay(90); //let first ring get itself together 
  
  drive.setPID(2);
  findTri(&tri, 9, 178);
@@ -916,7 +926,7 @@ void skills(){
  drive.setPID(2);
  drive.move(forward, 44-tri.b, 5, 100); //get 3rd ring
 
- pros::delay(900);
+ pros::delay(800);
 
 //  drive.turn(left, imuTarget(211), 1, 90); //turn to wall stake ring 
 
@@ -978,7 +988,7 @@ void skills(){
  drive.addErrorFunc(3, LAMBDA(clampPis.set_value(false)));
  drive.move(backward, tri.hyp, 1, 100); //drop off 2nd mogo
 
- pros::delay(500); //make sure clamp unlocks 
+ pros::delay(300); //make sure clamp unlocks 
 
  drive.setPID(1);
  drive.setSlew(genSlewProfile);
