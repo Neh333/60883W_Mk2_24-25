@@ -11,7 +11,7 @@ void Arm::setTarget(armState state){
     } else if(state == load){
         this->target = loadingTarget;
     } else if (state == inter) {
-        this->target = loadingTarget;
+        this->target = interTarget;
     } else {
         this->target = scoringTarget;
     }
