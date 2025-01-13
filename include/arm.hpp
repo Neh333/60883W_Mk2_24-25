@@ -4,10 +4,11 @@
 enum armState{
     standby,
     load,
+    inter,
     score
 };
 
-const int scoringTarget = 232, loadingTarget = 127, standByTarget = 98; //130, 29, 0 
+const int scoringTarget = 232, interTarget = 153, loadingTarget = 127, standByTarget = 98; 
 
 class Arm{
     private:

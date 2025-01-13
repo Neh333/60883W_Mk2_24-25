@@ -147,7 +147,7 @@ void opcontrol() {
 
     if(controller.get_digital_new_press(DIGITAL_R2)){
       ++armTog;
-      armTog = armTog>2 ? 0 : armTog;
+      armTog = armTog>3 ? 0 : armTog;
     }
     if(armTog == 0){
       armControl.setTarget(standby);
@@ -156,6 +156,9 @@ void opcontrol() {
       armControl.setTarget(load);
     }
     else if (armTog == 2){
+      armControl.setTarget(inter);
+    }
+    else if (armTog == 3) {
       armControl.setTarget(score);
     }
    

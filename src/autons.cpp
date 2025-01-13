@@ -243,7 +243,7 @@ void ringSideRed(){
  pros::delay(1);
  intake.move_voltage(12000);
 
- drive.move(forward, 18, 1, 100); //touch bar  
+ drive.move(forward, 19, 1, 100); //touch bar  
  
  runOnError.remove();
  drive.onErrorVector.clear();
@@ -297,10 +297,10 @@ void ringSideBlue(){
  
  drive.addErrorFunc(30, LAMBDA(intakePis.set_value(true)));
  drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(50)));
- drive.move(forward, 47-tri.b, 3, 100); //get 5th ring   
+ drive.move(forward, 48-tri.b, 3, 100); //get 5th ring   
 
  intakePis.set_value(false);
- pros::delay(150);
+ pros::delay(300); //150
 
  drive.move(backward, 5, 1, 100); //vCK UP TO take ring and touch ele 
  pros::delay(250);
@@ -313,7 +313,7 @@ void ringSideBlue(){
  pros::delay(1);
  intake.move_voltage(12000);
  
- drive.move(forward, 18, 1, 100); //touch bar  
+ drive.move(forward, 19, 1, 100); //touch bar  
  
  runOnError.remove();
  drive.onErrorVector.clear();
@@ -399,10 +399,6 @@ void goalSideBlue(){
  drive.addErrorFunc(20, LAMBDA(drive.setMaxVoltage(30)));
  drive.addErrorFunc(4, LAMBDA(clampPis.set_value(true)));
  drive.move(backward, tri.hyp, 3, 50);
-
- drive.setPID(2);
- drive.setSlew(mogoSlewProfile);
- drive.move(backward, 5, 1, 100);
 
  startIntake();
 

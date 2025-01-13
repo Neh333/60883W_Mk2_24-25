@@ -7,12 +7,13 @@ Arm armControl; //arm object for main.cpp and autons.cpp for changing the arm ta
 
 void Arm::setTarget(armState state){
     if(state == standby){
-        target = standByTarget;
-    }
-    else if(state == load){
-        target = loadingTarget;
+        this->target = standByTarget;
+    } else if(state == load){
+        this->target = loadingTarget;
+    } else if (state == inter) {
+        this->target = loadingTarget;
     } else {
-        target = scoringTarget;
+        this->target = scoringTarget;
     }
 }
 
@@ -25,7 +26,7 @@ void Arm::move(){
     if(target == scoringTarget){
         this->kP = 150; //74
     }
-    else if (target == loadingTarget) {
+    else if (target == loadingTarget || target == interTarget) {
         this->kP = 280;
     }
 
